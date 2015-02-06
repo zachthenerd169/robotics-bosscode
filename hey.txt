@@ -1,1 +1,3 @@
 Hey guys! Welcome to the robotics coding repository. 
+
+This is how you commit something.
