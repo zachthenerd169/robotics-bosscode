@@ -1,7 +1,7 @@
 
 import java.util.Date;
 
-import edu.ufl.digitalworlds.gui.DWApp;
+import edu.ufl.digitalworlds.j4k.DepthMap;
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 
 /*
@@ -55,12 +55,22 @@ public class SimpleExample extends J4KSDK {
 	}
 
 	@Override
-	public void onDepthFrameEvent(short[] depth_frame, byte[] body_index, float[] xyz, float[] uv) {
+	public void onDepthFrameEvent(short[] depth_frame, byte[] body_index, float[] XYZ, float[] UV) {
 //		System.out.println("A new depth frame was received.");
 		
-		if(counter==0)
-			time=new Date().getTime();
-		counter+=1;
+		DepthMap map=new DepthMap(getDepthWidth(),getDepthHeight(),XYZ);
+		map.setPlayerIndex(depth_frame, body_index);
+		if(UV!=null) map.setUV(UV);
+//		map.setMaximumAllowedDeltaZ(5);
+		
+		for (int i = 0; i < XYZ.length; i++)
+		{
+			XYZ[i];
+		}
+		
+//		if(counter==0)
+//			time=new Date().getTime();
+//		counter+=1;
 	}
 	
 	public static void main(String[] args)
