@@ -46,27 +46,107 @@ public class SimpleExample extends J4KSDK {
 	@Override
 	public void onSkeletonFrameEvent(boolean[] skeleton_tracked, float[] positions, float[] orientations, byte[] joint_status) {
 //		System.out.println("A new skeleton frame was received.");
-		System.out.println("HELLO LUUUUUUUUKA");
+//		System.out.println("HELLO LUUUUUUUUKA");
 	}
 
 	@Override
 	public void onColorFrameEvent(byte[] color_frame) {
 //		System.out.println("A new color frame was received.");
 	}
+	
+
+	@Override
+	public void onInfraredFrameEvent(short[] data) {
+		short[][] pixels = new short[640][480];
+		
+		for (int i = 0; i < data.length; i++)
+		{
+			int x = i % 640;
+			int y = i / 640;
+			pixels[x][y] = data[i];
+		}
+		
+		short maxVal = Short.MAX_VALUE;
+		for (int x = 0; x < 640; x++)
+		{
+			for (int y = 0; y < 480; y++)
+			{
+				if (pixels[x][y] < maxVal)
+					maxVal = pixels[x][y];
+			}
+		}
+		
+		System.out.println(maxVal);
+		
+//		if(viewer==null || viewer.videoTexture==null || !use_infrared) return;
+//		int sz=getInfraredWidth()*getInfraredHeight();
+//		byte bgra[]=new byte[sz*4];
+//		int idx=0;
+//		int iv=0;
+//		short sv=0;
+//		byte bv=0;
+//		for(int i=0;i<sz;i++)
+//		{
+//			sv=data[i];
+//			iv=sv >= 0 ? sv : 0x10000 + sv; 
+//			bv=(byte)( (iv & 0xfff8)>>6);
+//			bgra[idx]=bv;idx++;
+//			bgra[idx]=bv;idx++;
+//			bgra[idx]=bv;idx++;
+//			bgra[idx]=0;idx++;
+//		}
+//		
+//		viewer.videoTexture.update(getInfraredWidth(), getInfraredHeight(), bgra);
+	}
+
 
 	@Override
 	public void onDepthFrameEvent(short[] depth_frame, byte[] body_index, float[] XYZ, float[] UV) {
 //		System.out.println("A new depth frame was received.");
 		
-		DepthMap map=new DepthMap(getDepthWidth(),getDepthHeight(),XYZ);
-		map.setPlayerIndex(depth_frame, body_index);
-		if(UV!=null) map.setUV(UV);
+//		DepthMap map=new DepthMap(getDepthWidth(),getDepthHeight(),XYZ);
+//		map.setPlayerIndex(depth_frame, body_index);
+//		if(UV!=null) map.setUV(UV);
 //		map.setMaximumAllowedDeltaZ(5);
 		
-		for (int i = 0; i < XYZ.length; i++)
+		float a[]=getAccelerometerReading();
+		a[0] = (a[0]*100)/100f;
+		a[1] = (a[1]*100)/100f;
+		a[2] = (a[2]*100)/100f;
+		
+		float maxX = Float.MIN_VALUE;
+		float maxY = Float.MIN_VALUE;
+		float maxZ = Float.MIN_VALUE;
+		float minX = Float.MAX_VALUE;
+		float minY = Float.MAX_VALUE;
+		float minZ = Float.MAX_VALUE;
+		
+		for (int i = 0; i < XYZ.length; i += 3)
 		{
-			XYZ[i];
+			if (XYZ[i] > maxX)
+				maxX = XYZ[i];
+			if (XYZ[i+1] > maxY)
+				maxY = XYZ[i+1];
+			if (XYZ[i+2] > maxZ)
+				maxZ = XYZ[i+2];
+			if (XYZ[i] < minX)
+				minX = XYZ[i];
+			if (XYZ[i+1] < minY)
+				minY = XYZ[i+1];
+			if (XYZ[i+2] < minZ)
+				minZ = XYZ[i+2];
 		}
+		
+		minX *= 100f;
+		minY *= 100f;
+		minZ *= 100f;
+		maxX *= 100f;
+		maxY *= 100f;
+		maxZ *= 100f;
+		
+//		System.out.println(XYZ[i] + "\t" + XYZ[i+1] + "\t" + XYZ[i+2]);
+//		System.out.println(a[0] + "\t" + a[1] + "\t" + a[2] + "\t" + minX + "\t" + minY + "\t" + minZ + "\t" + maxX + "\t" + maxY + "\t" + maxZ);
+		System.out.println(XYZ[0] + "\t" + XYZ[1] + "\t" + XYZ[2]);
 		
 //		if(counter==0)
 //			time=new Date().getTime();
@@ -85,15 +165,16 @@ public class SimpleExample extends J4KSDK {
 		
 		System.out.println("This program will run for about 30 seconds.");
 		SimpleExample kinect=new SimpleExample();
-		kinect.start(J4KSDK.COLOR|J4KSDK.DEPTH|J4KSDK.SKELETON);
+//		kinect.start(J4KSDK.COLOR|J4KSDK.DEPTH|J4KSDK.XYZ|J4KSDK.INFRARED|J4KSDK.SKELETON);
+		kinect.start(J4KSDK.XYZ);
 		
 		
 		//Sleep for 30 seconds.
-		try {Thread.sleep(30000);} catch (InterruptedException e) {}
+		try {Thread.sleep(3000000);} catch (InterruptedException e) {}
 		
 		
 		kinect.stop();		
-		System.out.println("FPS: "+kinect.counter*1000.0/(new Date().getTime()-kinect.time));
+//		System.out.println("FPS: "+kinect.counter*1000.0/(new Date().getTime()-kinect.time));
 	}
 
 	
