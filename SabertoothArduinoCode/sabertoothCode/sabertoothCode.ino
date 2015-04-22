@@ -1,3 +1,4 @@
+
 // Software Serial Sample for Packet Serial
 // Copyright (c) 2012 Dimension Engineering LLC
 // See license.txt for license details.
@@ -17,7 +18,9 @@ void loop()
 {
   if(Serial.available() > 0) 
   {
-    float num = Serial.parseInt();
+    int num = Serial.read();
+    Serial.println(num, DEC);
+    
     if(num == 100)
     {
       digitalWrite(led, HIGH);
@@ -45,11 +48,8 @@ void loop()
 
 void turn(int direction, int powerLevel)
 {
-  // Ramp from -127 to 127 (full reverse to full forward), waiting 20 ms (1/50th of a second) per value.
-
-    ST.motor(1, direction * powerLevel);
-    ST.motor(2, direction * powerLevel);
-
+    ST.motor(1, -direction * powerLevel);
+    ST.motor(2, -direction * powerLevel);
 }
 
 void stop()

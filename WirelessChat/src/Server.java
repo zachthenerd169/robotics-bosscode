@@ -24,13 +24,24 @@ class Server {
         	 System.out.print("Paul: ");
         	 data = input.nextLine();
         	 
+        	 int num = 0;
+        	 try
+        	 {
+        		 num = Integer.parseInt(data);
+        	 }
+        	 catch (NumberFormatException e)
+        	 {
+        		 System.out.println("[ERR] Wrong format sucka");
+        	 }
+        	 
         	 if (data.startsWith("/exit"))
         	 {
         		 break;
         	 }
         	 else
         	 {
-                 out.println(data);
+                 out.write(num);
+                 out.flush();                 
         	 }
         	 
 //             System.out.println(in.readLine()); // Read one line and output it
@@ -41,6 +52,7 @@ class Server {
          srvr.close();
       }
       catch(Exception e) {
+    	  e.printStackTrace();
          System.out.print("Whoops! It didn't work!\n");
       }
    }

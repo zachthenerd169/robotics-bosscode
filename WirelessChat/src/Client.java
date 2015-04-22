@@ -5,7 +5,7 @@ import java.net.*;
 class Client {
    public static void main(String args[]) {
       try {
-         Socket skt = new Socket("192.168.137.1", 1234);
+         Socket skt = new Socket("127.0.0.1", 1234);
          BufferedReader in = new BufferedReader(new
             InputStreamReader(skt.getInputStream()));
          System.out.print("Received string: '");

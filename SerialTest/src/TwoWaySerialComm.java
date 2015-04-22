@@ -115,7 +115,7 @@ public class TwoWaySerialComm
     {
         try
         {
-            (new TwoWaySerialComm()).connect("/dev/tty.usbmodem1411");
+          (new TwoWaySerialComm()).connect("/dev/tty.usbmodem1411");
         }
         catch ( Exception e )
         {
