@@ -1,9 +1,13 @@
 
-import java.util.Date;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
-import edu.ufl.digitalworlds.j4k.DepthMap;
+import javax.imageio.ImageIO;
+
 import edu.ufl.digitalworlds.j4k.J4KSDK;
-
 /*
  * Copyright 2011-2014, Digital Worlds Institute, University of 
  * Florida, Angelos Barmpoutis.
@@ -51,6 +55,38 @@ public class SimpleExample extends J4KSDK {
 
 	@Override
 	public void onColorFrameEvent(byte[] color_frame) {
+		try {
+			 
+//			BufferedImage originalImage = ImageIO.read(new File(
+//					"c:/darksouls.jpg"));
+// 
+//			// convert BufferedImage to byte array
+//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//			ImageIO.write(originalImage, "jpg", baos);
+//			baos.flush();
+//			imageInByte = baos.toByteArray();
+//			baos.close();
+ 
+			// convert byte array back to BufferedImage
+			byte[] imageInByte = color_frame;
+			InputStream in = new ByteArrayInputStream(imageInByte);
+			BufferedImage bImageFromConvert = ImageIO.read(in);
+			bImageFromConvert = new BufferedImage(1280, 960, BufferedImage.TYPE_INT_RGB);
+			for (int y = 0; y < 1280; y++)
+			{
+				for (int x = 0; x < 960; x++)
+				{
+					bImageFromConvert.setRGB(x, y, color_frame[y*960+x]);
+				}
+			}
+ 
+			ImageIO.write(bImageFromConvert, "png", new File("c:/new-darksouls.png"));
+ 
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		System.out.println(color_frame.length);
 //		System.out.println("A new color frame was received.");
 	}
 	
@@ -166,8 +202,8 @@ public class SimpleExample extends J4KSDK {
 		System.out.println("This program will run for about 30 seconds.");
 		SimpleExample kinect=new SimpleExample();
 //		kinect.start(J4KSDK.COLOR|J4KSDK.DEPTH|J4KSDK.XYZ|J4KSDK.INFRARED|J4KSDK.SKELETON);
-		kinect.start(J4KSDK.XYZ);
-		
+//		kinect.start(J4KSDK.XYZ);
+		kinect.start(J4KSDK.COLOR);
 		
 		//Sleep for 30 seconds.
 		try {Thread.sleep(3000000);} catch (InterruptedException e) {}
