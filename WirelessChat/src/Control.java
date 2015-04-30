@@ -24,7 +24,12 @@ public class Control extends JApplet implements KeyListener {
     public Socket skt;
     public BufferedReader in;
     public PrintWriter out;
+    
+    public int powerLevel1 = 10;
+    public int powerLevel2 = 10;
 
+    public boolean isLocked = false;
+    
     public Control() {
         super();
 
@@ -73,16 +78,56 @@ public class Control extends JApplet implements KeyListener {
     
     public void keyPressedOnce(char key)
     {
-    	int powerLevel = 1;
+    	if (key == 'P') //lock mode
+    	{
+    		isLocked = !isLocked;
+    		send(0);
+    	}
+		
+		if (isLocked)
+			return;
+    	
+    	if (key == 'U')
+    		powerLevel1 += 5;
+    	if (key == 'J')
+    		powerLevel1 -= 5;
+    	if (key == 'I')
+    		powerLevel2 += 5;
+    	if (key == 'K')
+    		powerLevel2 -= 5;
+    	
+    	if (powerLevel1 <= 0)
+    		powerLevel1 = 0;
+    	if (powerLevel1 >= 125) //actually 127 max
+    		powerLevel1 = 125;
+    	if (powerLevel2 <= 0)
+    		powerLevel2 = 0;
+    	if (powerLevel2 >= 125)
+    		powerLevel2 = 125;
     	
     	if (key == 'W')
-    		send(powerLevel, 1); //forward
+    		send(1, powerLevel1, powerLevel2); //forward
     	if (key == 'S')
-    		send(powerLevel, 2); //backwards
+    		send(2, powerLevel1, powerLevel2); //backwards
     	if (key == 'A')
-    		send(powerLevel, 3); //turn left
+    		send(3, powerLevel1, powerLevel2); //turn left
     	if (key == 'D')
-    		send(powerLevel, 4); //turn right
+    		send(4, powerLevel1, powerLevel2); //turn right
+    	
+    	if (key == 'F')
+    		send(5); //digger drop
+    	if (key == 'R')
+    		send(6); //digger up
+    	
+    	if (key == 'T')
+    		send(7); //bucket dump
+    	if (key == 'G')
+    		send(8); //bucker retract
+    	
+    	if (key == ' ')
+    		send(0);
+    	
+    	System.out.println(key + " " + powerLevel1 + " " + powerLevel2);
     }
 
     public void keyReleased(KeyEvent e)
@@ -92,17 +137,20 @@ public class Control extends JApplet implements KeyListener {
     	
     	if (!keyDown['W'] && !keyDown['A'] && !keyDown['S'] && !keyDown['D'])
     		send(0); //stop
-    	System.out.println(key);
     }
-    public void send(int powerLevel, int mode)
-    {
-    	send(powerLevel + mode*4);
-    }
-    
+
     public void send(int num)
     {
         out.write(num);
         out.flush();        
+    }
+    
+    public void send(int mode, int powerLevel1, int powerLevel2)
+    {
+        out.write(mode);
+        out.write(powerLevel1);
+        out.write(powerLevel2);
+        out.flush();
     }
 
 
