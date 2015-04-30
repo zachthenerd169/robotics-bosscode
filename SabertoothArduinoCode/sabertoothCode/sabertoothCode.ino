@@ -127,18 +127,18 @@ void stopRobot()
 void straight(int powerLevel)
 {
     ST1.motor(1, powerLevel);
-    ST1.motor(2, -powerLevel);
+    ST1.motor(2, powerLevel);
 }
 
 void backward(int powerLevel)
 {
     ST1.motor(1, -powerLevel);
-    ST1.motor(2, powerLevel);
+    ST1.motor(2, -powerLevel);
 }
 
 void turnRobot(int direction, int powerLevel)
 {
-    ST1.motor(1, direction * powerLevel);
+    ST1.motor(1, -direction * powerLevel);
     ST1.motor(2, direction * powerLevel);
 }
 
