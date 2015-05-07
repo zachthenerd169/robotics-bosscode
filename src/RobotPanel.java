@@ -40,6 +40,7 @@ public class RobotPanel extends JPanel
 		
 	}
 	
+	@Override
 	public void paintComponent(Graphics g)
 	{
 //		drawBlue(g);

@@ -9,5 +9,10 @@
 	<classpathentry kind="lib" path="Libs/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="Libs/jogl-all.jar"/>
 	<classpathentry kind="lib" path="Libs/ufdw.jar"/>
+	<classpathentry kind="lib" path="Libs/RXTXcomm.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="SkeletorTestKinectBosscode/Libs"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

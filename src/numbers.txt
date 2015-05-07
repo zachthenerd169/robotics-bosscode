@@ -1,0 +1,19 @@
+0	stop
+4	forward
+8	backwards
+12	turn left
+16	turn right
+20	digger on
+24	digger off
+28	bucket on
+32	bucket return
+36	strafe left
+40	strafe right
+
+
+8	backwards
+20	dig
+24	dig off
+4	forwards
+28	bucket on
+32	bucket return

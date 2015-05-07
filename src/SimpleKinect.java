@@ -1,12 +1,4 @@
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 /*
  * Copyright 2011-2014, Digital Worlds Institute, University of 
