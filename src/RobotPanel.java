@@ -1,8 +1,12 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 
@@ -28,7 +32,7 @@ public class RobotPanel extends JPanel
 					update();
 					repaint();
 					
-					try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+					try {Thread.sleep(250);} catch (InterruptedException e) {e.printStackTrace();}
 				}
 			}
 			
@@ -44,7 +48,55 @@ public class RobotPanel extends JPanel
 	public void paintComponent(Graphics g)
 	{
 //		drawBlue(g);
-		drawInfrared(g);
+//		drawInfrared(g);
+		drawHough(g);
+	}
+	
+	public void drawHough(Graphics g)
+	{
+		byte[] output = kinect.getColorFrame();
+		
+
+		int[][] image = new int[640][480];
+		
+		for (int i = 0; i < output.length; i += 4)
+		{
+			int cb = output[i] & 0xFF;
+			int cg = output[i+1] & 0xFF;
+			int cr = output[i+2] & 0xFF;
+			int ca = output[i+3] & 0xFF;
+			
+			int x = 639 - (i/4) % 640;
+			int y = (i/4) / 640;
+			
+			g.setColor(new Color(cr, cg, cb));
+			g.drawRect(x, y, 1, 1);
+//			image[x][y] = clamp255(cr*2 - penalty(cg) - penalty(cb));
+		}
+		
+		ArrayData dd = new ArrayData(output, image.length, image[0].length);
+		dd = HoughTransform.houghTransform(dd, 640, 480, 100);
+				
+		for (int i = 0; i < output.length; i += 4)
+		{
+			int x = 639 - (i/4) % 640;
+			int y = (i/4) / 640;
+			
+			g.setColor(new Color(image[x][y], image[x][y], image[x][y]));
+			g.drawRect(x+640, y, 1, 1);
+		}
+
+		int max = dd.getMax();
+		BufferedImage outputImage = new BufferedImage(dd.width, dd.height, BufferedImage.TYPE_INT_ARGB);
+		for (int y = 0; y < dd.height; y++)
+		{
+			for (int x = 0; x < dd.width; x++)
+			{
+				int n = Math.min((int)Math.round(dd.get(x, y) * 255.0 / max), 255);
+				outputImage.setRGB(x, dd.height - 1 - y, (n << 16) | (n << 8) | 0x90 | -0x01000000);
+			}
+		}
+		g.drawImage(outputImage, 640, 0, 640, 480, null);
 	}
 	
 	public void drawBlue(Graphics g)

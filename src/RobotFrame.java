@@ -14,8 +14,8 @@ public class RobotFrame extends JFrame
 		SimpleKinect kinect=new SimpleKinect();
 //		kinect.start(J4KSDK.DEPTH);
 //		kinect.start(J4KSDK.XYZ);
-		kinect.start(J4KSDK.INFRARED);
-//		kinect.start(J4KSDK.COLOR);
+//		kinect.start(J4KSDK.INFRARED);
+		kinect.start(J4KSDK.COLOR);
 
 		try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		
