@@ -3,21 +3,21 @@
 // See license.txt for license details.
 #include <SoftwareSerial.h>
 #include <Sabertooth.h>
-//#include "DualVNH5019MotorShield.h"
+#include "DualVNH5019MotorShield.h"
 
 SoftwareSerial SWSerial1(NOT_A_PIN, 14); // RX on no pin (unused), TX on pin 14 (to S1).
 SoftwareSerial SWSerial2(NOT_A_PIN, 16);
 Sabertooth ST1(128, SWSerial1); // Address 128, and use SWSerial as the serial port.
 Sabertooth ST2(128, SWSerial2);
 
-//DualVNH5019MotorShield md; // The motor driver for digger actuators
+DualVNH5019MotorShield md; // The motor driver for digger actuators
 
 void stopIfFault()
 {
-//   if(md.getM1Fault())
-//   {
+   if(md.getM1Fault() || md.getM2Fault())
+   {
      Serial.println("Fault with digger motors"); 
-//   }
+   }
 }
 
 void setup()
@@ -30,7 +30,7 @@ void setup()
   ST1.setRamping(55);
   ST2.setRamping(55);
   
-//  md.init(); // initialize motor driver
+  md.init(); // initialize motor driver
 
 }
 
@@ -151,26 +151,26 @@ void turnRobot(int direction, int powerLevel1, int powerLevel2)
 
 void diggerUp()
 {
-//   ST2.motor(1, -127);  // Linear actuator out 
-   ST2.motor(2, 0);  // Motor on
+   ST2.motor(1, -127);  // Linear actuator out 
+   ST2.motor(2, 0);  // Motor off
 }
 
 void diggerDrop()
 {
-//   ST2.motor(1, 127);   // Linear actuator in
-   ST2.motor(2, 127);    // Motor off
+   ST2.motor(1, 127);   // Linear actuator in
+   ST2.motor(2, 70);    // Motor on
 }
 
 void bucketDump()
 {
-//   md.setSpeeds(-400, -400);  // Linear actuators up
-//   stopIfFault();
+   md.setSpeeds(-400, -400);  // Linear actuators up
+   stopIfFault();
 }
 
 void bucketDown()
 {
-//   md.setSpeeds(400, 400);  // Linear actuators down
-//   stopIfFault();
+   md.setSpeeds(400, 400);  // Linear actuators down
+   stopIfFault();
 }
 
 
