@@ -1,6 +1,6 @@
 *.pydevproject
-.metadata
-.gradle
+*.metadata
+*.gradle
 bin/
 tmp/
 *.tmp
@@ -8,11 +8,11 @@ tmp/
 *.swp
 *~.nib
 local.properties
-.settings/
-.loadpath
+*.settings/
+*.loadpath
 
 # Eclipse Core
-.project
+*.project
 
 # External tool builders
 .externalToolBuilders/
@@ -21,16 +21,16 @@ local.properties
 *.launch
 
 # CDT-specific
-.cproject
+*.cproject
 
 # JDT-specific (Eclipse Java Development Tools)
-.classpath
+*.classpath
 
 # PDT-specific
-.buildpath
+*.buildpath
 
 # sbteclipse plugin
-.target
+*.target
 
 # TeXlipse plugin
-.texlipse
+*.texlipse
