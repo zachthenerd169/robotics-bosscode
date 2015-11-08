@@ -1,0 +1,36 @@
+# depslib dependency file v1.0
+1425487257 source:/Users/mjacob/Dropbox/WORK/Courses/CIE2015/spring15/57017Private/homework/homework5/exampleSolution/EasyBMP/EasyBMP.cpp
+	"EasyBMP.h"
+
+1425487257 /Users/mjacob/Dropbox/WORK/Courses/CIE2015/spring15/57017Private/homework/homework5/exampleSolution/EasyBMP/EasyBMP.h
+	<iostream>
+	<cmath>
+	<cctype>
+	<cstring>
+	<stdio.h>
+	<cstdio>
+	"EasyBMP_DataStructures.h"
+	"EasyBMP_BMP.h"
+	"EasyBMP_VariousBMPutilities.h"
+
+1425487257 /Users/mjacob/Dropbox/WORK/Courses/CIE2015/spring15/57017Private/homework/homework5/exampleSolution/EasyBMP/EasyBMP_DataStructures.h
+
+1425487257 /Users/mjacob/Dropbox/WORK/Courses/CIE2015/spring15/57017Private/homework/homework5/exampleSolution/EasyBMP/EasyBMP_BMP.h
+
+1425487257 /Users/mjacob/Dropbox/WORK/Courses/CIE2015/spring15/57017Private/homework/homework5/exampleSolution/EasyBMP/EasyBMP_VariousBMPutilities.h
+
+1425487257 source:/Users/mjacob/Dropbox/WORK/Courses/CIE2015/spring15/57017Private/homework/homework5/exampleSolution/hw5.cpp
+	"Image.h"
+	<iostream>
+	<stack>
+
+1425487257 /Users/mjacob/Dropbox/WORK/Courses/CIE2015/spring15/57017Private/homework/homework5/exampleSolution/Image.h
+	<string>
+	"EasyBMP/EasyBMP.h"
+
+1425487257 source:/Users/mjacob/Dropbox/WORK/Courses/CIE2015/spring15/57017Private/homework/homework5/exampleSolution/Image.cpp
+	"Image.h"
+	"EasyBMP/EasyBMP.h"
+	<cstdlib>
+	<ctime>
+
