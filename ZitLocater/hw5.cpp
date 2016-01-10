@@ -150,10 +150,14 @@ int main( int argc, char* argv[] )
 
         }
         processedImage = smoothed;
+        //std::cout << "Writing final image: " << "mask.jpeg" << std::endl; //steph's code
+        mask.writeToBMPFile("mask.jpeg");
     }//end else statement
     
     std::cout << "Writing final image: " << outputImageFileName << std::endl;
     processedImage.writeToBMPFile(outputImageFileName);
+    //std::cout << "Writing final image: " << "mask.jpeg" << std::endl; //steph's code
+    //mask.processedImage("mask.jpeg");
     
     
   return 0;

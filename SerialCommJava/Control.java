@@ -1,4 +1,5 @@
 //- BinaryCalc.java
+//gui interface for client code (communicates with server on the robot) --> uses keyboard interface
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
