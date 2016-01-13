@@ -24,4 +24,17 @@ int main(void)
     const int maxBuff = 256;
     char messageBuff[maxBuff];
     char* serverIP;
+    
+    tcpSock=CreateSocket(AF_INET, SOCK_STREAM, 0); //create TCP socket
+    if(udpSock<0){perror("Can't create tdpSock: ");}
+}
+int CreateSocket(int domain, int type, int protocol)
+{
+    int sock=socket(domain, type, protocol);
+    if(sock<0)
+    {
+        perror("Can't create socket: ");
+        return -1; //exit program
+    }
+    else{return sock;}
 }
