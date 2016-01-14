@@ -207,10 +207,7 @@ int CommunicatingSocket::recv(void *buffer, int bufferLen)
   if ((rtn = ::recv(sockDesc, (raw_type *) buffer, bufferLen, 0)) < 0) {
     throw SocketException("Received failed (recv())", true);
   }
-        printf("In receive");
-
-
-  return rtn;
+        return rtn;
 }
 
 string CommunicatingSocket::getForeignAddress() 

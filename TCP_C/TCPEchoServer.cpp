@@ -16,6 +16,8 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+// g++ -o TCPEchoServer.exe TCPEchoServer.cpp PracticalSocket.cpp
+// ./TCPEchoServer.exe 1024
 
 #include "PracticalSocket.h"  // For Socket, ServerSocket, and SocketException
 #include <iostream>           // For cerr and cout
