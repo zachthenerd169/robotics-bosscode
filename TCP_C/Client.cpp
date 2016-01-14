@@ -29,7 +29,8 @@ int main (int argc, char *argv[])
     char userConfirm;
     string servAddress=argv[1];
     unsigned short servPort = atoi(argv[2]);
-    char *message; //message client will send the server
+    //char *message; //message client will send the server
+    string tempMessage;
    
     //confirm input (don't know if I should keep this)
     cout<<"\nServer IP is: "<<servAddress<<"\nServer Port is: "<<servPort<<"\nAre these correct?(Y/N)"<<endl;
@@ -72,19 +73,26 @@ int main (int argc, char *argv[])
                 while(!confirm(userConfirm, valid));
                 break;
             case 4:
+            {
                 cout<<"enter message to send to server"<<endl;
-                cin>>message;
+                cin>>tempMessage;
+                cout << tempMessage << endl;
+                const char *message=tempMessage.c_str();
                 try
                 {
                     TCPSocket sock(servAddress, servPort); //open socket
+                    cout<<"before send"<<endl;
                     sock.send(message, strlen(message)); //send message to server
+                    cout<<"after send"<<endl;
                     
                     char echoBuffer[(strlen(message))+1]; //createing a buffer that can capture the message received back from the server
                     int bytesReceived = 0;  // Bytes read on each recv()
                     int totalBytesReceived = 0;  // Total bytes read
                     cout << "Received: ";  // Setup to print the echoed string
-                    while (totalBytesReceived < strlen(message)+1)
+                    cout << endl;
+                    /*while (totalBytesReceived < strlen(message)+1)
                     {
+                        cout<<bytesReceived;
                         // Receive up to the buffer size bytes from the sender
                         if ((bytesReceived = (sock.recv(echoBuffer, strlen(message)+1))) <= 0)
                         {
@@ -94,8 +102,8 @@ int main (int argc, char *argv[])
                         totalBytesReceived += bytesReceived;     // Keep tally of total bytes
                         echoBuffer[bytesReceived] = '\0';        // Terminate the string!
                         cout << echoBuffer;                      // Print the echo buffer
-                    }
-                    cout << endl;
+                    }*/
+                    //cout << endl;
                 }
                 catch(SocketException &e)
                 {
@@ -103,6 +111,7 @@ int main (int argc, char *argv[])
                     exit(1);
                 }
                 break;
+            }
             case 5:
                 cout<<"haven't implemented"<<endl;
                 break;
