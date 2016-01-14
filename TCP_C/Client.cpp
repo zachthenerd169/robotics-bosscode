@@ -11,8 +11,9 @@
 #include "Client.hpp"
 #include <iostream>           // For cerr and cout
 #include <cstdlib>            // For atoi()
-#include <string>           // For user inputs
-const int RCVBUFSIZE = 32;    // Size of receive buffer
+#include <string.h>           // For user inputs
+
+//const int RCVBUFSIZE = 32;    // Size of receive buffer
 
 bool confirm(char userConfirm, bool valid); //prototypes
 int inputInt(void);
@@ -28,7 +29,7 @@ int main (int argc, char *argv[])
     char userConfirm;
     string servAddress=argv[1];
     unsigned short servPort = atoi(argv[2]);
-    string message; //message client will send the server
+    char *message; //message client will send the server
    
     //confirm input (don't know if I should keep this)
     cout<<"\nServer IP is: "<<servAddress<<"\nServer Port is: "<<servPort<<"\nAre these correct?(Y/N)"<<endl;
@@ -41,16 +42,6 @@ int main (int argc, char *argv[])
         cout<<"1) CONTROL ROBOT\n2) Change Server's IP Address\n3) Change Server's Port Number\n4) Send Test Message To Server Without Arduino\n5) Send Test Message To Server With Arduino\n6) Quit Program\nEnter a number that is 1-6"<<endl;
      
         userSelection = inputInt();
-        /*cin>>userSelection;
-        while(cin.fail()) //error handling user input
-        {
-            std::cin.clear();
-            std::cin.ignore(numeric_limits<streamsize>::max(),'\n');
-            std::cout << "Error: Input is not an integer\nEnter a number that is 1-6"<<endl;
-            std::cin >> userSelection;
-        }
-        cout<<"user selected "<<userSelection<<endl;*/
-        
         switch (userSelection)
         {
             case 1:
@@ -81,7 +72,36 @@ int main (int argc, char *argv[])
                 while(!confirm(userConfirm, valid));
                 break;
             case 4:
-                cout<<"haven't implemented"<<endl;
+                cout<<"enter message to send to server"<<endl;
+                cin>>message;
+                try
+                {
+                    TCPSocket sock(servAddress, servPort); //open socket
+                    sock.send(message, strlen(message)); //send message to server
+                    
+                    char echoBuffer[(strlen(message))+1]; //createing a buffer that can capture the message received back from the server
+                    int bytesReceived = 0;  // Bytes read on each recv()
+                    int totalBytesReceived = 0;  // Total bytes read
+                    cout << "Received: ";  // Setup to print the echoed string
+                    while (totalBytesReceived < strlen(message)+1)
+                    {
+                        // Receive up to the buffer size bytes from the sender
+                        if ((bytesReceived = (sock.recv(echoBuffer, strlen(message)+1))) <= 0)
+                        {
+                            cerr << "Unable to read";
+                            exit(1);
+                        }
+                        totalBytesReceived += bytesReceived;     // Keep tally of total bytes
+                        echoBuffer[bytesReceived] = '\0';        // Terminate the string!
+                        cout << echoBuffer;                      // Print the echo buffer
+                    }
+                    cout << endl;
+                }
+                catch(SocketException &e)
+                {
+                    cerr << e.what() << endl;
+                    exit(1);
+                }
                 break;
             case 5:
                 cout<<"haven't implemented"<<endl;
@@ -93,6 +113,7 @@ int main (int argc, char *argv[])
                 
             default:
                 cout<<"Enter a number that is 1-6"<<endl;
+                break;
         }
     }
     while(done);
@@ -134,6 +155,8 @@ int inputInt(void)
         std::cout << "Error: Input is not an integer\nTry again"<<endl;
         std::cin >> input;
     }
-    //cout<<"user selected "<<input<<endl;
     return input;
+}
+void echoMessage(unsigned int bufferSize)
+{
 }
