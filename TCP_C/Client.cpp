@@ -13,10 +13,9 @@
 #include <cstdlib>            // For atoi()
 #include <string.h>           // For user inputs
 
-//const int RCVBUFSIZE = 32;    // Size of receive buffer
-
 bool confirm(char userConfirm, bool valid); //prototypes
 int inputInt(void);
+//void echoMessage(TCPSocket sock, unsigned int bufferSize);
 
 int main (int argc, char *argv[])
 {
@@ -78,18 +77,18 @@ int main (int argc, char *argv[])
                 while ( getchar() != '\n'); //flusing input buffer
                 cout<<"enter message that to send to the server"<<endl;
                 std::getline(std::cin,tempMessage); //getting message
-                cout << tempMessage << endl;
                 const char *message=tempMessage.c_str();
                 try
                 {
                     TCPSocket sock(servAddress, servPort); //open socket
                     sock.send(message, strlen(message)); //send message to server
-                 
+                    //echoMessage(sock, strlen(message)); //echoing the message back
+                    
                     char echoBuffer[(strlen(message))+1]; //createing a buffer that can capture the message received back from the server
+    
+                    cout << "Echoed: ";  // Setup to print the echoed string
                     int bytesReceived = 0;  // Bytes read on each recv()
                     int totalBytesReceived = 0;  // Total bytes read
-                    cout << "Echoed: ";  // Setup to print the echoed string
-                 
                     while (totalBytesReceived < strlen(message))
                     {
                         // Receive up to the buffer size bytes from the sender
@@ -165,6 +164,25 @@ int inputInt(void)
     }
     return input;
 }
-void echoMessage(unsigned int bufferSize)
+//need to modify practical socket libary for this --> add 2 copy constructors
+/*void echoMessage(TCPSocket sock, unsigned int bufferSize)
 {
-}
+    cout << "Echoed: ";  // Setup to print the echoed string
+    char echoBuffer[bufferSize+1]; //createing a buffer that can capture the message received back from the server
+    int bytesReceived = 0;  // Bytes read on each recv()
+    int totalBytesReceived = 0;  // Total bytes read
+    while (totalBytesReceived < bufferSize)
+    {
+        // Receive up to the buffer size bytes from the sender
+        if ((bytesReceived = (sock.recv(echoBuffer, bufferSize+1))) <= 0)
+        {
+            cerr << "Unable to read";
+            exit(1);
+        }
+        totalBytesReceived += bytesReceived;     // Keep tally of total bytes
+        echoBuffer[bytesReceived] = '\0';        // Terminate the string!
+        cout <<echoBuffer;
+    }
+    cout << endl;
+
+}*/
