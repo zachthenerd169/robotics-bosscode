@@ -151,7 +151,7 @@ int inputInt(void)
  **/
 bool sendToServer(string servAddress, unsigned short servPort, const char* message, bool arduino)
 {
-    int bufferSize= arduino ? (strlen(message) + strlen("Arduino Received: ")) : strlen(message);
+    int bufferSize= arduino ? (strlen(message) + strlen("Arduino received"))-3 : strlen(message); //I think I need to subtract 3 b/c I'm double counting spaces
     cout <<"buffer size: " <<bufferSize << endl;
     try
     {
