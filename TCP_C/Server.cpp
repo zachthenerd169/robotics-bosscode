@@ -10,6 +10,11 @@
 #include <iostream>           // For cerr and cout
 #include <cstdlib>            // For atoi()
 #include "Server.hpp"
+#include "arduino-serial-lib.h"
+
+#define BAUDRATE 9600 // default baudrate
+#define BUF_MAX 256   // default max buffer size
+#define TIMEOUT 5000 // default timeout
 
 const unsigned int RCVBUFSIZE = 50; // Size of receive buffer
 
@@ -63,8 +68,10 @@ void handleClient(TCPSocket *sock)
     //string str = string(buffer); //I don't think we need to do that
     //str.resize(recvMsgSize);
     //cout<<str<<endl;
+    writeToArduino(buffer);
     memset(buffer, 0, RCVBUFSIZE); //clearing the buffer for next time
     delete sock;
+
     
 }
 /**
@@ -73,5 +80,34 @@ void handleClient(TCPSocket *sock)
  */
 string writeToArduino(string message)
 {
-    return "test";
+    int fd=-1; //status
+    char* port="/dev/cu.usbmodem1411"; //default for stephanie's laptop
+    //const char* test_message="hello arduino!";
+    int rc; //status
+    
+    char buf[BAUDRATE];
+    
+    char eolchar = '\n'; //when receive messages line by line
+    
+    printf("setting baud rate to %d\n", BAUDRATE);
+    printf("setting serial port to %s\n", port);
+    
+    fd = serialport_init(port, BAUDRATE); //opening port
+    fd==-1 ? perror("couldn't open port") : printf("opened port %s\n", port);
+    serialport_flush(fd);
+    
+    fd==-1 ? perror("serial port not opened") : printf("sending message: %s\n", message); //sending test message
+    
+    rc = serialport_write(fd, message);
+    if(rc==-1) perror("error writing");
+    
+    printf("receiving messages:\n");
+    for(int i=0; i<2; i++) //two messages to read
+    {
+        if( fd == -1) perror("serial port not opened"); //receiving message sent    back by the arduino
+        memset(buf,0,BUF_MAX); //clearing buffer
+        serialport_read_until(fd, buf, eolchar, BUF_MAX, TIMEOUT);
+        printf("%s", buf);
+    }
+    return 0;
 }
