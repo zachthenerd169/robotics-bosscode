@@ -4,10 +4,10 @@
 //  Description: client (the laptop running this code) will communicate
 //  with the NUC (server) on the robot
 //
-//  To Compile: g++ -o Client.exe Client.cpp PracticalSocket.cpp arduino-serial-lib.cpp
+//  To Compile: g++ -o Client.exe Client.cpp PracticalSocket.cpp
 //  To Run: ./Client.exe 'Server's IP Address' 'Server's Port Number'
 
-#include "arduino-serial-lib.h"
+
 #include "PracticalSocket.h"  // For Socket and SocketException
 #include "Client.hpp"
 #include <iostream>           // For cerr and cout

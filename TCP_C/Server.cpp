@@ -18,7 +18,6 @@
 
 const unsigned int RCVBUFSIZE = 50; // Size of receive buffer
 
-
 void handleClient(TCPSocket *sock); //prototypes
 string writeToArduino(char* message);
 
@@ -59,17 +58,19 @@ void handleClient(TCPSocket *sock)
     // Send received string and receive again until the end of transmission
     char buffer[RCVBUFSIZE];
     int recvMsgSize;
-
+    memset(buffer, 0, RCVBUFSIZE); //clearing the buffer for next time
     while ((recvMsgSize = sock->recv(buffer, RCVBUFSIZE)) > 0) //Zero means end of transmission
     {
        sock->send(buffer, recvMsgSize);  //Echo message back to client
     }
     cout<<"Server received: "<<buffer<<endl;
-    //string str = string(buffer); //I don't think we need to do that
-    //str.resize(recvMsgSize);
-    //cout<<str<<endl;
-    writeToArduino(buffer);
-    memset(buffer, 0, RCVBUFSIZE); //clearing the buffer for next time
+    string str = string(buffer);
+    cout<<"str is " << buffer<<endl;
+    if(str.substr(0,4).compare("ard-")==0)
+    {
+        //writeToArduino(buffer); //commenting this out for now b/c I don't have an arduino
+        cout<<"writing to arduino"<<endl;
+    }
     delete sock;
 
     
@@ -86,11 +87,9 @@ string writeToArduino(char* message)
     int rc; //status
     
     char buf[BAUDRATE];
-    
     char eolchar = '\n'; //when receive messages line by line
     
     printf("setting baud rate to %d\n", BAUDRATE);
-    //printf("setting serial port to %s\n", port);
     cout<<"setting serial port to: "<<port<<endl;
     
     fd = serialport_init(port, BAUDRATE); //opening port
@@ -99,18 +98,13 @@ string writeToArduino(char* message)
     
     fd==-1 ? cout<<"serial port not opened"<<endl : printf("sending message: %s\n", message); //sending test message
     
-    rc = serialport_write(fd, message);
+    rc = serialport_write(fd, message); //writing the to the arduino
     if(rc==-1) perror("error writing");
     
-    printf("receiving messages:\n");
-    for(int i=0; i<2; i++) //two messages to read
-    {
-        if( fd == -1) perror("serial port not opened"); //receiving message sent    back by the arduino
-        memset(buf,0,BUF_MAX); //clearing buffer
-        serialport_read_until(fd, buf, eolchar, BUF_MAX, TIMEOUT);
-        printf("%s", buf);
-    }
-    return "test";
-     
-    //return "test";
+    if( fd == -1) perror("serial port not opened");
+    memset(buf,0,BUF_MAX); //clearing buffer
+    serialport_read_until(fd, buf, eolchar, BUF_MAX, TIMEOUT); //'Arduino received <message>'
+    printf("%s", buf); //printing out what server receives from arduino
+   
+    return buf;
 }
