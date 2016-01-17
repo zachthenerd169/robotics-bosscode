@@ -4,12 +4,15 @@
 //
 //  Description: server (running on NUC) will communicate with arduino to control robot
 //  To Compile: g++ -o Server.exe Server.cpp PracticalSocket.cpp
-//  To Run: ./Client.exe 'Server's Port Number'
+//  To Run: ./Server.exe 'Server's Port Number'
 
 #include "PracticalSocket.h"  // For Socket, ServerSocket, and SocketException
 #include <iostream>           // For cerr and cout
 #include <cstdlib>            // For atoi()
 #include "Server.hpp"
+
+const unsigned int RCVBUFSIZE = 50; // Size of receive buffer
+
 
 void handleClient(TCPSocket *sock); //prototypes
 string writeToArduino(string message);
@@ -41,35 +44,28 @@ int main(int argc, char *argv[])
  **/
 void handleClient(TCPSocket *sock)
 {
-    const unsigned int RCVBUFSIZE = 32;    // Size of receive buffer
-    //cout<<"test!";
     cout << "Handling client ";
-    try {
-        cout << sock->getForeignAddress() << ":";
-    } catch (SocketException e) {
-        cerr << "Unable to get foreign address" << endl;
-    }
-    try {
-        cout<<"test1";
-        cout << sock->getForeignPort();
-    } catch (SocketException e) {
-        cerr << "Unable to get foreign port" << endl;
-    }
-    cout << endl;
+    try{cout << sock->getForeignAddress() << ": ";}
+    catch (SocketException e){cerr << "Unable to get foreign address" << endl;}
+    
+    try{cout << sock->getForeignPort() << endl;}
+    catch (SocketException e){cerr << "Unable to get foreign port" << endl;}
     
     // Send received string and receive again until the end of transmission
-    char echoBuffer[RCVBUFSIZE];
+    char buffer[RCVBUFSIZE];
     int recvMsgSize;
-    //cout<<"test"<<endl;
-    while ((recvMsgSize = sock->recv(echoBuffer, RCVBUFSIZE)) > 0) { // Zero means// end of transmission
-        //std:cout<<echoBuffer
-        // Echo message back to client
-        sock->send(echoBuffer, recvMsgSize);
-        
+
+    while ((recvMsgSize = sock->recv(buffer, RCVBUFSIZE)) > 0) //Zero means end of transmission
+    {
+       sock->send(buffer, recvMsgSize);  //Echo message back to client
     }
-    cout<<"test2"<<endl;
-    cout<<echoBuffer<<endl;
+    cout<<buffer<<endl;
+    //string str = string(buffer); //I don't think we need to do that
+    //str.resize(recvMsgSize);
+    //cout<<str<<endl;
+    memset(buffer, 0, RCVBUFSIZE); //clearing the buffer for next time
     delete sock;
+    
 }
 /**
  * Input: message to send to arduino
