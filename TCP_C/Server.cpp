@@ -19,7 +19,7 @@
 const unsigned int RCVBUFSIZE = 50; // Size of receive buffer
 
 void handleClient(TCPSocket *sock); //prototypes
-string writeToArduino(char* message);
+char* writeToArduino(const char* message);
 
 int main(int argc, char *argv[])
 {
@@ -61,15 +61,19 @@ void handleClient(TCPSocket *sock)
     memset(buffer, 0, RCVBUFSIZE); //clearing the buffer for next time
     while ((recvMsgSize = sock->recv(buffer, RCVBUFSIZE)) > 0) //Zero means end of transmission
     {
-       sock->send(buffer, recvMsgSize);  //Echo message back to client
-    }
-    cout<<"Server received: "<<buffer<<endl;
-    string str = string(buffer);
-    cout<<"str is " << buffer<<endl;
-    if(str.substr(0,4).compare("ard-")==0)
-    {
-        //writeToArduino(buffer); //commenting this out for now b/c I don't have an arduino
-        cout<<"writing to arduino"<<endl;
+        cout<<"Server received: "<<buffer<<endl;
+        string str = string(buffer);
+        cout<<"str is " << buffer<<endl;
+        if(str.substr(0,4).compare("ard-")==0)
+        {
+            str=str.substr(4, recvMsgSize);
+            const char *message = str.c_str();
+            char *ardMessage=writeToArduino(message);
+            cout<<"ardMessage is: "<<ardMessage<<endl;
+            cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
+            sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino
+        }
+        else{sock->send(buffer, recvMsgSize);} //send message as is
     }
     delete sock;
 
@@ -79,9 +83,9 @@ void handleClient(TCPSocket *sock)
  * Input: message to send to arduino
  * Output: message sent to arduino (pass this back to the client)
  */
-string writeToArduino(char* message)
+char* writeToArduino(const char* message)
 {
-    int fd=-1; //status
+    /*int fd=-1; //status
     const char* port="/dev/cu.usbmodem1411"; //default for stephanie's laptop
     const char* test_message="hello arduino!";
     int rc; //status
@@ -106,5 +110,11 @@ string writeToArduino(char* message)
     serialport_read_until(fd, buf, eolchar, BUF_MAX, TIMEOUT); //'Arduino received <message>'
     printf("%s", buf); //printing out what server receives from arduino
    
-    return buf;
+    return buf;*/
+    
+    string arduinoMess = "Arduino received ";
+    //have to do some shit to get char*
+    char *tempMess = new char[arduinoMess.length() + 1];
+    strcpy(tempMess, arduinoMess.c_str());
+    return strcat(tempMess, message); //returning message received from arduino (test)
 }

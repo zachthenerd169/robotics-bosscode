@@ -17,7 +17,7 @@
 bool confirm(char userConfirm, bool valid); //prototypes
 int inputInt(void);
 void echoMessage(TCPSocket *sock, unsigned int bufferSize);
-bool sendToServer(string servAddress, unsigned short servPort, const char* message);
+bool sendToServer(string servAddress, unsigned short servPort, const char* message, bool arduino);
 
 int main (int argc, char *argv[])
 {
@@ -80,7 +80,7 @@ int main (int argc, char *argv[])
                 cout<<"enter message that to send to the server"<<endl;
                 std::getline(std::cin,tempMessage); //getting message
                 const char *message=tempMessage.c_str();
-                bool success=sendToServer(servAddress, servPort, message);
+                bool success=sendToServer(servAddress, servPort, message, false);
                 if(!success){exit(1);} //exit program if this was unsucessful
                 break;
             }
@@ -91,7 +91,8 @@ int main (int argc, char *argv[])
                 std::getline(std::cin,tempMessage); //getting message
                 string arduinoMess="ard-"+tempMessage;
                 const char *message=arduinoMess.c_str();
-                cout<<"message is: " <<message<<endl;
+                bool success=sendToServer(servAddress, servPort, message, true);
+                if(!success){exit(1);} //exit program if this was unsucessful
                 break;
             }
             case 6:
@@ -148,13 +149,15 @@ int inputInt(void)
 /**
  *  Input: the server address and the server port number
  **/
-bool sendToServer(string servAddress, unsigned short servPort, const char* message)
+bool sendToServer(string servAddress, unsigned short servPort, const char* message, bool arduino)
 {
+    int bufferSize= arduino ? (strlen(message) + strlen("Arduino Received: ")) : strlen(message);
+    cout <<"buffer size: " <<bufferSize << endl;
     try
     {
         TCPSocket sock(servAddress, servPort); //open socket
         sock.send(message, strlen(message)); //send message to server
-        echoMessage(&sock, strlen(message));
+        echoMessage(&sock, bufferSize);
         return true;
     }
     catch(SocketException &e)
