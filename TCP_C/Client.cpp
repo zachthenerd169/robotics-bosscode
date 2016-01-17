@@ -17,6 +17,7 @@
 bool confirm(char userConfirm, bool valid); //prototypes
 int inputInt(void);
 void echoMessage(TCPSocket *sock, unsigned int bufferSize);
+bool sendToServer(string servAddress, unsigned short servPort, const char* message);
 
 int main (int argc, char *argv[])
 {
@@ -79,22 +80,20 @@ int main (int argc, char *argv[])
                 cout<<"enter message that to send to the server"<<endl;
                 std::getline(std::cin,tempMessage); //getting message
                 const char *message=tempMessage.c_str();
-                try
-                {
-                    TCPSocket sock(servAddress, servPort); //open socket
-                    sock.send(message, strlen(message)); //send message to server
-                    echoMessage(&sock, strlen(message));
-                                    }
-                catch(SocketException &e)
-                {
-                    cerr << e.what() << endl;
-                    exit(1);
-                }
+                bool success=sendToServer(servAddress, servPort, message);
+                if(!success){exit(1);} //exit program if this was unsucessful
                 break;
             }
             case 5:
-                cout<<"haven't implemented"<<endl;
+            {
+                while ( getchar() != '\n'); //flusing input buffer
+                cout<<"enter message that to send to the arduino"<<endl;
+                std::getline(std::cin,tempMessage); //getting message
+                string arduinoMess="ard-"+tempMessage;
+                const char *message=arduinoMess.c_str();
+                cout<<"message is: " <<message<<endl;
                 break;
+            }
             case 6:
                 done=false;
                 cout<<"Quiting Program!"<<endl;
@@ -145,6 +144,24 @@ int inputInt(void)
         std::cin >> input;
     }
     return input;
+}
+/**
+ *  Input: the server address and the server port number
+ **/
+bool sendToServer(string servAddress, unsigned short servPort, const char* message)
+{
+    try
+    {
+        TCPSocket sock(servAddress, servPort); //open socket
+        sock.send(message, strlen(message)); //send message to server
+        echoMessage(&sock, strlen(message));
+        return true;
+    }
+    catch(SocketException &e)
+    {
+        cerr << e.what() << endl;
+        return false;
+    }
 }
 /**
  *  Function prints out the message received from server
