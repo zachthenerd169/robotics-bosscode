@@ -59,7 +59,7 @@ void handleClient(TCPSocket *sock)
     {
        sock->send(buffer, recvMsgSize);  //Echo message back to client
     }
-    cout<<buffer<<endl;
+    cout<<"Server received: "<<buffer<<endl;
     //string str = string(buffer); //I don't think we need to do that
     //str.resize(recvMsgSize);
     //cout<<str<<endl;
