@@ -12,6 +12,7 @@
 #include "Server.hpp"
 
 void handleClient(TCPSocket *sock); //prototypes
+string writeToArduino(string message);
 
 int main(int argc, char *argv[])
 {
@@ -35,9 +36,11 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
-
-// TCP client handling function
-void handleClient(TCPSocket *sock) {
+/**
+ * Input: socket opened by server
+ **/
+void handleClient(TCPSocket *sock)
+{
     const unsigned int RCVBUFSIZE = 32;    // Size of receive buffer
     //cout<<"test!";
     cout << "Handling client ";
@@ -67,4 +70,12 @@ void handleClient(TCPSocket *sock) {
     cout<<"test2"<<endl;
     cout<<echoBuffer<<endl;
     delete sock;
+}
+/**
+ * Input: message to send to arduino
+ * Output: message sent to arduino (pass this back to the client)
+ */
+string writeToArduino(string message)
+{
+    return "test";
 }
