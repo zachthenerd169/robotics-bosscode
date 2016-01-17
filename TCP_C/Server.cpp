@@ -3,7 +3,7 @@
 //  Created by Stephanie Smith on 1/14/16.
 //
 //  Description: server (running on NUC) will communicate with arduino to control robot
-//  To Compile: g++ -o Server.exe Server.cpp PracticalSocket.cpp
+//  To Compile: g++ -o Server.exe Server.cpp PracticalSocket.cpp arduino-serial-lib.cpp
 //  To Run: ./Server.exe 'Server's Port Number'
 
 #include "PracticalSocket.h"  // For Socket, ServerSocket, and SocketException
@@ -20,7 +20,7 @@ const unsigned int RCVBUFSIZE = 50; // Size of receive buffer
 
 
 void handleClient(TCPSocket *sock); //prototypes
-string writeToArduino(string message);
+string writeToArduino(char* message);
 
 int main(int argc, char *argv[])
 {
@@ -78,11 +78,11 @@ void handleClient(TCPSocket *sock)
  * Input: message to send to arduino
  * Output: message sent to arduino (pass this back to the client)
  */
-string writeToArduino(string message)
+string writeToArduino(char* message)
 {
     int fd=-1; //status
-    char* port="/dev/cu.usbmodem1411"; //default for stephanie's laptop
-    //const char* test_message="hello arduino!";
+    const char* port="/dev/cu.usbmodem1411"; //default for stephanie's laptop
+    const char* test_message="hello arduino!";
     int rc; //status
     
     char buf[BAUDRATE];
@@ -90,13 +90,14 @@ string writeToArduino(string message)
     char eolchar = '\n'; //when receive messages line by line
     
     printf("setting baud rate to %d\n", BAUDRATE);
-    printf("setting serial port to %s\n", port);
+    //printf("setting serial port to %s\n", port);
+    cout<<"setting serial port to: "<<port<<endl;
     
     fd = serialport_init(port, BAUDRATE); //opening port
-    fd==-1 ? perror("couldn't open port") : printf("opened port %s\n", port);
+    (fd == -1) ? cout<< "couldn't open port" << endl : cout<< "opened port " << port << endl;
     serialport_flush(fd);
     
-    fd==-1 ? perror("serial port not opened") : printf("sending message: %s\n", message); //sending test message
+    fd==-1 ? cout<<"serial port not opened"<<endl : printf("sending message: %s\n", message); //sending test message
     
     rc = serialport_write(fd, message);
     if(rc==-1) perror("error writing");
@@ -109,5 +110,7 @@ string writeToArduino(string message)
         serialport_read_until(fd, buf, eolchar, BUF_MAX, TIMEOUT);
         printf("%s", buf);
     }
-    return 0;
+    return "test";
+     
+    //return "test";
 }
