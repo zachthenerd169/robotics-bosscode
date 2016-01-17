@@ -16,7 +16,7 @@
 
 bool confirm(char userConfirm, bool valid); //prototypes
 int inputInt(void);
-//void echoMessage(TCPSocket sock, unsigned int bufferSize);
+void echoMessage(TCPSocket *sock, unsigned int bufferSize);
 
 int main (int argc, char *argv[])
 {
@@ -83,27 +83,8 @@ int main (int argc, char *argv[])
                 {
                     TCPSocket sock(servAddress, servPort); //open socket
                     sock.send(message, strlen(message)); //send message to server
-                    //echoMessage(sock, strlen(message)); //echoing the message back
-                    
-                    char echoBuffer[(strlen(message))+1]; //createing a buffer that can capture the message received back from the server
-    
-                    cout << "Echoed: ";  // Setup to print the echoed string
-                    int bytesReceived = 0;  // Bytes read on each recv()
-                    int totalBytesReceived = 0;  // Total bytes read
-                    while (totalBytesReceived < strlen(message))
-                    {
-                        // Receive up to the buffer size bytes from the sender
-                        if ((bytesReceived = (sock.recv(echoBuffer, strlen(message)+1))) <= 0)
-                        {
-                            cerr << "Unable to read";
-                            exit(1);
-                        }
-                        totalBytesReceived += bytesReceived;     // Keep tally of total bytes
-                        echoBuffer[bytesReceived] = '\0';        // Terminate the string!
-                        cout <<echoBuffer;
-                    }
-                    cout << endl;
-                }
+                    echoMessage(&sock, strlen(message));
+                                    }
                 catch(SocketException &e)
                 {
                     cerr << e.what() << endl;
@@ -150,7 +131,7 @@ bool confirm(char userConfirm, bool valid)
 
 }
 /**
- * function outputs the number the user has inputted
+ * Output: The number the user has inputted
  **/
 int inputInt(void)
 {
@@ -165,8 +146,11 @@ int inputInt(void)
     }
     return input;
 }
-//need to modify practical socket libary for this --> add 2 copy constructors
-/*void echoMessage(TCPSocket sock, unsigned int bufferSize)
+/**
+ *  Function prints out the message received from server
+ *  Input: TCPSocket and the size of the message that is sent to the server
+ **/
+void echoMessage(TCPSocket *sock, unsigned int bufferSize)
 {
     cout << "Echoed: ";  // Setup to print the echoed string
     char echoBuffer[bufferSize+1]; //createing a buffer that can capture the message received back from the server
@@ -175,7 +159,7 @@ int inputInt(void)
     while (totalBytesReceived < bufferSize)
     {
         // Receive up to the buffer size bytes from the sender
-        if ((bytesReceived = (sock.recv(echoBuffer, bufferSize+1))) <= 0)
+        if ((bytesReceived = (sock->recv(echoBuffer, bufferSize+1))) <= 0)
         {
             cerr << "Unable to read";
             exit(1);
@@ -186,4 +170,4 @@ int inputInt(void)
     }
     cout << endl;
 
-}*/
+}
