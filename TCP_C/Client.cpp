@@ -47,8 +47,27 @@ int main (int argc, char *argv[])
         switch (userSelection)
         {
             case 1:
-                cout<<"haven't implemented"<<endl;
+            {
+                string userInput;
+                bool viewKey=true;
+                bool robotDone=false; //flag to control robot submenu
+                do{
+                    if(viewKey)
+                    {
+                        cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <0>\nMOVE STRAIGHT FORWARD: <1 powerLevel1 powerLevel2>\nMOVE STRAIGHT REVERSE: <2 powerLevel1 powerLevel2>\nTURN RIGHT: <3 powerLevel1 powerLevel2>\nTURN LEFT: <4 powerLevel1 powerLevel2>\nDIGGER DROP: <5>\nRAISE DIGGER: <6>\nDUMP BUCKET: <7>\nLOWER BUCKET: <8>\n\n"<<endl;
+                    }
+                    viewKey=false; //only dispay this when the user wants to
+                    cout<<"input 'help' to view mode key\ninput'exit' to quit\ninput correct argument to control robot"<<endl;
+                    cin>>userInput;
+                    if(userInput.compare("help")==0){viewKey=true;}
+                    else if(userInput.compare("exit")==0) {robotDone=true;}
+                    else
+                    {
+                    }
+                }
+                while(!robotDone);//stay in this menu while the user does not input "exit"
                 break;
+            }
             case 2:
                 cout<<"current address is: "<<servAddress<<"\nEnter new address: ";
                 do //keep asking for the address until the user confirms what they have entered
