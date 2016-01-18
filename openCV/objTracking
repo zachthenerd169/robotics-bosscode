@@ -1,0 +1,137 @@
+#include <iostream>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/core/core.hpp"
+#include "opencv2/videoio/videoio.hpp"
+#include <string>
+
+using namespace cv;
+using namespace std;
+
+
+int theObject[2] = {0,0};
+Rect objectBoundingRectangle = Rect(0,0,0,0);
+
+void searchForMovement (Mat thresholdImage, Mat &cameraFreed){
+    
+    bool objectDetected = false;
+    Mat temp;
+    thresholdImage.copyTo(temp);
+    vector< vector<Point> > contours;
+    vector<Vec4i> hierarachy;
+    findContours( temp, contours, hierarachy, CV_RETR_EXTERNAL ,CV_CHAIN_APPROX_SIMPLE);
+    
+    if (contours.size() > 0)objectDetected=true;
+    else objectDetected = false;
+    if (objectDetected){
+        
+        vector< vector<Point> > largestContourVec;
+        largestContourVec.push_back(contours.at(contours.size() - 1));
+        objectBoundingRectangle = boundingRect(largestContourVec.at(0));
+        int xpos= objectBoundingRectangle.x + objectBoundingRectangle.width / 2;
+        int ypos= objectBoundingRectangle.y + objectBoundingRectangle.height /2;
+        theObject[0] = xpos, theObject[1]=ypos;
+    
+    }
+    
+    int x =theObject[0];
+    int y=theObject[1];
+    
+    circle(cameraFreed, Point(x,y), 20, Scalar(0,255,0) , 2);
+    line (cameraFreed, Point(x,y), Point(x,y-25), Scalar(0,255,0),2);
+    line(cameraFreed, Point(x,y), Point(x,y+25), Scalar(0,255,0),2);
+    line(cameraFreed, Point(x,y), Point(x-25,y), Scalar(0,255,0),2);
+    line(cameraFreed, Point(x,y), Point(x+25,y), Scalar(0,255,0),2);
+    
+    
+}
+
+int main(int argc, char** argv)
+{
+    VideoCapture cap(0);
+    
+    
+    
+    if (!cap.isOpened())
+    {
+        cout<< "Cannot open the Web cam" <<endl;
+        return -1;
+    }
+    namedWindow("Control" ,CV_WINDOW_NORMAL);
+    
+    int iLowH = 0;
+    int iHighH = 179;
+    
+    int iLowS = 0;
+    int iHighS = 255;
+    
+    int iLowV = 0;
+    int iHighV = 255;
+    
+    cvCreateTrackbar("LowH", "Control", &iLowH, 179);
+    cvCreateTrackbar("HighH", "Control", &iHighH, 179);
+    
+    cvCreateTrackbar("LowS", "Control", &iLowS, 255);
+    cvCreateTrackbar("HighS", "Control", &iHighS, 255);
+    
+    cvCreateTrackbar("LowV", "Control", &iLowV, 255);
+    cvCreateTrackbar("HighV", "Control", &iHighV, 255);
+    
+    while (true)
+    {
+        Mat imgOriginal;
+        
+        bool bSuccess = cap.read(imgOriginal);
+        
+        if (!bSuccess)
+        {
+            cout<< "Cannnot read a frame video from stream" << endl;
+            break;
+        }
+        
+        Mat imgHSV;
+        
+        cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV);
+        
+        Mat imgThresholded;
+        
+        inRange(imgHSV, Scalar(iLowH,iLowS,iLowV), Scalar(iHighH,iHighS,iHighV), imgThresholded);
+        
+        erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+        dilate (imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+        
+        dilate (imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+        erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+        
+        searchForMovement(imgThresholded, imgOriginal);
+        
+        imshow("Thresholded Image", imgThresholded);
+        imshow("Original", imgOriginal);
+        
+        if (waitKey(30) == 27)
+        {
+            cout<<"esc key is pressed by user" <<endl;
+            break;
+        }
+
+    
+    }
+    
+    return 0;
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
