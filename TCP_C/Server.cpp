@@ -112,8 +112,9 @@ char* writeToArduino(const char* message)
    
     return buf;*/
     
-    string arduinoMess = "Arduino received ";
+    //WHEN YOU DON'T HAVE AN ARDUINO JUST USE THIS
     //have to do some shit to get char*
+    string arduinoMess = "Arduino received ";
     char *tempMess = new char[arduinoMess.length() + 1];
     strcpy(tempMess, arduinoMess.c_str());
     return strcat(tempMess, message); //returning message received from arduino (test)
