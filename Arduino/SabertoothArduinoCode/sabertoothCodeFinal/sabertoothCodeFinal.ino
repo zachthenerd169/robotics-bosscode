@@ -5,13 +5,13 @@
 #include <Sabertooth.h>
 #include "DualVNH5019MotorShield.h"
 
-SoftwareSerial SWSerial1(NOT_A_PIN, 14); // RX on no pin (unused), TX on pin 14 (to S1).
+SoftwareSerial SWSerial1(NOT_A_PIN, 14); // RX is NOT_A_PIN (unused), TX on pin 14 (to S1).
 SoftwareSerial SWSerial2(NOT_A_PIN, 16); //RX is NOT_A_PIN (unused), TX on pin 16 (to S2)
 
-Sabertooth ST1(128, SWSerial1); // Address 128, and use SWSerial as the serial port. //ST1 control treads/wheels
-Sabertooth ST2(128, SWSerial2); //ST1 and ST2 are two separate motor controllers?
+Sabertooth ST1(128, SWSerial1); //Address 128, and use SWSerial as the serial port.
+Sabertooth ST2(128, SWSerial2); //ST1 controls treads/wheels (2 motors), ST2 controls digger (1 linear actuator and 1 motor)
 
-DualVNH5019MotorShield md; // The motor driver for digger actuators
+DualVNH5019MotorShield md; //md controls bucket (two linear actuators)
 
 void stopIfFault()
 {
@@ -20,11 +20,11 @@ void stopIfFault()
 void setup()
 {
   Serial.begin(9600); //for communicating with NUC
-  SWSerial1.begin(9600); //for communicating with sabertooth #1
-  SWSerial2.begin(9600); //for comminicating with sabertooth #2
+  SWSerial1.begin(9600); //for communicating with sabertooth #1 (wheels)
+  SWSerial2.begin(9600); //for comminicating with sabertooth #2 (digger)
   ST1.autobaud(); //delay to give driver time to start up
   ST2.autobaud(); //delay to give driver time to start up
-  ST1.setRamping(55);
+  ST1.setRamping(55); //how did we decide 55?
   ST2.setRamping(55);
   
   md.init(); // initialize motor driver
@@ -35,17 +35,17 @@ void loop()
 {
   while (Serial.available() == 0)  {} //wait until there is something to read
   
-    int num = Serial.read();
+    int num = Serial.read(); //read the mode
     int powerLevel1 = 0;
     int powerLevel2 = 0;
     int mode = num;
     
-    if (mode >= 1 && mode <= 4)
+    if (mode >= 1 && mode <= 4) //if the user wants chooses mode 1-4, they need to set the power
     {
-      while(Serial.available() == 0) { } //wait for another command to set the power level
+      while(Serial.available() == 0) {} //wait for another command to set the power level
         powerLevel1 = Serial.read();
         
-      while(Serial.available() <= 0) { } //why <=0 and not == 0?
+      while(Serial.available() <= 0) {} //why <=0 and not == 0?
         powerLevel2 = Serial.read();
     }
     if(mode <= 0) //Stop
