@@ -1,3 +1,8 @@
+/**
+ * To Compile: g++ -o objTracking.exe objTracking.cpp -lopencv_core -lopencv_imgproc -lopencv_highgui  -lopencv_videoio
+ * To Run: ./objTracking.exe
+**/
+
 #include <iostream>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -14,7 +19,7 @@ Rect objectBoundingRectangle = Rect(0,0,0,0);
 
 void searchForMovement (Mat thresholdImage, Mat &cameraFreed){
     
-    bool objectDetected = false;
+   bool objectDetected = false;
     Mat temp;
     thresholdImage.copyTo(temp);
     vector< vector<Point> > contours;
