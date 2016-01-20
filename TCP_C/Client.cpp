@@ -28,7 +28,16 @@ typedef bitset<8> BYTE;
 
 int main (int argc, char *argv[])
 {
-    
+    //cout<<"size of boolean "<<sizeof(test)<<endl;
+    /*bool bits[] = {0, 1, 0, 0, 0, 0, 0, 1};
+    char c = 0;
+    for(int i = 0; i < 8; i++)
+        c += (bits[i] >> i); // 0 or 1 times 2 to the ith power
+    cout << c << endl; // should print out A
+    cin.get();
+    return 0;*/
+
+
     if(argc!=3){cerr<<"\n\nError: Wrong Number of Arguments\nTo Run: "<< argv[0]<<" <Server's IP Address> <Server's Port>\n\n"<<endl;
         exit(1);} //imediately terminates if command line arguments were not specified
     
@@ -58,7 +67,7 @@ int main (int argc, char *argv[])
             {
                 string userInput;
                 bool viewKey=true;
-                int mode;
+                int powerLevel=0;
                 bool robotDone=false; //flag to control robot submenu
                 do{
                     //representing in the least amount of bits:
@@ -67,57 +76,71 @@ int main (int argc, char *argv[])
                     //can send two bits or can send boolean array
                     if(viewKey)
                     {
-                        cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <0>\nMOVE STRAIGHT FORWARD: <1 powerLevel1 powerLevel2>\nMOVE STRAIGHT REVERSE: <2 powerLevel1 powerLevel2>\nTURN RIGHT: <3 powerLevel1 powerLevel2>\nTURN LEFT: <4 powerLevel1 powerLevel2>\nDIGGER DROP: <5>\nRAISE DIGGER: <6>\nDUMP BUCKET: <7>\nLOWER BUCKET: <8>\n\n"<<endl;
+                        /*cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <0>\nMOVE STRAIGHT FORWARD: <1 powerLevel1 powerLevel2>\nMOVE STRAIGHT REVERSE: <2 powerLevel1 powerLevel2>\nTURN RIGHT: <3 powerLevel1 powerLevel2>\nTURN LEFT: <4 powerLevel1 powerLevel2>\nDIGGER DROP: <5>\nRAISE DIGGER: <6>\nDUMP BUCKET: <7>\nLOWER BUCKET: <8>\n\n"<<endl;*/
+                        cout<<"COMMAND KEY:\n0) stop\n1) forward\n2) reverse\n3) right\n4) left\n5) digger drop\n6) raise digger\n7) dump bucket\n8) lower bucket\n\n"<<endl;
                     }
                     viewKey=false; //only dispay this when the user wants to
-                    cout<<"input 'help' to view mode key\ninput'exit' to quit\ninput correct argument to control robot"<<endl;
+                    cout<<"input 'help' to view mode key\ninput'exit' to quit\notherwise enter the integer that corresponds to the desired command"<<endl;
                     while ( getchar() != '\n'); //flusing input buffer
                     std::getline(std::cin, userInput);
                     if(userInput.compare("help")==0){viewKey=true;}
                     else if(userInput.compare("exit")==0) {robotDone=true;}
                     else
                     {
-                        vector<string> inputs=splitString(userInput); //parse string into three integers
-                        if(inputs.size()>=1)
+                        int mode=atoi(userInput.c_str()); //get the int the user entered
+                     
+                        if(mode==0)//stop robot
                         {
-                            
-                            mode = atoi(inputs[0].c_str());
+                            cout<<"size of input: "<<sizeof(userInput.c_str())<<endl;
+                            bool success=sendToServer(servAddress, servPort, userInput.c_str(), false); //will be 'true' later
+                            if(!success){exit(1);} //exit program if this was unsucessful
+                            cout<<"stopping robot"<<endl;
+                        }
+                        else if(mode>0 && mode<5)//turn right;left;straight;reverse //ask for power levels here
+                        {
                             switch (mode)
                             {
-                                case 0:
-                                {
-                                    checkUserInput(inputs, 1);
-                                    bool success=sendToServer(servAddress, servPort, inputs[0].c_str(), false); //stop robot --> should be true otherwise
-                                    if(!success){exit(1);} //exit program if this was unsuccessful
-                                    break;
-                                }
                                 case 1:
-                                {
-                                    checkUserInput(inputs, 3);
-                                    bool success=sendToServer(servAddress, servPort, userInput.c_str(), false); //stop robot --> should be true otherwise
-                                    if(!success){exit(1);} //exit program if this was unsuccessful
+                                    cout<<"moving forward at power level "<<powerLevel<<endl;
                                     break;
-                                }
                                 case 2:
+                                    cout<<"moving backwards at power level "<<powerLevel<<endl;
                                     break;
                                 case 3:
+                                    cout<<"turning right at power level "<<powerLevel<<endl;
                                     break;
                                 case 4:
-                                    break;
-                                case 5:
-                                    break;
-                                case 6:
-                                    break;
-                                case 7:
-                                    break;
-                                case 8:
-                                    break;
+                                    cout<<"turning left at power level "<<powerLevel<<endl;
                                 default:
-                                    cout<<"mode needs to be an integer that is 0-8\n"<<endl;
                                     break;
                             }
                         }
-                        else{cout<<"\n\nneed to have at least one input"<<endl;}
+                        else if(mode<9 && mode>4)//digger drop; digger raise; bucket drop; bucket raise
+                        {
+                            bool success=sendToServer(servAddress, servPort, userInput.c_str(), false); //will be 'true' later
+                            if(!success){exit(1);} //exit program if this was unsucessful
+                            switch (mode)
+                            {
+                                case 5:
+                                    cout<<"dropping digger"<<endl;
+                                    break;
+                                case 6:
+                                    cout<<"raising digger"<<endl;
+                                    break;
+                                case 7:
+                                    cout<<"dumping bucket"<<endl;
+                                    break;
+                                case 8:
+                                    cout<<"raising bucket"<<endl;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        else //didn't input the right number
+                        {
+                            cout<<"input an integer 0-8"<<endl;
+                        }
                     }
                 }
                 while(!robotDone);//stay in this menu while the user does not input "exit"

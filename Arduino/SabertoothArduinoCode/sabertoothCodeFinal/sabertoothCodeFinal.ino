@@ -36,7 +36,7 @@ void loop()
   while (Serial.available() == 0)  {} //wait until there is something to read
   
     int num = Serial.read(); //read the mode
-    int powerLevel1 = 0;
+    int powerLevel1 = 0; 
     int powerLevel2 = 0;
     int mode = num;
     
@@ -147,10 +147,7 @@ void bucketDown()
    md.setSpeeds(400, 400);  // Linear actuators down
    stopIfFault();
 }
-void test(int num=1)
-{
-  Serial.println(num);
-}
+
 
 
 
