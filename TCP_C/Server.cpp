@@ -85,12 +85,12 @@ void handleClient(TCPSocket *sock)
  */
 char* writeToArduino(const char* message)
 {
-    /*int fd=-1; //status
+    int fd=-1; //status
     const char* port="/dev/cu.usbmodem1411"; //default for stephanie's laptop
     const char* test_message="hello arduino!";
     int rc; //status
     
-    char buf[BAUDRATE];
+    char* buf=(char*)malloc(BUF_MAX*sizeof(char));
     char eolchar = '\n'; //when receive messages line by line
     
     printf("setting baud rate to %d\n", BAUDRATE);
@@ -110,12 +110,12 @@ char* writeToArduino(const char* message)
     serialport_read_until(fd, buf, eolchar, BUF_MAX, TIMEOUT); //'Arduino received <message>'
     printf("%s", buf); //printing out what server receives from arduino
    
-    return buf;*/
+    return buf;
     
     //WHEN YOU DON'T HAVE AN ARDUINO JUST USE THIS
     //have to do some shit to get char*
-    string arduinoMess = "Arduino received ";
+    /*string arduinoMess = "Arduino received ";
     char *tempMess = new char[arduinoMess.length() + 1];
     strcpy(tempMess, arduinoMess.c_str());
-    return strcat(tempMess, message); //returning message received from arduino (test)
+    return strcat(tempMess, message); //returning message received from arduino (test)*/
 }

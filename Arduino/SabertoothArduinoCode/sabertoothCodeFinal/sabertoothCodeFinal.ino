@@ -24,7 +24,7 @@ void setup()
   SWSerial2.begin(9600); //for comminicating with sabertooth #2 (digger)
   ST1.autobaud(); //delay to give driver time to start up
   ST2.autobaud(); //delay to give driver time to start up
-  ST1.setRamping(55); //how did we decide 55?
+  ST1.setRamping(55); //-1683 (slowest)
   ST2.setRamping(55);
   
   md.init(); // initialize motor driver
@@ -146,6 +146,10 @@ void bucketDown()
 {
    md.setSpeeds(400, 400);  // Linear actuators down
    stopIfFault();
+}
+void test(int num=1)
+{
+  Serial.println(num);
 }
 
 

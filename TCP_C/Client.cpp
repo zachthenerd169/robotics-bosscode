@@ -13,11 +13,17 @@
 #include <iostream>           // For cerr and cout
 #include <cstdlib>            // For atoi()
 #include <string.h>           // For user inputs
+#include <sstream>
+#include <vector>
+
 
 bool confirm(char userConfirm, bool valid); //prototypes
 int inputInt(void);
 void echoMessage(TCPSocket *sock, unsigned int bufferSize);
 bool sendToServer(string servAddress, unsigned short servPort, const char* message, bool arduino);
+vector<string> splitString(string str);
+
+typedef bitset<8> BYTE;
 
 int main (int argc, char *argv[])
 {
@@ -40,6 +46,11 @@ int main (int argc, char *argv[])
     if(!confirm(userConfirm, valid)){exit(1);}
     do //main menu
     {
+        //representing in the least amount of bits:
+        //3 bits for mode; 5 bits for each power if the power is incremented by ten
+        //13 bits total woo
+        //can send two bits or can send boolean array
+        
         cout<<"\nUofI Robotic's Control Menu: "<<endl;
         cout<<"1) CONTROL ROBOT\n2) Change Server's IP Address\n3) Change Server's Port Number\n4) Send Test Message To Server Without Arduino\n5) Send Test Message To Server With Arduino\n6) Quit Program\nEnter a number that is 1-6"<<endl;
      
@@ -50,6 +61,7 @@ int main (int argc, char *argv[])
             {
                 string userInput;
                 bool viewKey=true;
+                int mode;
                 bool robotDone=false; //flag to control robot submenu
                 do{
                     if(viewKey)
@@ -58,11 +70,43 @@ int main (int argc, char *argv[])
                     }
                     viewKey=false; //only dispay this when the user wants to
                     cout<<"input 'help' to view mode key\ninput'exit' to quit\ninput correct argument to control robot"<<endl;
-                    cin>>userInput;
+                    while ( getchar() != '\n'); //flusing input buffer
+                    std::getline(std::cin, userInput);
                     if(userInput.compare("help")==0){viewKey=true;}
                     else if(userInput.compare("exit")==0) {robotDone=true;}
                     else
                     {
+                        vector<string> inputs=splitString(userInput); //parse string into three integers
+                        if(inputs.size()>=1)
+                        {
+                            mode = atoi(inputs[0].c_str());
+                            switch (mode)
+                            {
+                                case 0:
+                                    
+                                    break;
+                                case 1:
+                                    break;
+                                case 2:
+                                    break;
+                                case 3:
+                                    break;
+                                case 4:
+                                    break;
+                                case 5:
+                                    break;
+                                case 6:
+                                    break;
+                                case 7:
+                                    break;
+                                case 8:
+                                    break;
+                                default:
+                                    cout<<"mode needs to be an integer that is 0-8\n"<<endl;
+                                    break;
+                            }
+                        }
+                        else{cout<<"\n\nneed to have at least one input"<<endl;}
                     }
                 }
                 while(!robotDone);//stay in this menu while the user does not input "exit"
@@ -170,7 +214,7 @@ int inputInt(void)
  **/
 bool sendToServer(string servAddress, unsigned short servPort, const char* message, bool arduino)
 {
-    int bufferSize= arduino ? (strlen(message) + strlen("Arduino received"))-3 : strlen(message); //I think I need to subtract 3 b/c I'm double counting spaces
+    int bufferSize= arduino ? (strlen(message) + strlen("Arduino received: "))-3 : strlen(message); //I think I need to subtract 3 b/c I'm double counting spaces
     cout <<"buffer size: " <<bufferSize << endl;
     try
     {
@@ -209,4 +253,23 @@ void echoMessage(TCPSocket *sock, unsigned int bufferSize)
     }
     cout << endl;
 
+}
+vector<string> splitString(string str)
+{
+    string buf; // Have a buffer string
+    stringstream ss(str); // Insert the string into a stream
+    vector<string> tokens; // Create vector to hold our words
+    
+    while (ss >> buf)
+        tokens.push_back(buf);
+    
+    for(int i=0; i<tokens.size(); i++)
+    {
+        cout<<tokens[i]<<endl;
+    }
+    return tokens;
+}
+bool checkUserInput(vector<string> input)
+{
+    return false;
 }
