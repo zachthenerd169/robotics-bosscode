@@ -22,6 +22,7 @@ int inputInt(void);
 void echoMessage(TCPSocket *sock, unsigned int bufferSize);
 bool sendToServer(string servAddress, unsigned short servPort, const char* message, bool arduino);
 vector<string> splitString(string str);
+bool checkUserInput(vector<string> input, int numArguments);
 
 typedef bitset<8> BYTE;
 
@@ -46,16 +47,12 @@ int main (int argc, char *argv[])
     if(!confirm(userConfirm, valid)){exit(1);}
     do //main menu
     {
-        //representing in the least amount of bits:
-        //3 bits for mode; 5 bits for each power if the power is incremented by ten
-        //13 bits total woo
-        //can send two bits or can send boolean array
         
         cout<<"\nUofI Robotic's Control Menu: "<<endl;
         cout<<"1) CONTROL ROBOT\n2) Change Server's IP Address\n3) Change Server's Port Number\n4) Send Test Message To Server Without Arduino\n5) Send Test Message To Server With Arduino\n6) Quit Program\nEnter a number that is 1-6"<<endl;
      
         userSelection = inputInt();
-        switch (userSelection)
+        switch (userSelection) //nested menu
         {
             case 1:
             {
@@ -64,6 +61,10 @@ int main (int argc, char *argv[])
                 int mode;
                 bool robotDone=false; //flag to control robot submenu
                 do{
+                    //representing in the least amount of bits:
+                    //3 bits for mode; 5 bits for each power if the power is incremented by ten
+                    //13 bits total woo
+                    //can send two bits or can send boolean array
                     if(viewKey)
                     {
                         cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <0>\nMOVE STRAIGHT FORWARD: <1 powerLevel1 powerLevel2>\nMOVE STRAIGHT REVERSE: <2 powerLevel1 powerLevel2>\nTURN RIGHT: <3 powerLevel1 powerLevel2>\nTURN LEFT: <4 powerLevel1 powerLevel2>\nDIGGER DROP: <5>\nRAISE DIGGER: <6>\nDUMP BUCKET: <7>\nLOWER BUCKET: <8>\n\n"<<endl;
@@ -79,14 +80,24 @@ int main (int argc, char *argv[])
                         vector<string> inputs=splitString(userInput); //parse string into three integers
                         if(inputs.size()>=1)
                         {
+                            
                             mode = atoi(inputs[0].c_str());
                             switch (mode)
                             {
                                 case 0:
-                                    
+                                {
+                                    checkUserInput(inputs, 1);
+                                    bool success=sendToServer(servAddress, servPort, inputs[0].c_str(), false); //stop robot --> should be true otherwise
+                                    if(!success){exit(1);} //exit program if this was unsuccessful
                                     break;
+                                }
                                 case 1:
+                                {
+                                    checkUserInput(inputs, 3);
+                                    bool success=sendToServer(servAddress, servPort, userInput.c_str(), false); //stop robot --> should be true otherwise
+                                    if(!success){exit(1);} //exit program if this was unsuccessful
                                     break;
+                                }
                                 case 2:
                                     break;
                                 case 3:
@@ -269,7 +280,17 @@ vector<string> splitString(string str)
     }
     return tokens;
 }
-bool checkUserInput(vector<string> input)
+bool checkUserInput(vector<string> input, int numArguments)
 {
-    return false;
+    if(input.size()==numArguments){return false;}
+    else
+    {
+        int pow1=atoi(input[0].c_str()); //checking if the power levels are acceptable
+        int pow2=atoi(input[1].c_str());
+        if(pow1<=127 || pow1>=127 || pow2 <= 127 || pow2 >= 127)
+        {
+            return false; //power needs to be in the -127-127
+        }
+    }
+    return true; //probably need to check the other argument
 }
