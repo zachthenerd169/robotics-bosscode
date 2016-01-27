@@ -17,6 +17,7 @@ void stopIfFault()
 {
    if(md.getM1Fault() || md.getM2Fault()){Serial.println("Fault with digger motors");} //client won't be able to receive for now
 }
+
 void setup()
 {
   Serial.begin(9600); //for communicating with NUC
@@ -35,18 +36,14 @@ void loop()
 {
   while (Serial.available() == 0)  {} //wait until there is something to read
   
-    int num = Serial.read(); //read the mode
-    int powerLevel1 = 0; 
-    int powerLevel2 = 0;
-    int mode = num;
+    int mode = Serial.read(); //read the mode
+    int powerLevel = 0;
     
     if (mode >= 1 && mode <= 4) //if the user wants chooses mode 1-4, they need to set the power
     {
       while(Serial.available() == 0) {} //wait for another command to set the power level
-        powerLevel1 = Serial.read();
+      powerLevel = Serial.read();
         
-      while(Serial.available() <= 0) {} //why <=0 and not == 0?
-        powerLevel2 = Serial.read();
     }
     if(mode <= 0) //Stop
     {
@@ -54,19 +51,19 @@ void loop()
     }
     else if(mode == 1)  //turning which direction?
     {
-       straight(powerLevel1, powerLevel2); 
+       straight(powerLevel); 
     }
     else if(mode == 2)  //turing which direction?
     {
-      backward(powerLevel1, powerLevel2);  
+      backward(powerLevel);  
     }
     else if(mode == 3)  // This is actually straight or back
     {
-      turnRobot(1, powerLevel1, powerLevel2);
+      turnRobot(1, powerLevel);
     }   
     else if(mode == 4) // This is actually straight or back
     {
-       turnRobot(-1, powerLevel1, powerLevel2); 
+       turnRobot(-1, powerLevel); 
     }
     else if(mode == 5) //drop digger
     {
@@ -84,66 +81,57 @@ void loop()
     {
       bucketDown();
     }  
-    /*
-     // Strafe right
-    else if(mode == 9)
-    {
-      strafeRight();
-    }  
-    
-     // Strafe left
-    else if(mode == 10)
-    {
-      strafeLeft();
-    }  
-    */
 }
 
 
 
 void stopRobot()
 {
-   ST1.motor(1, 0); 
-   ST1.motor(2, 0);
+    ST1.motor(1, 0); 
+    ST1.motor(2, 0);
 }
-void straight(int powerLevel1, int powerLevel2)
+void straight(int powerLevel)
 {
-    ST1.motor(1, powerLevel1);
-    ST1.motor(2, powerLevel2);
-}
-
-void backward(int powerLevel1, int powerLevel2)
-{
-    ST1.motor(1, -powerLevel1);
-    ST1.motor(2, -powerLevel2);
+    ST1.motor(1, powerLevel);
+    ST1.motor(2, powerLevel);
 }
 
-void turnRobot(int direction, int powerLevel1, int powerLevel2)
+void backward(int powerLevel)
 {
-    ST1.motor(1, -direction * powerLevel1);
-    ST1.motor(2, direction * powerLevel2);
+   ST1.motor(1, -powerLevel);
+   ST1.motor(2, -powerLevel);
+}
+
+void turnRobot(int direction, int powerLevel)
+{
+   ST1.motor(1, -direction * powerLevel);
+   ST1.motor(2, direction * powerLevel);
 }
 
 void diggerUp()
 {
+   // 127 is the default power level
    ST2.motor(1, -127);  // Linear actuator out 
    ST2.motor(2, 0);  // Motor off
 }
 
 void diggerDrop()
 {
+   // 127 is the default power level
    ST2.motor(1, 127);   // Linear actuator in
    ST2.motor(2, 70);    // Motor on
 }
 
 void bucketDump()
 {
+   // 400 is the default speed
    md.setSpeeds(-400, -400);  // Linear actuators up
    stopIfFault();
 }
 
 void bucketDown()
 {
+   // 400 is the default speed
    md.setSpeeds(400, 400);  // Linear actuators down
    stopIfFault();
 }
