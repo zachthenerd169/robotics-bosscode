@@ -24,7 +24,7 @@ bool sendToServer(string servAddress, unsigned short servPort, const char* messa
 vector<string> splitString(string str);
 bool checkUserInput(vector<string> input, int numArguments);
 
-typedef bitset<8> BYTE;
+
 
 int main (int argc, char *argv[])
 {
@@ -68,6 +68,8 @@ int main (int argc, char *argv[])
                 string userInput;
                 bool viewKey=true;
                 int powerLevel=0;
+                int mode=-1;
+                bool success=false;
                 bool robotDone=false; //flag to control robot submenu
                 do{
                     //representing in the least amount of bits:
@@ -76,8 +78,8 @@ int main (int argc, char *argv[])
                     //can send two bits or can send boolean array
                     if(viewKey)
                     {
-                        /*cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <0>\nMOVE STRAIGHT FORWARD: <1 powerLevel1 powerLevel2>\nMOVE STRAIGHT REVERSE: <2 powerLevel1 powerLevel2>\nTURN RIGHT: <3 powerLevel1 powerLevel2>\nTURN LEFT: <4 powerLevel1 powerLevel2>\nDIGGER DROP: <5>\nRAISE DIGGER: <6>\nDUMP BUCKET: <7>\nLOWER BUCKET: <8>\n\n"<<endl;*/
-                        cout<<"COMMAND KEY:\n0) stop\n1) forward\n2) reverse\n3) right\n4) left\n5) digger drop\n6) raise digger\n7) dump bucket\n8) lower bucket\n\n"<<endl;
+                        cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <0>\nMOVE STRAIGHT FORWARD: <1 powerLevel>\nMOVE STRAIGHT REVERSE: <2 powerLevel>\nTURN RIGHT: <3 powerLevel>\nTURN LEFT: <4 powerLevel>\nDIGGER DROP: <5>\nRAISE DIGGER: <6>\nDUMP BUCKET: <7>\nLOWER BUCKET: <8>\n\n"<<endl;
+                        /*cout<<"COMMAND KEY:\n0) stop\n1) forward\n2) reverse\n3) right\n4) left\n5) digger drop\n6) raise digger\n7) dump bucket\n8) lower bucket\n9) change drive power level\n10) change digger power level\n"<<endl;*/
                     }
                     viewKey=false; //only dispay this when the user wants to
                     cout<<"input 'help' to view mode key\ninput'exit' to quit\notherwise enter the integer that corresponds to the desired command"<<endl;
@@ -87,35 +89,44 @@ int main (int argc, char *argv[])
                     else if(userInput.compare("exit")==0) {robotDone=true;}
                     else
                     {
-                        int mode=atoi(userInput.c_str()); //get the int the user entered
-                     
+                        cout<<"size of input: "<<sizeof(userInput.c_str())<<endl;
+                        vector<string> inputs= splitString(userInput);
+                        mode=atoi(inputs[0].c_str());
                         if(mode==0)//stop robot
                         {
-                            cout<<"size of input: "<<sizeof(userInput.c_str())<<endl;
-                            bool success=sendToServer(servAddress, servPort, userInput.c_str(), false); //will be 'true' later
+                            success=sendToServer(servAddress, servPort, userInput.c_str(), false); //will be 'true' later
                             if(!success){exit(1);} //exit program if this was unsucessful
                             cout<<"stopping robot"<<endl;
                         }
                         else if(mode>0 && mode<5)//turn right;left;straight;reverse //ask for power levels here
                         {
+                            
                             switch (mode)
                             {
                                 case 1:
-                                    cout<<"moving forward at power level "<<powerLevel<<endl;
+                                    
+                                    powerLevel=atoi(inputs[1].c_str());
+                                    //controlRobo(userInput, string "moving forward at power level"+powerLevel);
                                     break;
                                 case 2:
+                                    powerLevel=atoi(inputs[1].c_str());
+                                    success=sendToServer(servAddress, servPort, userInput.c_str(), false);
                                     cout<<"moving backwards at power level "<<powerLevel<<endl;
                                     break;
                                 case 3:
+                                    powerLevel=atoi(inputs[1].c_str());
+                                    success=sendToServer(servAddress, servPort, userInput.c_str(), false);
                                     cout<<"turning right at power level "<<powerLevel<<endl;
                                     break;
                                 case 4:
+                                    powerLevel=atoi(inputs[1].c_str());
+                                    success=sendToServer(servAddress, servPort, userInput.c_str(), false);
                                     cout<<"turning left at power level "<<powerLevel<<endl;
                                 default:
                                     break;
                             }
                         }
-                        else if(mode<9 && mode>4)//digger drop; digger raise; bucket drop; bucket raise
+                        else if(mode<11 && mode>4)//digger drop; digger raise; bucket drop; bucket raise
                         {
                             bool success=sendToServer(servAddress, servPort, userInput.c_str(), false); //will be 'true' later
                             if(!success){exit(1);} //exit program if this was unsucessful
@@ -133,13 +144,19 @@ int main (int argc, char *argv[])
                                 case 8:
                                     cout<<"raising bucket"<<endl;
                                     break;
+                                case 9:
+                                    cout<<"raising bucket"<<endl;
+                                    break;
+                                case 10:
+                                    cout<<"raising bucket"<<endl;
+                                    break;
                                 default:
                                     break;
                             }
                         }
                         else //didn't input the right number
                         {
-                            cout<<"input an integer 0-8"<<endl;
+                            cout<<"input an integer 0-10 and powerlevel if required"<<endl;
                         }
                     }
                 }
@@ -306,14 +323,21 @@ vector<string> splitString(string str)
 bool checkUserInput(vector<string> input, int numArguments)
 {
     if(input.size()==numArguments){return false;}
-    else
+    else if(input.size()==2) //if the power level was specified
     {
         int pow1=atoi(input[0].c_str()); //checking if the power levels are acceptable
-        int pow2=atoi(input[1].c_str());
-        if(pow1<=127 || pow1>=127 || pow2 <= 127 || pow2 >= 127)
+        if(pow1<=127 || pow1>=127)
         {
             return false; //power needs to be in the -127-127
         }
+        else{return true;}
     }
-    return true; //probably need to check the other argument
+    return true; //if it's the correct # of arguments the input is fine
 }
+/*
+void controlRobo(string userInput, string message)
+{
+    bool success=sendToServer(servAddress, servPort, userInput.c_str(), true);
+    if(!success){exit(1);}
+    cout<<message<<endl;
+}*/
