@@ -30,15 +30,6 @@ bool controlRobo(string userInput, string message, string servAddress, int servP
 
 int main (int argc, char *argv[])
 {
-    //cout<<"size of boolean "<<sizeof(test)<<endl;
-    /*bool bits[] = {0, 1, 0, 0, 0, 0, 0, 1};
-    char c = 0;
-    for(int i = 0; i < 8; i++)
-        c += (bits[i] >> i); // 0 or 1 times 2 to the ith power
-    cout << c << endl; // should print out A
-    cin.get();
-    return 0;*/
-
 
     if(argc!=3){cerr<<"\n\nError: Wrong Number of Arguments\nTo Run: "<< argv[0]<<" <Server's IP Address> <Server's Port>\n\n"<<endl;
         exit(1);} //imediately terminates if command line arguments were not specified
@@ -77,7 +68,7 @@ int main (int argc, char *argv[])
                 do{
                     if(viewKey)
                     {
-                        cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <0>\nMOVE STRAIGHT FORWARD: <1 powerLevel>\nMOVE STRAIGHT REVERSE: <2 powerLevel>\nTURN RIGHT: <3 powerLevel>\nTURN LEFT: <4 powerLevel>\nDIGGER DROP: <5>\nRAISE DIGGER: <6>\nDUMP BUCKET: <7>\nLOWER BUCKET: <8>\n\n"<<endl;
+                        cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <1>\nMOVE STRAIGHT FORWARD: <2 powerLevel>\nMOVE STRAIGHT REVERSE: <3 powerLevel>\nTURN RIGHT: <4 powerLevel>\nTURN LEFT: <5 powerLevel>\nDIGGER DROP: <6>\nRAISE DIGGER: <7>\nDUMP BUCKET: <8>\nLOWER BUCKET: <9>\n\n"<<endl;
                         /*cout<<"COMMAND KEY:\n0) stop\n1) forward\n2) reverse\n3) right\n4) left\n5) digger drop\n6) raise digger\n7) dump bucket\n8) lower bucket\n9) change drive power level\n10) change digger power level\n"<<endl;*/
                     }
                     viewKey=false; //only dispay this when the user wants to
@@ -89,45 +80,46 @@ int main (int argc, char *argv[])
                     {
                         //cout<<"size of input: "<<sizeof(userInput.c_str())<<endl;
                         vector<string> inputs= splitString(userInput); //splitting the string at the ' ' and storing the substrings into a vector; this is to separate the power from the mode
-                        mode=atoi(inputs[0].c_str()); //first int should be mode
-                        if(mode==0 && checkUserInput(inputs, 1))//stop robot
+                        mode=atoi(inputs[0].c_str()); //first int should be mode --> atoi defaults to 0 if you enter a bunch of garbage
+                        cout<<"mode is: "<<mode<<endl;
+                        if(mode==1 && checkUserInput(inputs, 1))//stop robot
                         {
                             controlRobo(userInput, "stopping robot", servAddress, servPort); //sending user input to server (NUC) and printing conformation message to user
 
                         }
-                        else if(mode>0 && mode<5 && checkUserInput(inputs, 2))//turn right;left;straight;reverse //ask for power levels here
+                        else if(mode>1 && mode<6 && checkUserInput(inputs, 2))//turn right;left;straight;reverse //ask for power levels here
                         {
                             switch (mode)
                             {
-                                case 1:
+                                case 2:
                                     controlRobo(userInput, "moving forward at power level "+inputs[1], servAddress, servPort);
                                     break;
-                                case 2:
+                                case 3:
                                    controlRobo(userInput, "moving backwards at power level "+inputs[1], servAddress, servPort);
                                     break;
-                                case 3:
+                                case 4:
                                     controlRobo(userInput, "turning right at power level "+inputs[1], servAddress, servPort);
                                     break;
-                                case 4:
+                                case 5:
                                     controlRobo(userInput, "turning left at power level "+inputs[1], servAddress, servPort);
                                 default:
                                     break;
                             }
                         }
-                        else if(mode<11 && mode>4 && checkUserInput(inputs, 1))//digger drop; digger raise; bucket drop; bucket raise
+                        else if(mode<10 && mode>5 && checkUserInput(inputs, 1))//digger drop; digger raise; bucket drop; bucket raise
                         {
                             switch (mode)
                             {
-                                case 5:
+                                case 6:
                                     controlRobo(userInput, "dropping digger", servAddress, servPort);
                                     break;
-                                case 6:
+                                case 7:
                                     controlRobo(userInput, "raising digger", servAddress, servPort);
                                     break;
-                                case 7:
+                                case 8:
                                     controlRobo(userInput, "dumping bucket", servAddress, servPort);
                                     break;
-                                case 8:
+                                case 9:
                                     controlRobo(userInput, "raising bucket", servAddress, servPort);
                                     break;
                                 default:
@@ -136,7 +128,7 @@ int main (int argc, char *argv[])
                         }
                         else //didn't input the right number
                         {
-                            cout<<"incorrect input\nEnter an integer 0-10 & a powerlevel if required"<<endl;
+                            cout<<"incorrect input\nEnter an integer 1-9 & a powerlevel if required"<<endl;
                         }
                     }
                     userInput.clear(); //clearing the string, so the user can enter another input
