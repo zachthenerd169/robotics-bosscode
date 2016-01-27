@@ -13,8 +13,8 @@
 #include <iostream>           // For cerr and cout
 #include <cstdlib>            // For atoi()
 #include <string.h>           // For user inputs
-#include <sstream>
-#include <vector>
+#include <sstream>            // for split(string)
+#include <vector>             // also for split(string)
 
 
 
@@ -24,7 +24,7 @@ void echoMessage(TCPSocket *sock, unsigned int bufferSize);
 bool sendToServer(string servAddress, unsigned short servPort, const char* message, bool arduino);
 vector<string> splitString(string str);
 bool checkUserInput(vector<string> input, int numArguments);
-void controlRobo(string userInput, string message, string servAddress, int servPort);
+bool controlRobo(string userInput, string message, string servAddress, int servPort);
 
 
 
@@ -67,6 +67,7 @@ int main (int argc, char *argv[])
         {
             case 1:
             {
+                while ( getchar() != '\n'); //flusing input buffer
                 string userInput;
                 bool viewKey=true;
                 short powerLevel=0;
@@ -74,10 +75,6 @@ int main (int argc, char *argv[])
                 bool success=false;
                 bool robotDone=false; //flag to control robot submenu
                 do{
-                    //representing in the least amount of bits:
-                    //3 bits for mode; 5 bits for each power if the power is incremented by ten
-                    //13 bits total woo
-                    //can send two bits or can send boolean array
                     if(viewKey)
                     {
                         cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <0>\nMOVE STRAIGHT FORWARD: <1 powerLevel>\nMOVE STRAIGHT REVERSE: <2 powerLevel>\nTURN RIGHT: <3 powerLevel>\nTURN LEFT: <4 powerLevel>\nDIGGER DROP: <5>\nRAISE DIGGER: <6>\nDUMP BUCKET: <7>\nLOWER BUCKET: <8>\n\n"<<endl;
@@ -85,74 +82,53 @@ int main (int argc, char *argv[])
                     }
                     viewKey=false; //only dispay this when the user wants to
                     cout<<"input 'help' to view mode key\ninput'exit' to quit\notherwise enter the integer that corresponds to the desired command"<<endl;
-                    while ( getchar() != '\n'); //flusing input buffer
                     std::getline(std::cin, userInput);
                     if(userInput.compare("help")==0){viewKey=true;}
                     else if(userInput.compare("exit")==0) {robotDone=true;}
                     else
                     {
-                        char intToStringBuf[10]; //used to convert power level (a short) into a string
-                        cout<<"size of input: "<<sizeof(userInput.c_str())<<endl;
-                        vector<string> inputs= splitString(userInput);
+                        //cout<<"size of input: "<<sizeof(userInput.c_str())<<endl;
+                        vector<string> inputs= splitString(userInput); //splitting the string at the ' ' and storing the substrings into a vector; this is to separate the power from the mode
                         mode=atoi(inputs[0].c_str()); //first int should be mode
-                        cout<<"mode is: "<<mode<<endl;
-                        cout<<"input is: "<<checkUserInput(inputs, 1)<<endl;
                         if(mode==0 && checkUserInput(inputs, 1))//stop robot
                         {
-                            success=sendToServer(servAddress, servPort, userInput.c_str(), false); //will be 'true' later
-                            if(!success){exit(1);} //exit program if this was unsucessful
-                            cout<<"stopping robot"<<endl;
+                            controlRobo(userInput, "stopping robot", servAddress, servPort); //sending user input to server (NUC) and printing conformation message to user
+
                         }
                         else if(mode>0 && mode<5 && checkUserInput(inputs, 2))//turn right;left;straight;reverse //ask for power levels here
                         {
                             switch (mode)
                             {
                                 case 1:
-                                    
-                                    powerLevel=atoi(inputs[1].c_str());
-                                    controlRobo(userInput, "moving forward at power level", servAddress, servPort);
+                                    controlRobo(userInput, "moving forward at power level "+inputs[1], servAddress, servPort);
                                     break;
                                 case 2:
-                                    powerLevel=atoi(inputs[1].c_str());
-                                    success=sendToServer(servAddress, servPort, userInput.c_str(), false);
-                                    cout<<"moving backwards at power level "<<powerLevel<<endl;
+                                   controlRobo(userInput, "moving backwards at power level "+inputs[1], servAddress, servPort);
                                     break;
                                 case 3:
-                                    powerLevel=atoi(inputs[1].c_str());
-                                    success=sendToServer(servAddress, servPort, userInput.c_str(), false);
-                                    cout<<"turning right at power level "<<powerLevel<<endl;
+                                    controlRobo(userInput, "turning right at power level "+inputs[1], servAddress, servPort);
                                     break;
                                 case 4:
-                                    powerLevel=atoi(inputs[1].c_str());
-                                    success=sendToServer(servAddress, servPort, userInput.c_str(), false);
-                                    cout<<"turning left at power level "<<powerLevel<<endl;
+                                    controlRobo(userInput, "turning left at power level "+inputs[1], servAddress, servPort);
                                 default:
                                     break;
                             }
                         }
                         else if(mode<11 && mode>4 && checkUserInput(inputs, 1))//digger drop; digger raise; bucket drop; bucket raise
                         {
-                            bool success=sendToServer(servAddress, servPort, userInput.c_str(), false); //will be 'true' later
-                            if(!success){exit(1);} //exit program if this was unsucessful
                             switch (mode)
                             {
                                 case 5:
-                                    cout<<"dropping digger"<<endl;
+                                    controlRobo(userInput, "dropping digger", servAddress, servPort);
                                     break;
                                 case 6:
-                                    cout<<"raising digger"<<endl;
+                                    controlRobo(userInput, "raising digger", servAddress, servPort);
                                     break;
                                 case 7:
-                                    cout<<"dumping bucket"<<endl;
+                                    controlRobo(userInput, "dumping bucket", servAddress, servPort);
                                     break;
                                 case 8:
-                                    cout<<"raising bucket"<<endl;
-                                    break;
-                                case 9:
-                                    cout<<"raising bucket"<<endl;
-                                    break;
-                                case 10:
-                                    cout<<"raising bucket"<<endl;
+                                    controlRobo(userInput, "raising bucket", servAddress, servPort);
                                     break;
                                 default:
                                     break;
@@ -163,6 +139,7 @@ int main (int argc, char *argv[])
                             cout<<"incorrect input\nEnter an integer 0-10 & a powerlevel if required"<<endl;
                         }
                     }
+                    userInput.clear(); //clearing the string, so the user can enter another input
                 }
                 while(!robotDone);//stay in this menu while the user does not input "exit"
                 break;
@@ -309,7 +286,12 @@ void echoMessage(TCPSocket *sock, unsigned int bufferSize)
     cout << endl;
 
 }
-vector<string> splitString(string str)
+/**
+ * description: splits the string at the ' '
+ * input: a single string
+ * output: a vector of strings --> where each element is a word
+ **/
+vector<string> splitString(string str) //this may be used on the server side too
 {
     string buf; // Have a buffer string
     stringstream ss(str); // Insert the string into a stream
@@ -324,27 +306,38 @@ vector<string> splitString(string str)
     }
     return tokens;
 }
+/**
+ * For the control robot menu item, this function checks if the user input is reasonble (ie it has the correct format and a feasible power level
+ * input: a vector (the user's input)
+ *        the expected size of the vector (it should either be 1 or 2)
+ * output: true if the input is reasonable; false otherwise
+ **/
 bool checkUserInput(vector<string> input, int numArguments)
 {
-    cout<<"input size: " <<input.size()<<endl;
     if(input.size()!=numArguments){return false;}
     else if(input.size()==2) //if the power level was specified
     {
-        cout<<"in pow if"<<endl;
         int pow1=atoi(input[1].c_str()); //checking if the power levels are acceptable
         if(pow1<-127 || pow1>127)
         {
-            cout<<"power level ranges from -127 to 127"<<endl;
+            cout<<"incorrect power input: power level ranges from -127 to 127"<<endl;
             return false; //power needs to be in the -127-127
         }
         else{return true;}
     }
     return true; //if it's the correct # of arguments the input is fine
 }
-
-void controlRobo(string userInput, string message, string servAddress, int servPort)
+/**
+ *  Function sends message to the server (that will then send a message to the arduino) and prints status message
+ *  inputs: string userinput (robot command to send to server)
+ *          string mess (status message to print out)
+ *          string servAddress (the IP address of the server)
+ *          int servPort (the port the server is listening on)
+ *  outputs: true if the message sends successfully; false otherwise
+ **/
+bool controlRobo(string userInput, string message, string servAddress, int servPort)
 {
-    bool success=sendToServer(servAddress, servPort, userInput.c_str(), false); //make true later
-    if(!success){exit(1);}
-    cout<<message<<endl;
+    bool success=sendToServer(servAddress, servPort, userInput.c_str(), false); //make true later -->true once you have an arduino
+    cout<<message<<endl; //print status message
+    return !success ? false : true;
 }
