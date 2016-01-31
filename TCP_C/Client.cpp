@@ -259,12 +259,13 @@ bool sendToServer(string servAddress, unsigned short servPort, const char* messa
  **/
 void echoMessage(TCPSocket *sock, unsigned int bufferSize)
 {
-    cout << "Echoed: ";  // Setup to print the echoed string
+    
     char echoBuffer[bufferSize+1]; //createing a buffer that can capture the message received back from the server
     int bytesReceived = 0;  // Bytes read on each recv()
     int totalBytesReceived = 0;  // Total bytes read
     while (totalBytesReceived < bufferSize)
     {
+        cout << "Echoed: ";  // Setup to print the echoed string
         // Receive up to the buffer size bytes from the sender
         if ((bytesReceived = (sock->recv(echoBuffer, bufferSize+1))) <= 0)
         {
@@ -329,7 +330,8 @@ bool checkUserInput(vector<string> input, int numArguments)
  **/
 bool controlRobo(string userInput, string message, string servAddress, int servPort)
 {
-    bool success=sendToServer(servAddress, servPort, userInput.c_str(), false); //make true later -->true once you have an arduino
+    userInput="ard-"+userInput; //adding the to send to arduino
+    bool success=sendToServer(servAddress, servPort, userInput.c_str(), true); //make true later -->true once you have an arduino
     cout<<message<<endl; //print status message
     return !success ? false : true;
 }

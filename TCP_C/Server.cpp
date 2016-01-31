@@ -11,6 +11,8 @@
 #include <cstdlib>            // For atoi()
 #include "Server.hpp"
 #include "arduino-serial-lib.h"
+#include <vector>             // also for split(string)
+#include <sstream>            // for split(string)
 
 #define BAUDRATE 9600 // default baudrate
 #define BUF_MAX 256   // default max buffer size
@@ -20,6 +22,8 @@ const unsigned int RCVBUFSIZE = 50; // Size of receive buffer
 
 void handleClient(TCPSocket *sock); //prototypes
 char* writeToArduino(const char* message);
+vector<string> splitString(string str);
+void arduinoSend(const char *message, TCPSocket *socket);
 
 int main(int argc, char *argv[])
 {
@@ -68,15 +72,42 @@ void handleClient(TCPSocket *sock)
         {
             str=str.substr(4, recvMsgSize);
             const char *message = str.c_str();
-            char *ardMessage=writeToArduino(message);
+            
+            vector<string> ard_control=splitString(message); //sending ea
+            for(int i=0; i<ard_control.size(); i++)
+            {
+                arduinoSend(ard_control[i].c_str(), sock);
+            }
+            
+            /*char *ardMessage=writeToArduino(message);
             cout<<"ardMessage is: "<<ardMessage<<endl;
             cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
-            sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino
+            sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino*/
         }
         else{sock->send(buffer, recvMsgSize);} //send message as is
     }
     delete sock;
 
+    
+}
+void arduinoSend(const char *message, TCPSocket *sock)
+{
+     char *ardMessage=writeToArduino(message);
+     cout<<"ardMessage is: "<<ardMessage<<endl;
+     cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
+     sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino*
+
+    /*char *ardMessage=NULL;
+    vector<string> ard_control=splitString(message);
+    for(int i=0; i<ard_control.size(); i++)
+    {
+        ardMessage=writeToArduino(ard_control[i].c_str());
+        //int size=ardMessage.size();
+        cout<<"ardMessage is: "<<ardMessage<<endl;
+        cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
+        sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino
+        memset(ardMessage, 0,  BUF_MAX); //clearing the array
+    }*/
     
 }
 /**
@@ -118,4 +149,24 @@ char* writeToArduino(const char* message)
     char *tempMess = new char[arduinoMess.length() + 1];
     strcpy(tempMess, arduinoMess.c_str());
     return strcat(tempMess, message); //returning message received from arduino (test)*/
+}
+/**
+ * description: splits the string at the ' '
+ * input: a single string
+ * output: a vector of strings --> where each element is a word
+ **/
+vector<string> splitString(string str) //this may be used on the server side too
+{
+    string buf; // Have a buffer string
+    stringstream ss(str); // Insert the string into a stream
+    vector<string> tokens; // Create vector to hold our words
+    
+    while (ss >> buf)
+        tokens.push_back(buf);
+    
+    for(int i=0; i<tokens.size(); i++)
+    {
+        cout<<tokens[i]<<endl;
+    }
+    return tokens;
 }
