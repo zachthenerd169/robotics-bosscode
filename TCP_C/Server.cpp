@@ -13,6 +13,7 @@
 #include "arduino-serial-lib.h"
 #include <vector>             // also for split(string)
 #include <sstream>            // for split(string)
+#include <string>
 
 #define BAUDRATE 9600 // default baudrate
 #define BUF_MAX 256   // default max buffer size
@@ -21,7 +22,7 @@
 const unsigned int RCVBUFSIZE = 50; // Size of receive buffer
 
 void handleClient(TCPSocket *sock); //prototypes
-char* writeToArduino(const char* message);
+char* writeToArduino(int mode, int powerLevel);
 vector<string> splitString(string str);
 void arduinoSend(const char *message, TCPSocket *socket);
 
@@ -73,13 +74,16 @@ void handleClient(TCPSocket *sock)
             str=str.substr(4, recvMsgSize);
             const char *message = str.c_str();
             
-            vector<string> ard_control=splitString(message); //sending ea
-            for(int i=0; i<ard_control.size(); i++)
+            vector<string> ard_control=splitString(message); //hard code for now
+            int mode = std::stoi(ard_control[0], nullptr, 10);
+            int powerLevel = ard_control.size()==2 ? std::stoi(ard_control[0], nullptr, 10) : -1;
+            cout<<mode<<endl;
+            /*for(int i=0; i<ard_control.size(); i++)
             {
                 arduinoSend(ard_control[i].c_str(), sock);
-            }
-            
-            /*char *ardMessage=writeToArduino(message);
+            }*/
+            char *ardMessage=writeToArduino(mode, powerLevel);
+            //char *ardMessage=writeToArduino(message);
             cout<<"ardMessage is: "<<ardMessage<<endl;
             cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
             sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino*/
@@ -92,10 +96,11 @@ void handleClient(TCPSocket *sock)
 }
 void arduinoSend(const char *message, TCPSocket *sock)
 {
-     char *ardMessage=writeToArduino(message);
-     cout<<"ardMessage is: "<<ardMessage<<endl;
-     cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
-     sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino*
+    /*int mess_int=atoi(message);
+    char *ardMessage=writeToArduino(mess_int);
+    cout<<"ardMessage is: "<<ardMessage<<endl;
+    cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
+    sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino*/
 
     /*char *ardMessage=NULL;
     vector<string> ard_control=splitString(message);
@@ -114,9 +119,10 @@ void arduinoSend(const char *message, TCPSocket *sock)
  * Input: message to send to arduino
  * Output: message sent to arduino (pass this back to the client)
  */
-char* writeToArduino(const char* message)
+char* writeToArduino(int mode, int powerLevel)
 {
-    int fd=-1; //status
+    cout<<"mode "<<mode << " powerLevel: "<<powerLevel<<endl;
+    /*int fd=-1; //status
     const char* port="/dev/cu.usbmodem1411"; //default for stephanie's laptop
     const char* test_message="hello arduino!";
     int rc; //status
@@ -145,10 +151,11 @@ char* writeToArduino(const char* message)
     
     //WHEN YOU DON'T HAVE AN ARDUINO JUST USE THIS
     //have to do some shit to get char*
-    /*string arduinoMess = "Arduino received ";
+    string arduinoMess = "Arduino received ";
     char *tempMess = new char[arduinoMess.length() + 1];
     strcpy(tempMess, arduinoMess.c_str());
     return strcat(tempMess, message); //returning message received from arduino (test)*/
+    return NULL;
 }
 /**
  * description: splits the string at the ' '
