@@ -22,9 +22,9 @@
 const unsigned int RCVBUFSIZE = 50; // Size of receive buffer
 
 void handleClient(TCPSocket *sock); //prototypes
-char* writeToArduino(int mode, int powerLevel);
 vector<string> splitString(string str);
 void arduinoSend(const char *message, TCPSocket *socket);
+char* writeToArduino(const int mode, const int powerLevel);
 
 int main(int argc, char *argv[])
 {
@@ -119,10 +119,11 @@ void arduinoSend(const char *message, TCPSocket *sock)
  * Input: message to send to arduino
  * Output: message sent to arduino (pass this back to the client)
  */
-char* writeToArduino(int mode, int powerLevel)
+
+char* writeToArduino(const int mode, const int powerLevel)
 {
     cout<<"mode "<<mode << " powerLevel: "<<powerLevel<<endl;
-    /*int fd=-1; //status
+    int fd=-1; //status
     const char* port="/dev/cu.usbmodem1411"; //default for stephanie's laptop
     const char* test_message="hello arduino!";
     int rc; //status
@@ -137,10 +138,25 @@ char* writeToArduino(int mode, int powerLevel)
     (fd == -1) ? cout<< "couldn't open port" << endl : cout<< "opened port " << port << endl;
     serialport_flush(fd);
     
-    fd==-1 ? cout<<"serial port not opened"<<endl : printf("sending message: %s\n", message); //sending test message
+    fd==-1 ? cout<<"serial port not opened"<<endl : printf("sending messages: %d %d\n", mode, powerLevel); //sending test message
     
-    rc = serialport_write(fd, message); //writing the to the arduino
+    // Sends over the mode
+    // Accounts for little-endian and big-endian machines
+    char highMode = (mode >> (8*3)) & 0xff;
+    char lowMode = (mode >> (8*0)) & 0xff;
+    char modeToSend = highMode >  lowMode ? highMode : lowMode;
+    rc = serialport_writebyte(fd, modeToSend); //writing the to the arduino
     if(rc==-1) perror("error writing");
+    
+    // Send over the power level if it is valid
+    if(powerLevel >= 0) {
+        // Accounts for little-endian and big-endian machines
+        char highPower = (powerLevel >> (8*3)) & 0xff;
+        char lowPower = (powerLevel >> (8*0)) & 0xff;
+        char powerToSend = highPower > lowPower ? highPower : lowPower;
+        rc = serialport_writebyte(fd, powerToSend); //writing the to the arduino
+        if(rc==-1) perror("error writing");
+    }
     
     if( fd == -1) perror("serial port not opened");
     memset(buf,0,BUF_MAX); //clearing buffer
@@ -151,11 +167,11 @@ char* writeToArduino(int mode, int powerLevel)
     
     //WHEN YOU DON'T HAVE AN ARDUINO JUST USE THIS
     //have to do some shit to get char*
-    string arduinoMess = "Arduino received ";
+    /*string arduinoMess = "Arduino received ";
     char *tempMess = new char[arduinoMess.length() + 1];
     strcpy(tempMess, arduinoMess.c_str());
-    return strcat(tempMess, message); //returning message received from arduino (test)*/
-    return NULL;
+    return strcat(tempMess, message); //returning message received from arduino (test)
+    return NULL;*/
 }
 /**
  * description: splits the string at the ' '
