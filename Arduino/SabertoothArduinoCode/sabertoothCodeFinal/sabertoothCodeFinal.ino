@@ -4,6 +4,7 @@
 #include <SoftwareSerial.h>
 #include <Sabertooth.h>
 #include "DualVNH5019MotorShield.h"
+#include <Servo.h> //for testing only
 
 SoftwareSerial SWSerial1(NOT_A_PIN, 14); // RX is NOT_A_PIN (unused), TX on pin 14 (to S1).
 SoftwareSerial SWSerial2(NOT_A_PIN, 16); //RX is NOT_A_PIN (unused), TX on pin 16 (to S2)
@@ -12,6 +13,7 @@ Sabertooth ST1(128, SWSerial1); //Address 128, and use SWSerial as the serial po
 Sabertooth ST2(128, SWSerial2); //ST1 controls treads/wheels (2 motors), ST2 controls digger (1 linear actuator and 1 motor)
 
 DualVNH5019MotorShield md; //md controls bucket (two linear actuators)
+Servo servo;
 
 void stopIfFault()
 {
@@ -30,6 +32,7 @@ void setup()
   
   md.init(); // initialize motor driver
 
+  servo.attach(13);
 }
 
 void loop()
@@ -39,7 +42,7 @@ void loop()
     int mode = Serial.read(); //read the mode
     int powerLevel = 0;
     
-    if (mode >= 1 && mode <= 4) //if the user wants chooses mode 1-4, they need to set the power
+    if (mode >= 2 && mode <= 5) //if the user wants chooses mode 1-4, they need to set the power
     {
       while(Serial.available() == 0) {} //wait for another command to set the power level
       powerLevel = Serial.read();
@@ -81,6 +84,13 @@ void loop()
     {
       bucketDown();
     }  
+
+    servo.write(powerLevel);
+    delay(20);
+    //digitalWrite(13,HIGH);
+    //delay(700);
+    //digitalWrite(13, LOW);
+    Serial.println("Arduino Received: " + String(mode, DEC) + " " + String(powerLevel, DEC));
 }
 
 
