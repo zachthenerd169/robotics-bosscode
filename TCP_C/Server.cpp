@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
         int fd=arduinoInit();
         cout<<"server running"<<endl;
         TCPServerSocket servSock(servPort);  //Server Socket object
+        //CHECK OUT TCP TIMEOUT
         for (;;) {handleClient(servSock.accept(), fd); }  // Wait for a client to connect
     
     }
