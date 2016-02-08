@@ -5,6 +5,13 @@
 #include "opencv2/videoio/videoio.hpp"
 #include <string>
 
+/**
+ 
+ * To Compile: g++ -o objTracking.exe objTracking.cpp -lopencv_core -lopencv_imgproc -lopencv_highgui  -lopencv_videoio
+ 
+ * To Run: ./objTracking.exe
+ 
+ **/
 using namespace cv;
 using namespace std;
 
