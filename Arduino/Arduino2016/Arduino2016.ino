@@ -1,6 +1,3 @@
-// Software Serial Sample for Packet Serial
-// Copyright (c) 2012 Dimension Engineering LLC
-// See license.txt for license details.
 #include <SoftwareSerial.h>
 #include <Sabertooth.h>
 #include "DualVNH5019MotorShield.h"
@@ -11,10 +8,6 @@ Sabertooth ST1(128, SWSerial1); //Address 128, and use SWSerial as the serial po
 Sabertooth ST2(128, SWSerial2); //ST1 controls treads/wheels (2 motors), ST2 controls digger (1 linear actuator and 1 motor)
 DualVNH5019MotorShield md; //md controls bucket (two linear actuators)
 
-void stopIfFault()
-{
-   if(md.getM1Fault() || md.getM2Fault()){Serial.println("Fault with digger motors");} //client won't be able to receive for now
-}
 void setup()
 {
   Serial.begin(9600); //for communicating with NUC
@@ -31,15 +24,15 @@ void loop()
     while (Serial.available() == 0)  {} //wait until there is something to read
     int mode = Serial.read(); //read the mode
     int powerLevel = 0;
-    if (mode >= 2 && mode <= 5) //if the user wants chooses mode 2-5, they need to set the power
+    if (mode >= 2 && mode <= 5) //if the user wants chooses mode 2-5, they need to set the power (these modes move the robot)
     {
       while(Serial.available() == 0) {} //wait for another command to set the power level
-      powerLevel = Serial.read();
+      powerLevel = Serial.read(); //reading the power level
     }
     //FSM
     if(mode == 1) { moveRobot(0,1,1); }//stop robot
     else if(mode == 2)  {moveRobot(powerLevel,1,1);}//move straight forward
-    else if(mode == 3)  {moveRobot(powerLevel, -1, -1);}
+    else if(mode == 3)  {moveRobot(powerLevel, -1, -1);} //move robot in reverse
     else if(mode == 4)  {moveRobot(powerLevel, -1, 1); } //turn robot right //turnRobot(1, powerLevel);
     else if(mode == 5)  {moveRobot(powerLevel, 1, -1); } // //turn robot left  turnRobot(-1, powerLevel);
     else if(mode == 6){diggerDrop();} //drop digger
@@ -47,21 +40,54 @@ void loop()
     else if(mode == 8){moveBucket(-1);} //dump bucket 
     else if(mode == 9){moveBucket(1);} //put bucket back down
 }
+/**
+ * Function stops the robot, turns the robot right/left, 
+ * and moves the robot straight/reverse
+ * 
+ * the motor controller controlling the wheels on the robot is sabertooth ST1
+ * 
+ * motor #1 controls the left wheel?
+ * motor #2 controls the right wheel?
+ * 
+ * power level range: 
+ * suggested power levels: 
+ */
 void moveRobot(int powerLevel, short dir1, short dir2)
 {
   ST1.motor(1, dir1*powerLevel);
   ST1.motor(2, dir2*powerLevel);
 }
+/**
+ * Functions diggerUp and diggerDrop operate the digger --> one of the motors is a linear actuator to raise/lower the digger; the other motor is a CIM that does the digging
+ * 
+ * the motor controller controlling the digger on the robot is sabertooth ST2
+ * 
+ * motor #1 controls the linear actuator
+ * motor #2 controls the CIM (digging operations)
+ */
 void diggerUp()
 {
-   // 127 is the default power level
-   ST2.motor(1, -127);  // Linear actuator out 
-   ST2.motor(2, 0);  // Motor off
+   ST2.motor(1, -127); //Linear actuator out  //127 is the default power level
+   ST2.motor(2, 0);  //Motor off
 }
 void diggerDrop()
 {
-   // 127 is the default power level
-   ST2.motor(1, 127);   // Linear actuator in
-   ST2.motor(2, 70);    // Motor on
+   ST2.motor(1, 127);//Linear actuator in //127 is the default power level
+   ST2.motor(2, 70);//Motor on
 }
+/**
+ * Function raises and lowers the bucket
+ * 
+ * the motor controller controlling the bucket is the arduino shield
+ * 
+ * The motor shield has to separate channels: A & B. Each channel control a linear actuator.
+ */
 void moveBucket(short dir){md.setSpeeds(dir*400, dir*400);}
+/**
+ * If either of the channels experience faults --> do what? should we just return something back to the client, 
+ * or should we stop both actuators (this would be preferable)
+ */
+void stopIfFault()
+{
+   if(md.getM1Fault() || md.getM2Fault()){Serial.println("Fault with digger motors");} //client won't be able to receive for now
+}
