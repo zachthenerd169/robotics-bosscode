@@ -6,6 +6,11 @@
 //
 //  To Compile: g++ -o Client.exe Client.cpp PracticalSocket.cpp
 //  To Run: ./Client.exe 'Server's IP Address' 'Server's Port Number'
+//
+//
+// Important note: for linux/osx, you can check to see how many minures of inactivity cause your TCP connection to time out
+//                 with the following command (on console): sysctl net.inet.tcp
+//                 This command lists different settings about your transport layer
 
 
 #include "PracticalSocket.h"  // For Socket and SocketException
@@ -68,8 +73,7 @@ int main (int argc, char *argv[])
                 do{
                     if(viewKey)
                     {
-                        cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <1>\nMOVE STRAIGHT FORWARD: <2 powerLevel>\nMOVE STRAIGHT REVERSE: <3 powerLevel>\nTURN RIGHT: <4 powerLevel>\nTURN LEFT: <5 powerLevel>\nDIGGER DROP: <6>\nRAISE DIGGER: <7>\nDUMP BUCKET: <8>\nLOWER BUCKET: <9>\n\n"<<endl;
-                        /*cout<<"COMMAND KEY:\n0) stop\n1) forward\n2) reverse\n3) right\n4) left\n5) digger drop\n6) raise digger\n7) dump bucket\n8) lower bucket\n9) change drive power level\n10) change digger power level\n"<<endl;*/
+                        cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <1>\nMOVE STRAIGHT FORWARD: <2 powerLevel>\nMOVE STRAIGHT REVERSE: <3 powerLevel>\nTURN RIGHT: <4 powerLevel>\nTURN LEFT: <5 powerLevel>\nDIGGER DROP: <6>\nRAISE DIGGER: <7>\nDUMP BUCKET: <8>\nLOWER BUCKET: <9>\nREQUEST DATA <10>\n\n"<<endl;
                     }
                     viewKey=false; //only dispay this when the user wants to
                     cout<<"input 'help' to view mode key\ninput'exit' to quit\notherwise enter the integer that corresponds to the desired command"<<endl;

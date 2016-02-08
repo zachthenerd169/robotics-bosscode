@@ -10,7 +10,7 @@
 #include <iostream>           // For cerr and cout
 #include <cstdlib>            // For atoi()
 #include "Server.hpp"
-#include "arduino-serial-lib.h"
+#include "arduino-serial-lib.h" //for writeArduino()
 #include <vector>             // also for split(string)
 #include <sstream>            // for split(string)
 #include <string>
@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
         int fd=arduinoInit();
         cout<<"server running"<<endl;
         TCPServerSocket servSock(servPort);  //Server Socket object
-        //CHECK OUT TCP TIMEOUT
         for (;;) {handleClient(servSock.accept(), fd); }  // Wait for a client to connect
     
     }
@@ -71,53 +70,29 @@ void handleClient(TCPSocket *sock, int fd)
     {
         cout<<"Server received: "<<buffer<<endl;
         string str = string(buffer);
-        cout<<"str is " << buffer<<endl;
-        if(str.substr(0,4).compare("ard-")==0)
+        if(str.substr(0,4).compare("ard-")==0) //see if it was a message intended for the arduino
         {
             str=str.substr(4, recvMsgSize);
             const char *message = str.c_str();
-            
             vector<string> ard_control=splitString(message); //hard code for now
-            int mode = std::stoi(ard_control[0], nullptr, 10);
-            int powerLevel = ard_control.size()==2 ? std::stoi(ard_control[1], nullptr, 10) : -1;
-            cout<<mode<<endl;
-            /*for(int i=0; i<ard_control.size(); i++)
+            int mode;
+            int powerLevel;
+            if(vector.size()==1|| vector.size() ==2 )
             {
-                arduinoSend(ard_control[i].c_str(), sock);
-            }*/
-            char *ardMessage=writeToArduino(mode, powerLevel, fd);
-            //char *ardMessage=writeToArduino(message);
-            cout<<"ardMessage is: "<<ardMessage<<endl;
-            cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
-            sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino*/
+                mode = std::stoi(ard_control[0], nullptr, 10);
+                powerLevel = ard_control.size()==2 ? std::stoi(ard_control[1], nullptr, 10) : -1;
+                char *ardMessage=writeToArduino(mode, powerLevel, fd);
+            }
+            else{cout<<"FIXX THIS!"<<endl;}
+            sock->send(ardMessage, strlen(ardMessage)); //sending arduino message back to client
         }
         else{sock->send(buffer, recvMsgSize);} //send message as is
     }
     delete sock;
-
-    
 }
-void arduinoSend(const char *message, TCPSocket *sock)
-{
-    /*int mess_int=atoi(message);
-    char *ardMessage=writeToArduino(mess_int);
-    cout<<"ardMessage is: "<<ardMessage<<endl;
-    cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
-    sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino*/
-
-    /*char *ardMessage=NULL;
-    vector<string> ard_control=splitString(message);
-    for(int i=0; i<ard_control.size(); i++)
-    {
-        ardMessage=writeToArduino(ard_control[i].c_str());
-        //int size=ardMessage.size();
-        cout<<"ardMessage is: "<<ardMessage<<endl;
-        cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
-        sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino
-        memset(ardMessage, 0,  BUF_MAX); //clearing the array
-    }*/
-    
-}
+/**
+ * Function initializes connection between arduino & NUC
+ **/
 int arduinoInit()
 {
     int fd=-1; //status
@@ -126,8 +101,6 @@ int arduinoInit()
     fd = serialport_init(port, BAUDRATE); //opening port
     (fd == -1) ? cout<< "couldn't open port" << endl : cout<< "opened port " << port << endl;
     serialport_flush(fd);
-    
-    //fd==-1 ? cout<<"serial port not opened"<<endl : printf("sending messes: %d %d\n", mode, powerLevel);
     return fd;
 }
 /**
