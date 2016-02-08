@@ -38,7 +38,8 @@ void setup()
 }
 /**
  * processing user input
- * Do serial event instead?
+ * Arduino expects a mode # that is 1-9. The mode # specifies what robot operation to do.
+ * If the mode # that is 2-5, the arduino also expects a power level
  */
 void loop()
 {
