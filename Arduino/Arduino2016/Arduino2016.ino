@@ -1,3 +1,20 @@
+/**
+ * Arduino program receives a serial input from the NUC (via the usb port), and then executes the desired command.
+ * The 3 main commands the arduino should receive are:
+ *  1) driving the robot
+ *  2) operating the digger
+ *  3) dumping/lowering the bucket
+ *  
+ *  The arduino accomplishes these commands by commounicating with 3 motor controllers. 
+ *  There are two sabertooth motor controllers (ST1 & ST2) that control the wheels\treads and digger.
+ *  There is one arduino motor sield (md) that controls the bucket
+ *  
+ *  Here is the documentation of the sabertooth motor controllers: http://www.dimensionengineering.com/products/sabertooth2x32 (specs)
+ *                                                                 https://www.dimensionengineering.com/info/arduino (arduino interface)
+ *  Here is the documentatiom of the arduino motor shield: https://www.arduino.cc/en/Main/ArduinoMotorShieldR3
+ *  
+ *  The arduino will allow send data to the NUC if there is a fault in the motor shield
+ */
 #include <SoftwareSerial.h>
 #include <Sabertooth.h>
 #include "DualVNH5019MotorShield.h"
@@ -19,6 +36,10 @@ void setup()
   ST2.setRamping(55);
   md.init(); // initialize motor driver
 }
+/**
+ * processing user input
+ * Do serial event instead?
+ */
 void loop()
 {
     while (Serial.available() == 0)  {} //wait until there is something to read
@@ -46,8 +67,8 @@ void loop()
  * 
  * the motor controller controlling the wheels on the robot is sabertooth ST1
  * 
- * motor #1 controls the left wheel?
- * motor #2 controls the right wheel?
+ * motor #1 controls the right wheel
+ * motor #2 controls the left wheel
  * 
  * power level range: 
  * suggested power levels: 
@@ -89,5 +110,5 @@ void moveBucket(short dir){md.setSpeeds(dir*400, dir*400);}
  */
 void stopIfFault()
 {
-   if(md.getM1Fault() || md.getM2Fault()){Serial.println("Fault with digger motors");} //client won't be able to receive for now
+   if(md.getM1Fault() || md.getM2Fault()){Serial.println("FAULT: MOTOR SHIELD (DIGGERS)");} //client won't be able to receive for now
 }
