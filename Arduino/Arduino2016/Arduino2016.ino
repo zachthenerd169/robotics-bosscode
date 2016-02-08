@@ -25,7 +25,6 @@ void setup()
   ST1.setRamping(55); //-1683 (slowest)
   ST2.setRamping(55);
   md.init(); // initialize motor driver
-  servo.attach(13);
 }
 void loop()
 {
@@ -38,17 +37,17 @@ void loop()
       powerLevel = Serial.read();
     }
     //FSM
-    if(mode == 1) { moveRobot(0); }//stop robot
-    else if(mode == 2)  {moveRobot(powerLevel);}//move straight forward
+    if(mode == 1) { moveRobot(0,1,1); }//stop robot
+    else if(mode == 2)  {moveRobot(powerLevel,1,1);}//move straight forward
     else if(mode == 3)  {moveRobot(powerLevel, -1, -1);}
     else if(mode == 4)  {moveRobot(powerLevel, -1, 1); } //turn robot right //turnRobot(1, powerLevel);
     else if(mode == 5)  {moveRobot(powerLevel, 1, -1); } // //turn robot left  turnRobot(-1, powerLevel);
     else if(mode == 6){diggerDrop();} //drop digger
     else if(mode == 7){diggerUp();} //raise digger
-    else if(mode == 8){bucketDump(-1);} //dump bucket 
-    else if(mode == 9){bucketDump(1);} //put bucket back down
+    else if(mode == 8){moveBucket(-1);} //dump bucket 
+    else if(mode == 9){moveBucket(1);} //put bucket back down
 }
-void moveRobot(int powerLevel, short dir1=1, short dir2=1)
+void moveRobot(int powerLevel, short dir1, short dir2)
 {
   ST1.motor(1, dir1*powerLevel);
   ST1.motor(2, dir2*powerLevel);
