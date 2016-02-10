@@ -15,9 +15,6 @@
 using namespace cv;
 using namespace std;
 
-
-
-
 int theObject[2] = {0,0};
 
 //bounding the rectangle of object, we will use the center of it as its position
@@ -71,19 +68,18 @@ void searchForMovement (Mat thresholdImage, Mat &cameraFeed)
 
 int main(int argc, char** argv)
 {
-    VideoCapture cap(0); // capture the video from web cam
+    int iLowH,iHighH,iLowS,iHighS,iLowV,iHighV;
+    VideoCapture camera(0); //opens the default camera
     
-    
-    
-    if (!cap.isOpened()) // if not success exit program
+    if (!camera.isOpened()) //if not success exit program
     {
         cout<< "Cannot open the Web cam" <<endl;
         return -1;
     }
-    namedWindow("Control" ,CV_WINDOW_NORMAL); // create a window called "control"
+    namedWindow("ObjDetect" ,CV_WINDOW_NORMAL); //create a window called "obj_dectection"
     
-    int iLowH,iHighH,iLowS,iHighS,iLowV,iHighV;
-  
+    //int cvCreateTrackbar(const char* trackbarName, const char* windowName, int* value, int count, CvTrackbarCallback onChange)
+    //can use trackbar to of HSV variables
     
     cvCreateTrackbar("LowH", "Control", &iLowH, 179);
     cvCreateTrackbar("HighH", "Control", &iHighH, 179);
@@ -94,39 +90,41 @@ int main(int argc, char** argv)
     cvCreateTrackbar("LowV", "Control", &iLowV, 255);
     cvCreateTrackbar("HighV", "Control", &iHighV, 255);
     
+    //hard coding HSV values
     /*int iLowH= 100;
-    int iHighH=140;//pure red is at 120 angle
-    int iLowS=230;//
-    int iHighS=255;//
-    int iLowV=230;//
-    int iHighV=250;//*/
-    
+    int iHighH=140;
+    int iLowS=230;
+    int iHighS=255;
+    int iLowV=230;
+    int iHighV=250;*/
     
     while (true)
     {
-        Mat imgOriginal;
+        Mat inputFrame; //creating an empty matrix
+        Mat hsvFrame; //creating an empty matrix
+        Mat mask;
         
-        bool bSuccess = cap.read(imgOriginal); // read a new frame from video
-        
+        bool bSuccess = camera.read(inputFrame); //read a new frame from video and store it in Mat (read in as a BRG image)
         if (!bSuccess)
         {
             cout<< "Cannnot read a frame video from stream" << endl;
-            break;
+            break; //exit while loop
         }
+        cvtColor(inputFrame, imgHSV, COLOR_BGR2HSV); //convert BGR to HSV
         
-        Mat imgHSV;
+        //Checks if array elements lie between the elements of two other arrays.
+        //(InputArray src, InputArray lowerb, InputArray upperb, OutputArray dst)
         
-        cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); // convert bgr to hsv
         
-        Mat imgThresholded;
-        
-        inRange(imgHSV, Scalar(iLowH,iLowS,iLowV), Scalar(iHighH,iHighS,iHighV), imgThresholded);
+        inRange(hsvFrame, Scalar(iLowH,iLowS,iLowV), Scalar(iHighH,iHighS,iHighV), mask); //if HSV pixel lies in the range; the pixel becomes 255 (1) otherwise the pixel is 0
         
         //morphological opening (remove small objects from foreground)
-        erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-        dilate (imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-        
-        
+        //erodes away the boundaries of foreground objects
+        //useful for removing small white objects
+        erode(mask, mask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+        //growing the image again
+        dilate (mask, mask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+        //why do this twice??
         //morphological closing (fill small holes in the foreground)
         dilate (imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
         erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
@@ -142,7 +140,8 @@ int main(int argc, char** argv)
         //imshow("Original", imgOriginal);
         //imshow("HSVImage", imgHSV);
         
-        for (int i=0; i<3; i++) {
+        for (int i=0; i<3; i++)
+        {
             switch (i) {
                 case 1:
                     imshow("Thresholded Image", imgThresholded);
