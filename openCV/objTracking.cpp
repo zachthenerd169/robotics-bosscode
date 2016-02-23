@@ -16,62 +16,19 @@
 using namespace cv;
 using namespace std;
 
-
-
-
-int theObject[2] = {0,0};
-
-//bounding the rectangle of object, we will use the center of it as its position
-Rect objectBoundingRectangle = Rect(0,0,0,0);
-
-//
-void searchForMovement (Mat thresholdImage, Mat &cameraFeed)
+struct ImageData
 {
-    
-    bool objectDetected = false;
-    Mat temp;
-    thresholdImage.copyTo(temp);
-    
-    //These two vectors needed for output of findContours
-    vector< vector<Point> > contours;
-    vector<Vec4i> hierarachy;
-    
-    findContours( temp, contours, hierarachy, CV_RETR_EXTERNAL ,CV_CHAIN_APPROX_SIMPLE);
-    //if contours vector is not empty we have found some objects
-    if (contours.size() > 0)objectDetected=true;
-    else objectDetected = false;
-    if (objectDetected){
-        //the largest contour is found at the end of the contours vector
-        //we will assume that the biggest contour is the object we are looking for
-        vector< vector<Point> > largestContourVec;
-        largestContourVec.push_back(contours.at(contours.size() - 1));
-        objectBoundingRectangle = boundingRect(largestContourVec.at(0));
-        
-        //make a bounding rectangle around the largest contour then find its centeroid
-        //this will be the object's final estimated position
-        int xpos= objectBoundingRectangle.x + objectBoundingRectangle.width / 2;
-        int ypos= objectBoundingRectangle.y + objectBoundingRectangle.height /2;
-        
-        //update the object position by changing the 'theObject values'
-        theObject[0] = xpos, theObject[1]=ypos;
-    
+    vector<Mat> images;
+    vector<Rect> objects;
+    ImageData(vector<Mat> i, vector<Rect> o)
+    {
+        images = i;
+        objects = o;
     }
-    //some temp x and y
-    int x =theObject[0];
-    int y=theObject[1];
-    
-    //draw some crosshairs on the object
-    circle(cameraFeed, Point(x,y), 20, Scalar(0,255,0) , 2);
-    line (cameraFeed, Point(x,y), Point(x,y-25), Scalar(0,255,0),2);
-    line(cameraFeed, Point(x,y), Point(x,y+25), Scalar(0,255,0),2);
-    line(cameraFeed, Point(x,y), Point(x-25,y), Scalar(0,255,0),2);
-    line(cameraFeed, Point(x,y), Point(x+25,y), Scalar(0,255,0),2);
-    //putText(cameraFeed, &"tracking object at ("+ x, Point(x,y), 1,1, Scalar(0,0,255), 2);
-    
-}
+};
 
 /* encapsulate image processing into an object */
-class ImageProc : public zwlib::IUpdater<Mat>
+class ImageProc : public zwlib::IUpdater<ImageData>
 {
     struct Threshold
     {
@@ -86,7 +43,7 @@ public:
         {
             cout << "Cannot open webcam" << endl;
             return -1;
-	}
+        }
 
         tHue.low = 106;
         tHue.high = 126;
@@ -96,20 +53,67 @@ public:
         tVal.high = 255;
     }
 
-    Mat update()
+    ImageData update()
     {
         cap.read(cameraImage);
-        return cameraImage;
+
+        Mat filteredImage;
+        cameraImage.copyTo(filteredImage);
+        applyThreshold(filteredImage);
+        applyFilter(filteredImage);
+        Rect largestRectangle = findLargestObjectBoundingRectangle(filteredImage);
+
+        vector<Mat> images =  {cameraImage, filteredImage};
+        vector<Rect> objects = {largestRectangle};
+
+        return ImageData(images, objects);
     }
 private:
     VideoCapture cap;
 
     Mat cameraImage;
-
 public:
     Threshold tHue;
     Threshold tSat;
     Threshold tVal;
+private:
+    void applyThreshold(Mat &inputOutputImage)
+    {
+        cvtColor(inputOutputImage, inputOutputImage, COLOR_BGR2HSV);
+
+        inRange(inputOutputImage, Scalar(tHue.low,tSat.low,tVal.low), Scalar(tHue.high,tSat.high,tVal.high), inputOutputImage);
+    }
+
+    void applyFilter(Mat &inputOutputImage)
+    {
+        inputOutputImage = morphologyEx(inputOutputImage, MORPH_OPEN, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+        inputOutputImage = morphologyEx(inputOutputImage, MORPH_CLOSE, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+    }
+
+    Rect findLargestObjectBoundingRectangle(const Mat &inputImage)
+    {
+        typedef vector<vector<Point>> ContourType;
+        typedef vector<Vec4i>         HierarachyType;
+
+        ContourType contours;
+        HierarachyType hierarachy;
+
+        findContours(inputImage, contours, hierarachy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+
+        double largestArea = 0;
+        int indexOfLargestContour = 0;
+        for (int i = 0; i < contours.size(); ++i)
+        {
+            double currentArea = contourArea(contours[i], false);
+            if(currentArea > largestArea)
+            {
+                currentArea = largestArea;
+                indexOfLargestContour = i;
+            }
+        }
+
+        return boundingRect(contours[indexOfLargestContour]);
+    }
 };
 
 /* new main function that tests using the image processing object
@@ -124,10 +128,20 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    namedWindow("CameraImage", CV_WINDOW_NORMAL);
-    imshow("CameraImage", improc.update());
 
-    zwlib::ContinuousUpdater<Mat> cu(&improc);
+    namedWindow("ThresholdValues", CV_WINDOW_NORMAL);
+    cvCreateTrackbar("LowH", "ThresholdValues", &improc.tHue.low, 179);
+    cvCreateTrackbar("HighH", "ThresholdValues", &improc.tHue.high, 179);
+    cvCreateTrackbar("LowS", "ThresholdValues", &improc.tSat.low, 255);
+    cvCreateTrackbar("HighS", "ThresholdValues", &improc.tSat.high, 255);
+    cvCreateTrackbar("LowV", "ThresholdValues", &improc.tVal.low, 255);
+    cvCreateTrackbar("HighV", "ThresholdValues", &improc.tVal.high, 255);
+
+
+    namedWindow("CameraImage", CV_WINDOW_NORMAL);
+    imshow("CameraImage", improc.update().images[0]);
+
+    zwlib::ContinuousUpdater<ImageData> cu(&improc,std::chrono::milliseconds(50));
 
     cu.start();
 
@@ -135,7 +149,32 @@ int main(int argc, char* argv[])
 
     while(waitKey(1) == -1)
     {
-        imshow("CameraImage", cu.get());
+        ImageData data = cu.get();
+        Mat image = data.images[0];
+
+        Scalar lineColor(0,255,0);
+        int lineWidth = 2;
+
+        circle(
+            image, 
+            Point(data.objectX, data.objectY), 
+            data.objectWidth/4, 
+            lineColor, lineWidth
+        );
+        line(
+            image, 
+            Point(data.objectX-data.objectWidth/2, data.objectY), 
+            Point(data.objectX-data.objectWidth/2, data.objectY), 
+            lineColor, lineWidth
+        );
+        line(
+            image, 
+            Point(data.objectX, data.objectY-data.objectHeight/2), 
+            Point(data.objectX, data.objectY+data.objectHeight/2), 
+            lineColor, lineWidth
+        );
+
+        imshow("CameraImage", image);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
