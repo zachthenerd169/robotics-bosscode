@@ -8,57 +8,92 @@
 
 #include "Server.hpp"
 
-Server::Server(const int port)
+Server::Server(const int port) //constructor
 {
     m_servPort=port;
-    serial_fd=arduinoInit();
+    serial_fd=arduinoInit(); //initialze communication with arduino
+    
     TCPServerSocket servSock(servPort); //ServerSocket object
     cout<<"server running on port: "<<m_servPort<<endl;
     while(true){handleClient(servSock.accept(), fd);}  //Wait for a client to connect
 }
 void Server::handleClient()
 {
-    cout << "Handling client ";
-    try{cout << sock->getForeignAddress() << ": ";}
-    catch (SocketException e){cerr << "Unable to get foreign address" << endl;}
+    std::cout << "Handling client "; //getting ip and port of client
+    try{std::cout << m_sock->getForeignAddress() << ": ";}
+    catch (SocketException e){std::cerr << "Unable to get foreign address" << std::endl;}
     
-    try{cout << sock->getForeignPort() << endl;}
-    catch (SocketException e){cerr << "Unable to get foreign port" << endl;}
+    try{std::cout << m_sock->getForeignPort() << std::endl;}
+    catch (SocketException e){std::cerr << "Unable to get foreign port" << std::endl;}
     
-    // Send received string and receive again until the end of transmission
-    char buffer[RCVBUFSIZE];
-    int recvMsgSize;
-    memset(buffer, 0, RCVBUFSIZE); //clearing the buffer for next time
-    while ((recvMsgSize = sock->recv(buffer, RCVBUFSIZE)) > 0) //Zero means end of transmission
+    memset(m_buffer, 0, BUF_MAX); //clearing the buffer before a new chunk of data is received
+    int recvMsgSize=0;
+    
+    //while the server has data to receive, receive it
+    while ((recvMsgSize = m_sock->recv(m_buffer, RCVBUFSIZE)) > 0) //Zero means end of transmission
     {
-        cout<<"Server received: "<<buffer<<endl;
-        string str = string(buffer);
-        if(str.substr(0,4).compare("ard-")==0) //see if it was a message intended for the arduino
+        
+        #if DEBUG
+            std::cout<<"Server received: "<<m_buffer<<std::endl;
+        #endif
+        string full_str = string(m_buffer); //casting char* to string type, so we can parse the string easily
+        string des=full_str.substr(0, m_desLength); //des is what device the message was intended for.
+                                               //des should ALWAYS be specified with 1 character followed by a -
+                                               //des could be:
+                                                    //a- (for controlling motors)
+                                                    //c- (for getting image data)
+                                                    //m- (for only client server message-->used for testing)
+        const char* message=full_str.substr(m_desLength, recvMsgSize).c_str(); //removing the "des-" part of the string & then converting the str back into a C string, so we can use the arduino-serial/PracticalSocket libraries
+        if(des.compare("a-")==0) //message for either arduino
         {
-            str=str.substr(4, recvMsgSize);
-            const char *message = str.c_str(); //stripping the 'ard-' off of the string
-            cout<<"message: " << message<<endl;
-            vector<string> ard_control=splitString(message); //break up the line
-            int mode;
-            int powerLevel;
-            if(ard_control.size()==1|| ard_control.size() ==2 ) //if the arduino commands were correctly specified
-            {
-                mode = std::stoi(ard_control[0], nullptr, 10); //get the mode
-                powerLevel = ard_control.size()==2 ? std::stoi(ard_control[1], nullptr, 10) : -1; //if no power level was specified send a -1 power
-                char *ardMessage=writeToMotors(mode, powerLevel, fd); //write to the arduino
-                cout<<"ARD MESSAGE: "<<message<<endl;
-                sock->send(message, strlen(message)); //sending arduino message back to client
-            }
-            else{
-                cout<<"after writeToArduino"<<endl;
-                //else{cout<<"FIXX THIS!"<<endl;} don't need to do anything else
-                sock->send(message, strlen(message)); //sending arduino message back to client
-            }
-            
+            parseArdCommand(message);
         }
-        else{sock->send(buffer, recvMsgSize);} //send message as is
+        else if(des.compare("c-")==0) //message for camera --> take pic and highlight certain data from the image
+        {
+        }
+        else if(des.compare("m-")==0) //send message back to client
+        {
+            m_sock->send(message, recvMsgSize);
+        }
+        else
+        {
+            #if DEBUG
+                std::cout<<"message desination could not be specified"<<std::endl;
+            #endif
+        }
     }
-    delete sock; //done with the socket, so you can delete it
+    delete m_sock; //done with the socket, so you can delete it
+}
+/**
+ //24 bits for one way
+ *1- -->arduino that controls the robot motors
+ * 2- -->arduino that controls the camera
+ **/
+void Server::parseArdCommand(const char* message)
+{
+    string full_str = string(message);
+    string des=message.substr(0,m_desLength);
+    
+    if(des.compare("1-")==0)
+    {
+        vector<string> ard_control=splitString(message); //break up the line
+        short mode=-1;
+        short powerLevel-1;
+        writeToRobotMotors();
+    }
+    else if(des.compare("2-"))
+    {
+        writeToCamMotors();
+    }
+}
+void Server::writeToRobotMotors()
+{
+}
+void Server::writeToCamMotors()
+{
+}
+void Server::parseCamCommand()
+{
 }
 void Server::testArduinoConnection()
 {
@@ -77,4 +112,13 @@ void Server::moveCamera()
 }
 int Server::arduinoInit()
 {
+ 
+        
+        
+    const char* port="/dev/cu.usbmodem1411"; //default for stephanie's laptop
+        fd = serialport_init(port, BAUDRATE); //opening port
+        (fd == -1) ? cout<< "couldn't open port" << endl : cout<< "opened port " << port << endl;
+        serialport_flush(fd);
+        return fd;
+    
 }
