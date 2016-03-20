@@ -19,7 +19,7 @@
 class Server
 {
     public:
-    Server(const int port);
+        Server(const int port)
     
     
         void handleClient();

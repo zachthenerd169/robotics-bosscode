@@ -16,7 +16,6 @@ Server::Server(const int port)
     cout<<"server running on port: "<<m_servPort<<endl;
     while(true){handleClient(servSock.accept(), fd);}  //Wait for a client to connect
 }
-
 void Server::handleClient()
 {
     cout << "Handling client ";
