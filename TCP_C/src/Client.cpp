@@ -65,6 +65,7 @@ void Client::echoMessage(unsigned int bufferSize)
     std::cout << std::endl;
 
 }
+//used to receive data from server
 string Client::receiveMessageFromServer(unsigned int bufferSize)
 {
     return "test";
