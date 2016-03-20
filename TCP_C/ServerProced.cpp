@@ -24,8 +24,10 @@ const unsigned int RCVBUFSIZE = 50; // Size of receive buffer
 void handleClient(TCPSocket *sock, int fd); //prototypes
 vector<string> splitString(string str);
 void arduinoSend(const char *message, TCPSocket *socket);
-char* writeToArduino(const int mode, const int powerLevel, int fd);
+char* writeToMotors(const int mode, const int powerLevel, int fd);
 int arduinoInit();
+char* requestCameraData();
+char* writeToArduino(string message);
 
 int main(int argc, char *argv[])
 {
@@ -73,22 +75,29 @@ void handleClient(TCPSocket *sock, int fd)
         if(str.substr(0,4).compare("ard-")==0) //see if it was a message intended for the arduino
         {
             str=str.substr(4, recvMsgSize);
-            const char *message = str.c_str();
-            vector<string> ard_control=splitString(message); //hard code for now
+            const char *message = str.c_str(); //stripping the 'ard-' off of the string
+            cout<<"message: " << message<<endl;
+            vector<string> ard_control=splitString(message); //break up the line
             int mode;
             int powerLevel;
-            if(vector.size()==1|| vector.size() ==2 )
+            if(ard_control.size()==1|| ard_control.size() ==2 ) //if the arduino commands were correctly specified
             {
-                mode = std::stoi(ard_control[0], nullptr, 10);
-                powerLevel = ard_control.size()==2 ? std::stoi(ard_control[1], nullptr, 10) : -1;
-                char *ardMessage=writeToArduino(mode, powerLevel, fd);
+                mode = std::stoi(ard_control[0], nullptr, 10); //get the mode
+                powerLevel = ard_control.size()==2 ? std::stoi(ard_control[1], nullptr, 10) : -1; //if no power level was specified send a -1 power
+                char *ardMessage=writeToMotors(mode, powerLevel, fd); //write to the arduino
+                cout<<"ARD MESSAGE: "<<message<<endl;
+                sock->send(message, strlen(message)); //sending arduino message back to client
             }
-            else{cout<<"FIXX THIS!"<<endl;}
-            sock->send(ardMessage, strlen(ardMessage)); //sending arduino message back to client
+            else{
+            cout<<"after writeToArduino"<<endl;
+            //else{cout<<"FIXX THIS!"<<endl;} don't need to do anything else
+           sock->send(message, strlen(message)); //sending arduino message back to client
+            }
+            
         }
         else{sock->send(buffer, recvMsgSize);} //send message as is
     }
-    delete sock;
+    delete sock; //done with the socket, so you can delete it
 }
 /**
  * Function initializes connection between arduino & NUC
@@ -103,17 +112,25 @@ int arduinoInit()
     serialport_flush(fd);
     return fd;
 }
+char* writeToArduino(string message)
+{
+    return nullptr;
+}
+char* requestCameraData()
+{
+    return nullptr;
+}
 /**
  * Input: message to send to arduino
  * Output: message sent to arduino (pass this back to the client)
  */
 
-char* writeToArduino(const int mode, const int powerLevel, int fd)
+char* writeToMotors(const int mode, const int powerLevel, int fd)
 {
     cout<<"mode "<<mode << " powerLevel: "<<powerLevel<<endl;
     //int fd=-1; //status
     const char* port="/dev/cu.usbmodem1411"; //default for stephanie's laptop
-    const char* test_message="hello arduino!";
+    //const char* test_message="hello arduino!";
     int rc; //status
     
     char* buf=(char*)malloc(BUF_MAX*sizeof(char));
@@ -122,13 +139,7 @@ char* writeToArduino(const int mode, const int powerLevel, int fd)
     printf("setting baud rate to %d\n", BAUDRATE);
     cout<<"setting serial port to: "<<port<<endl;
     
-    /*fd = serialport_init(port, BAUDRATE); //opening port
-    (fd == -1) ? cout<< "couldn't open port" << endl : cout<< "opened port " << port << endl;
-    serialport_flush(fd);
-    
-    fd==-1 ? cout<<"serial port not opened"<<endl : printf("sending messages: %d %d\n", mode, powerLevel); //sending test message*/
-    
-    // Sends over the mode
+   
     // Accounts for little-endian and big-endian machines
     char highMode = (mode >> (8*3)) & 0xff;
     char lowMode = (mode >> (8*0)) & 0xff;
