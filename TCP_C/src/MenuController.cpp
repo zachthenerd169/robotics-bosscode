@@ -60,6 +60,92 @@ void MenuController::processMainMenu(void)
 }
 void MenuController::processRobotMenu(void)
 {
+    //while ( getchar() != '\n'); //flusing input buffer
+    string userInput;
+    bool viewKey=true;
+    short powerLevel=0;
+    short mode=-1;
+    bool success=false;
+    bool robotDone=false; //flag to control robot submenu
+    /*do{
+     if(viewKey)
+     {
+     cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <1>\nMOVE STRAIGHT FORWARD: <2 powerLevel>\nMOVE STRAIGHT REVERSE: <3 powerLevel>\nTURN RIGHT: <4 powerLevel>\nTURN LEFT: <5 powerLevel>\nDIGGER DROP: <6>\nRAISE DIGGER: <7>\nDUMP BUCKET: <8>\nLOWER BUCKET: <9>\nREQUEST DATA <10>\n\n"<<endl; //only display the first time or if user inputs 'help'
+     }
+     viewKey=false; //only dispay this when the user wants to
+     cout<<"input 'help' to view mode key\ninput'exit' to quit\notherwise enter the integer that corresponds to the desired command"<<endl;
+     std::getline(std::cin, userInput);
+     cout<<"after geline"<<endl;
+     if(userInput.compare("help")==0){viewKey=true;}
+     else if(userInput.compare("exit")==0) {robotDone=true;}
+     else
+     {
+     //cout<<"size of input: "<<sizeof(userInput.c_str())<<endl;
+     vector<string> inputs= splitString(userInput); //splitting the string at the ' ' and storing the substrings into a vector; this is to separate the power from the mode
+     mode=atoi(inputs[0].c_str()); //first int should be mode --> atoi defaults to 0 if you enter a bunch of garbage
+     cout<<"mode is: "<<mode<<endl;
+     if(mode==1 && checkUserInput(inputs, 1))//stop robot
+     {
+     controlRobo(userInput, "stopping robot", servAddress, servPort); //sending user input to server (NUC) and printing conformation message to user
+     
+     }
+     else if(mode>1 && mode<6 && checkUserInput(inputs, 2))//turn right;left;straight;reverse //ask for power levels here
+     {
+     switch (mode)
+     {
+     case 2:
+     controlRobo(userInput, "moving forward at power level "+inputs[1], servAddress, servPort);
+     break;
+     case 3:
+     controlRobo(userInput, "moving backwards at power level "+inputs[1], servAddress, servPort);
+     break;
+     case 4:
+     controlRobo(userInput, "turning right at power level "+inputs[1], servAddress, servPort);
+     break;
+     case 5:
+     controlRobo(userInput, "turning left at power level "+inputs[1], servAddress, servPort);
+     default:
+     break;
+     }
+     }
+     else if(mode<10 && mode>5 && checkUserInput(inputs, 1))//digger drop; digger raise; bucket drop; bucket raise
+     {
+     switch (mode)
+     {
+     case 6:
+     controlRobo(userInput, "dropping digger", servAddress, servPort);
+     break;
+     case 7:
+     controlRobo(userInput, "raising digger", servAddress, servPort);
+     break;
+     case 8:
+     controlRobo(userInput, "dumping bucket", servAddress, servPort);
+     break;
+     case 9:
+     controlRobo(userInput, "raising bucket", servAddress, servPort);
+     break;
+     default:
+     break;
+     }
+     }
+     else if(mode==10)
+     {
+     int userSel=0; //reseting just in case
+     do{
+     cout<<"1) Get Image\n2) Get Obstacle Info\n3) Get esitmated distance\n4) Quit\n"<<endl;
+     userSel = inputInt();
+     } while(userSel!=4);
+     //while ( getchar() != '\n'); //flusing input buffer
+     }
+     else //didn't input the right number
+     {
+     cout<<"incorrect input\nEnter an integer 1-9 & a powerlevel if required"<<endl;
+     }
+     }
+     userInput.clear(); //clearing the string, so the user can enter another input
+     cout<<"clear user input"<<endl;
+     
+     }*/
 }
 void MenuController::processRequestMenu(void)
 {
