@@ -25,25 +25,34 @@ class MenuController
     
         void processMainMenu(void);
         void processRobotMenu(void);
-        void processRequestMenu(std::string input);
+        void processRequestMenu(void);
     
         /*getters*/
         short getNumInput(void){return m_numInput;}
         std::string getStrInput(void){return m_strInput;}
     
     private:
+    
+        /*fields*/
         short m_numInput;
         std::string m_strInput;
+    
         /*setters*/
         void setNumInput(short numInput){m_numInput=numInput;}
         void setStrInput(std::string strInput){m_strInput=strInput;}
     
-        void flushInputBuffer(void);
-        //bool inputToNum(std::string input);
-        short inputNum(void);
-        bool numInBounds(short numInput, short lowerBound, short upperBound);
+        /*menu utility functions*/
         void changeIPAddress();
+        void changePortNumber(void);
+        void flushInputBuffer(void);
+        void sendArdTestMess(void);
+        void sendServerTestMess(void);
+    
+        /*IO utility functions*/
+        short inputNum(void);
         bool confirm(char userConfirm, bool valid);
+        void flushInputBuffer(void);
+        //bool numInBounds(short numInput, short lowerBound, short upperBound);
 };
 
 
@@ -53,6 +62,9 @@ class MenuController
 #if DEBUG
     int main(void)
     {
-        std::cout<<"menu test"<<std::endl;
+        MenuController mc; //creating menu object
+        mc.displayMainMenu();
+        mc.processMainMenu();
+        return 0;
     }
 #endif
