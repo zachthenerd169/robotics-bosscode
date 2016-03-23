@@ -24,7 +24,7 @@ class MenuController
         void displayRequestMenu(void); //to request info from the robot
     
         void processMainMenu(void);
-        void processRobotMenu(std::string input);
+        void processRobotMenu(void);
         void processRequestMenu(std::string input);
     
         /*getters*/
@@ -42,6 +42,8 @@ class MenuController
         //bool inputToNum(std::string input);
         short inputNum(void);
         bool numInBounds(short numInput, short lowerBound, short upperBound);
+        void changeIPAddress();
+        bool confirm(char userConfirm, bool valid);
 };
 
 

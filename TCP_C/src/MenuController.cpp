@@ -24,16 +24,33 @@ void MenuController::displayRequestMenu()
 void MenuController::processMainMenu(void)
 {
     short userSelection = inputNum(); //get the user input
-    while(!numInBounds(userSelection, 1, 6));
+    while(!numInBounds(userSelection, 1, 6)); //make sure the user inputs and option 1-6
+    bool mainMenuDone=false;
     
-    switch (userSelection) //nested menu
+    while(!mainMenuDone)
     {
-        case 1:
+        switch (userSelection) //nested menu
         {
+            case 1:
+                processRobotMenu();
+                break;
+            case 2:
+                changeIPAddress();
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                mainMenuDone=true;
+                break;
         }
+        
     }
 }
-void MenuController::processRobotMenu(std::string input)
+void MenuController::processRobotMenu(void)
 {
 }
 void MenuController::processRequestMenu(std::string input)
@@ -74,4 +91,37 @@ bool MenuController::numInBounds(short numInput, short lowerBound, short upperBo
         
     }
 }
-            
+void MenuController::changeIPAddress()
+{
+    /*cout<<"current address is: "<<servAddress<<"\nEnter new address: ";
+    do //keep asking for the address until the user confirms what they have entered
+    {
+        cin>>servAddress;
+        cout<<"\nnew address is: "<<servAddress<<endl;
+        cout<<"Is this correct?(Y/N)"<<endl;
+        cin>>userConfirm;
+        valid = getchar() == '\n' ? true : false;
+    }
+    while(!confirm(userConfirm, valid));*/
+
+}
+bool MenuController::confirm(char userConfirm, bool valid)
+{
+    while((!valid) || (userConfirm!='Y' && userConfirm!='y' && userConfirm!='N' && userConfirm!='n'))
+    {
+        std::cout<<"Please input 'Y' or 'N'"<<std::endl;
+        if(!valid){while ( getchar() != '\n' );} //flusing input buffer
+        std::cin>>userConfirm;
+        valid = getchar() == '\n' ? true : false;
+    }
+    if(userConfirm=='N' || userConfirm == 'n')
+    {
+        std::cout<<"run again with different arguments"<<std::endl;
+        return false;
+    }
+    else{return true;} //user confirmed with 'Y'
+    
+}
+
+
+
