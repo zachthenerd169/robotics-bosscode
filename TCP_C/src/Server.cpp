@@ -8,6 +8,7 @@
 
 #include "Server.hpp"
 
+
 Server::Server(const int port) //constructor
 {
     m_servPort=port;
@@ -46,10 +47,11 @@ void Server::handleClient()
         const char* message=full_str.substr(m_desLength, recvMsgSize).c_str(); //removing the "des-" part of the string & then converting the str back into a C string, so we can use the arduino-serial/PracticalSocket libraries
         if(des.compare("a-")==0) //message for either arduino
         {
-            parseArdCommand(message);
+            parseArdCommand(string(message));
         }
         else if(des.compare("c-")==0) //message for camera --> take pic and highlight certain data from the image
         {
+            parseCamCommand(string(message));
         }
         else if(des.compare("m-")==0) //send message back to client
         {
@@ -69,21 +71,27 @@ void Server::handleClient()
  *1- -->arduino that controls the robot motors
  * 2- -->arduino that controls the camera
  **/
-void Server::parseArdCommand(const char* message)
+void Server::parseArdCommand(string message)
 {
-    string full_str = string(message);
     string des=message.substr(0,m_desLength);
-    
     if(des.compare("1-")==0)
     {
+        message.substr(m_desLength, message.length())
         vector<string> ard_control=splitString(message); //break up the line
         short mode=-1;
         short powerLevel-1;
+        
         writeToRobotMotors();
     }
     else if(des.compare("2-"))
     {
         writeToCamMotors();
+    }
+    else
+    {
+        #if DEBUG
+            std::cout<<"arduino function could not be specified"<<std::endl;
+        #endif
     }
 }
 void Server::writeToRobotMotors()
@@ -92,7 +100,7 @@ void Server::writeToRobotMotors()
 void Server::writeToCamMotors()
 {
 }
-void Server::parseCamCommand()
+void Server::parseCamCommand(string message)
 {
 }
 void Server::testArduinoConnection()
@@ -112,13 +120,8 @@ void Server::moveCamera()
 }
 int Server::arduinoInit()
 {
- 
-        
-        
-    const char* port="/dev/cu.usbmodem1411"; //default for stephanie's laptop
-        fd = serialport_init(port, BAUDRATE); //opening port
-        (fd == -1) ? cout<< "couldn't open port" << endl : cout<< "opened port " << port << endl;
+    fd = serialport_init(m_serialport, BAUDRATE); //opening port
+    (fd == -1) ? std::cout<< "couldn't open port" << std::endl : std::cout<< "opened port " << m_serialport <<std::endl;
         serialport_flush(fd);
         return fd;
-    
 }
