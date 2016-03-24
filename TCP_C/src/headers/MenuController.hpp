@@ -7,8 +7,11 @@
  * Class Description:
  */
 
-#include <string> //For user inputs
+#include <string>   //For user inputs
 #include <iostream> //For cerr and cout
+#include <sstream>  // for split(string)
+#include <vector>   // also for split(string)
+#include <cstdlib>  // For atoi()
 
 #define DEBUG 1 //1 when debugging code, make 0 when you are no longer testing this class
 
@@ -44,7 +47,6 @@ class MenuController
         /*menu utility functions*/
         void changeIPAddress();
         void changePortNumber(void);
-        void flushInputBuffer(void);
         void sendArdTestMess(void);
         void sendServerTestMess(void);
     
@@ -52,7 +54,11 @@ class MenuController
         short inputNum(void);
         bool confirm(char userConfirm, bool valid);
         void flushInputBuffer(void);
+        bool checkUserInput(std::vector<std::string> input, short numArguments);
         //bool numInBounds(short numInput, short lowerBound, short upperBound);
+    
+        /*utility string functions*/
+        std::vector<std::string> splitString(std::string str);
 };
 
 
