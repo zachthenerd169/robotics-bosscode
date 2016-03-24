@@ -50,12 +50,13 @@ class MenuController
         void sendArdTestMess(void);
         void sendServerTestMess(void);
     
+        bool controlRobot(std::string userInput, std::string message, std::string servAddress, unsigned short servPort);
+    
         /*IO utility functions*/
         short inputNum(void);
         bool confirm(char userConfirm, bool valid);
         void flushInputBuffer(void);
         bool checkUserInput(std::vector<std::string> input, short numArguments);
-        //bool numInBounds(short numInput, short lowerBound, short upperBound);
     
         /*utility string functions*/
         std::vector<std::string> splitString(std::string str);

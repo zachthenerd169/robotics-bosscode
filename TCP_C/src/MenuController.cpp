@@ -80,14 +80,84 @@ void MenuController::processRobotMenu(void)
      
             std::vector<std::string> inputs= splitString(userInput); //splitting the string at the ' ' and storing the substrings into a vector; this is to separate the power from the mode
             short mode=atoi(inputs[0].c_str()); //first int should be mode --> atoi defaults to 0 if you enter a bunch of garbage
-       
-         
+            if(mode==1 && checkUserInput(inputs, 1))//stop robot
+            {
+                //controlRobot(userInput, "stopping robot", servAddress, servPort); //sending user input to server (NUC) and printing conformation message to user
+            }
+            else if(mode>1 && mode<6 && checkUserInput(inputs, 2))//turn right;left;straight;reverse //ask for power levels here
+            {
+                switch (mode) //switch print statements
+                {
+                    case 2:
+                        //controlRobot(userInput, "moving forward at power level "+inputs[1], servAddress, servPort);
+                        break;
+                    case 3:
+                        //controlRobot(userInput, "moving backwards at power level "+inputs[1], servAddress, servPort);
+                        break;
+                    case 4:
+                        //controlRobot(userInput, "turning right at power level "+inputs[1], servAddress, servPort);
+                        break;
+                    case 5:
+                        //controlRobot(userInput, "turning left at power level "+inputs[1], servAddress, servPort);
+                    default:
+                        break;
+                }
+            }
+            else if(mode<10 && mode>5 && checkUserInput(inputs, 1))//digger drop; digger raise; bucket drop; bucket raise
+            {
+                switch (mode) //switch print statments
+                {
+                    case 6:
+                        //controlRobot(userInput, "dropping digger", servAddress, servPort);
+                        break;
+                    case 7:
+                        //controlRobot(userInput, "raising digger", servAddress, servPort);
+                        break;
+                    case 8:
+                        //controlRobot(userInput, "dumping bucket", servAddress, servPort);
+                        break;
+                    case 9:
+                        //controlRobot(userInput, "raising bucket", servAddress, servPort);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else if(mode==10)
+            {
+                processRequestMenu();
+            }
+            else //didn't input the right number
+            {
+                std::cout<<"incorrect input\nEnter an integer 1-10 & a powerlevel if required"<<std::endl;
+            }
         }
         userInput.clear(); //clearing the string, so the user can enter another input
     }while(!robotDone);
 }
 void MenuController::processRequestMenu(void)
 {
+    bool done=false;
+    do{
+        displayRequestMenu();
+        short userSelection = inputNum();
+        switch (userSelection)
+        {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                done = true;
+                std::cout<<"exiting request data menu"<<std::endl;
+                break;
+            default:
+                std::cout<<"invalid input\nEnter an integer 1-4"<<std::endl;
+                break;
+        }
+    } while(!done);
 }
 void MenuController::changeIPAddress(void) //main menu option #2
 {
@@ -140,6 +210,16 @@ void MenuController::sendServerTestMess(void) //main menu option #5
      break;
      
      */
+}
+bool MenuController::controlRobot(std::string userInput, std::string message, std::string servAddress, unsigned short servPort)
+{
+    /*
+     userInput="ard-"+userInput; //adding the to send to arduino
+     bool success=sendToServer(servAddress, servPort, userInput.c_str(), true); //make true later -->true once you have an arduino
+     cout<<message<<endl; //print status message
+     return !success ? false : true;
+     */
+    return false;
 }
 void MenuController::flushInputBuffer(void){while ( getchar() != '\n');} //IO utility function
 short MenuController::inputNum(void) //IO utility function
@@ -207,16 +287,3 @@ std::vector<std::string> MenuController::splitString(std::string str)
     }
     return tokens;
 }
-/*bool MenuController::numInBounds(short numInput, short lowerBound, short upperBound)
- {
- if(numInput<=upperBound && numInput>=lowerBound){return true;}
- else
- {
- std::cout<<"error: number must be an integer between "<<lowerBound<<" and "<<upperBound<<"\nTry Again"<<std::endl;
- return false;
- 
- }
- }*/
-
-
-
