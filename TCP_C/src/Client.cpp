@@ -5,19 +5,10 @@
 //  Created by Stephanie Smith on 2/28/16.
 
 #include "Client.hpp"
-#include "PracticalSocket.h"  // For Socket, ServerSocket, and SocketException
-#include <string.h>           // For user inputs
-#include <iostream>           // For cerr and cout
 
-
-
-
-/**
- *
- **/
 bool Client::sendToServer(const char* message)
 {
-    int bufferSize=strlen(message)-strlen("ard-");
+    /*int bufferSize=strlen(message)-strlen("ard-");
     //int bufferSize= arduino ? (strlen(message) + strlen("Arduino received: "))-3 : strlen(message); //I think I need to subtract 3 b/c I'm double counting spaces
     std::cout <<"buffer size: " <<bufferSize << std::endl;
     try
@@ -30,11 +21,12 @@ bool Client::sendToServer(const char* message)
     {
         cerr << e.what() << endl;
         return false;
-    }
+    }*/
+    return false;
 }
 void Client::echoMessage(unsigned int bufferSize)
 {
-    char echoBuffer[bufferSize+1]; //createing a buffer that can capture the message received back from the server
+    /*char echoBuffer[bufferSize+1]; //createing a buffer that can capture the message received back from the server
     int bytesReceived = 0;  // Bytes read on each recv()
     int totalBytesReceived = 0;  // Total bytes read
     while (totalBytesReceived < bufferSize)
@@ -50,7 +42,7 @@ void Client::echoMessage(unsigned int bufferSize)
         echoBuffer[bytesReceived] = '\0';        // Terminate the string!
         cout <<echoBuffer;
     }
-    std::cout << std::endl;
+    std::cout << std::endl;*/
 
 }
 //used to receive data from server

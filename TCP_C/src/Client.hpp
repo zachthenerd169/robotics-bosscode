@@ -22,12 +22,16 @@ class Client
 {
     public:
     
+        /*
+         * Constructor
+         */
         Client(const string servAddress, unsigned short servPort)
         {
             std::cout<<servAddress<<": "<<servPort<<std::endl;
-            TCPSocket sock(servAddress, servPort); //constructing socket
-            //m_sock=sock; //assigning class member to socket
-        } //initializer list
+            setServerPort(servPort);
+            setServerIP(servAddress);
+            m_sock=new TCPSocket(servAddress, servPort);
+        }
 
         /*For the command-line interface there are three different types of
          menus to be dispayed*/
@@ -46,7 +50,7 @@ class Client
         void setServerPort(unsigned short servPort){m_servPort=servPort;}
 
     private:
-        //TCPSocket m_sock; //open socket
+        TCPSocket* m_sock; //open socket
         std::string m_servAddress;
         unsigned short m_servPort;
 
@@ -54,7 +58,10 @@ class Client
 #if DEBUG
     int main(void)
     {
-        Client client("127.0.0.1", 1024);
+        TCPSocket s("127.0.0.1", 1024);
+        //TCPSocket* s;
+        //s= new TCPSocket("127.0.0.1", 1024);
+        //Client client("127.0.0.1", 1024);
         return 0;
     }
 #endif
