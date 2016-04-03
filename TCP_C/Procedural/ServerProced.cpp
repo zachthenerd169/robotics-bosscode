@@ -80,14 +80,7 @@ void handleClient(TCPSocket *sock, int fd)
             vector<string> ard_control=splitString(message); //break up the line
             int mode;
             int powerLevel;
-            if(ard_control.size()==1|| ard_control.size() ==2 ) //if the arduino commands were correctly specified
-            {
-                mode = std::stoi(ard_control[0], nullptr, 10); //get the mode
-                powerLevel = ard_control.size()==2 ? std::stoi(ard_control[1], nullptr, 10) : -1; //if no power level was specified send a -1 power
-                char *ardMessage=writeToMotors(mode, powerLevel, fd); //write to the arduino
-                cout<<"ARD MESSAGE: "<<message<<endl;
-                sock->send(message, strlen(message)); //sending arduino message back to client
-            }
+         
             else{
             cout<<"after writeToArduino"<<endl;
             //else{cout<<"FIXX THIS!"<<endl;} don't need to do anything else

@@ -68,7 +68,7 @@ int main (int argc, char *argv[])
                 short mode=-1;
                 bool success=false;
                 bool robotDone=false; //flag to control robot submenu
-                do{
+                /*do{
                     if(viewKey)
                     {
                         cout<<"\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <1>\nMOVE STRAIGHT FORWARD: <2 powerLevel>\nMOVE STRAIGHT REVERSE: <3 powerLevel>\nTURN RIGHT: <4 powerLevel>\nTURN LEFT: <5 powerLevel>\nDIGGER DROP: <6>\nRAISE DIGGER: <7>\nDUMP BUCKET: <8>\nLOWER BUCKET: <9>\nREQUEST DATA <10>\n\n"<<endl; //only display the first time or if user inputs 'help'
@@ -146,7 +146,7 @@ int main (int argc, char *argv[])
                     userInput.clear(); //clearing the string, so the user can enter another input
                     cout<<"clear user input"<<endl;
                 
-                }
+                }*/
                 while(!robotDone);//stay in this menu while the user does not input "exit"
                 break;
             }
