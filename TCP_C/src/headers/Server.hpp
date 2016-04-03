@@ -15,7 +15,7 @@
 
 #define DEBUG 1 //will print off info
 
-#include <stdio.h>
+#include <iostream>
 
 #endif /* Server_hpp */
 
@@ -23,7 +23,6 @@ class Server
 {
     public:
         Server(const int port)
-    
     
         void handleClient();
     
@@ -47,3 +46,9 @@ class Server
         //and utility functions
     
 };
+#if DEBUG
+    int main void(int argc char** argv)
+    {
+        return 0;
+    }
+#endif

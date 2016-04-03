@@ -123,8 +123,8 @@ public:
 //public:
   //steph changed this from private to public
   // Prevent the user from trying to use value semantics on this object
-  public: Socket(const Socket &sock);
-  public: void operator=(const Socket &sock);
+  private: Socket(const Socket &sock);
+  private: void operator=(const Socket &sock);
 
 protected:
   int sockDesc;              // Socket descriptor

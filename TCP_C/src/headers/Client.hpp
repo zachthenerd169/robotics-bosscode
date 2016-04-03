@@ -13,7 +13,7 @@
 
 #include <stdio.h>
 #include <string.h>           // For user inputs
-#include "PracticalSocket.cpp"  // For Socket, ServerSocket, and SocketException
+#include "PracticalSocket.h"  // For Socket, ServerSocket, and SocketException
 #include <iostream>           // For cerr and cout
 
 #endif /* Client_hpp */
@@ -22,31 +22,19 @@ class Client
 {
     public:
     
-        Client(const string servAddress, unsigned short servPort)
-        {
-            std::cout<<servAddress<<": "<<servPort<<std::endl;
-            TCPSocket sock(servAddress, servPort); //constructing socket
-            //m_sock=sock; //assigning class member to socket
-        } //initializer list
-
-        /*For the command-line interface there are three different types of
-         menus to be dispayed*/
-    
-    
-        /*sending/receiving*/
-        bool sendToServer(const char* message);
+        Client(const std::string servAddress, unsigned short servPort);
+        bool sendToServer(std::string);
         void echoMessage(unsigned int bufferSize);
-        string receiveMessageFromServer(unsigned int bufferSize);
+        std::string receiveMessageFromServer(unsigned int bufferSize);
     
         /*getters/setters-->implemented here!*/
-    
-        string getServerIP(){return m_servAddress;}
+        std::string getServerIP(){return m_servAddress;}
         unsigned short getServerPort(){return m_servPort;}
         void setServerIP(string servAddress){m_servAddress=servAddress;}
         void setServerPort(unsigned short servPort){m_servPort=servPort;}
 
     private:
-        //TCPSocket m_sock; //open socket
+        TCPSocket* m_sock; //open socket
         std::string m_servAddress;
         unsigned short m_servPort;
 
@@ -54,7 +42,7 @@ class Client
 #if DEBUG
     int main(void)
     {
-        Client client("127.0.0.1", 1024);
+        //Client client("127.0.0.1", 1024);
         return 0;
     }
 #endif
