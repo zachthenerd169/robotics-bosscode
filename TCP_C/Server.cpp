@@ -37,7 +37,8 @@ int main(int argc, char *argv[])
     unsigned short servPort = atoi(argv[1]); //First arg: local port
     try
     {
-        int fd=arduinoInit();
+        //int fd=arduinoInit();
+        int fd=5;
         cout<<"server running"<<endl;
         TCPServerSocket servSock(servPort);  //Server Socket object
         //CHECK OUT TCP TIMEOUT
@@ -70,28 +71,29 @@ void handleClient(TCPSocket *sock, int fd)
     while ((recvMsgSize = sock->recv(buffer, RCVBUFSIZE)) > 0) //Zero means end of transmission
     {
         cout<<"Server received: "<<buffer<<endl;
-        string str = string(buffer);
-        cout<<"str is " << buffer<<endl;
-        if(str.substr(0,4).compare("ard-")==0)
+        //string str = string(buffer);
+        //cout<<"str is " << buffer<<endl;
+        /*if(str.substr(0,4).compare("ard-")==0)
         {
             str=str.substr(4, recvMsgSize);
             const char *message = str.c_str();
             
-            vector<string> ard_control=splitString(message); //hard code for now
-            int mode = std::stoi(ard_control[0], nullptr, 10);
-            int powerLevel = ard_control.size()==2 ? std::stoi(ard_control[1], nullptr, 10) : -1;
-            cout<<mode<<endl;
-            /*for(int i=0; i<ard_control.size(); i++)
+            //vector<string> ard_control=splitString(message); //hard code for now
+            //int mode = std::stoi(ard_control[0], nullptr, 10);
+            //int powerLevel = ard_control.size()==2 ? std::stoi(ard_control[1], nullptr, 10) : -1;
+            //cout<<mode<<endl;
+            for(int i=0; i<ard_control.size(); i++)
             {
                 arduinoSend(ard_control[i].c_str(), sock);
-            }*/
-            char *ardMessage=writeToArduino(mode, powerLevel, fd);
+            }
+            //char *ardMessage=writeToArduino(mode, powerLevel, fd);
             //char *ardMessage=writeToArduino(message);
-            cout<<"ardMessage is: "<<ardMessage<<endl;
-            cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
-            sock->send(ardMessage, strlen(ardMessage)); //send message returned from arduino*/
-        }
-        else{sock->send(buffer, recvMsgSize);} //send message as is
+            //cout<<"ardMessage is: "<<ardMessage<<endl;
+            //cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
+            sock->send(message, strlen(message)); //send message returned from arduino*/
+       // }
+        //else{sock->send(buffer, recvMsgSize);} //send message as is*/
+        sock->send(buffer, recvMsgSize);
     }
     delete sock;
 
