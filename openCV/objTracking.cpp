@@ -4,6 +4,7 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/videoio/videoio.hpp"
 #include <string>
+#include "ContinuousUpdater.h"
 
 /**
  
@@ -69,7 +70,80 @@ void searchForMovement (Mat thresholdImage, Mat &cameraFeed)
     
 }
 
-int main(int argc, char** argv)
+/* encapsulate image processing into an object */
+class ImageProc : public zwlib::IUpdater<Mat>
+{
+    struct Threshold
+    {
+        int low;
+        int high;
+    };
+public:
+    int init()
+    {
+        cap = VideoCapture(0);
+        if(!cap.isOpened())
+        {
+            cout << "Cannot open webcam" << endl;
+            return -1;
+	}
+
+        tHue.low = 106;
+        tHue.high = 126;
+        tSat.low = 68;
+        tSat.high = 255;
+        tVal.low = 60;
+        tVal.high = 255;
+    }
+
+    Mat update()
+    {
+        cap.read(cameraImage);
+        return cameraImage;
+    }
+private:
+    VideoCapture cap;
+
+    Mat cameraImage;
+
+public:
+    Threshold tHue;
+    Threshold tSat;
+    Threshold tVal;
+};
+
+/* new main function that tests using the image processing object
+ * with the multithreadded updater
+ */
+int main(int argc, char* argv[])
+{
+    ImageProc improc;
+    if(improc.init() == -1)
+    {
+        cout << "could not init improc" << endl;
+        return -1;
+    }
+
+    namedWindow("CameraImage", CV_WINDOW_NORMAL);
+    imshow("CameraImage", improc.update());
+
+    zwlib::ContinuousUpdater<Mat> cu(&improc);
+
+    cu.start();
+
+    while(!cu.ready()) {}
+
+    while(waitKey(1) == -1)
+    {
+        imshow("CameraImage", cu.get());
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    return 0;
+}
+
+
+int old_main(int argc, char** argv)
 {
     VideoCapture cap(0); // capture the video from web cam
     
@@ -133,44 +207,25 @@ int main(int argc, char** argv)
         
         searchForMovement(imgThresholded, imgOriginal);
         
-         namedWindow ("Thresholded Image", WINDOW_NORMAL);
-         namedWindow ("Original", WINDOW_NORMAL);
-         namedWindow ("HSVImage", WINDOW_NORMAL);
+        namedWindow ("Thresholded Image", WINDOW_NORMAL);
+        namedWindow ("Original", WINDOW_NORMAL);
+        namedWindow ("HSVImage", WINDOW_NORMAL);
         
         
         //imshow("Thresholded Image", imgThresholded);
         //imshow("Original", imgOriginal);
         //imshow("HSVImage", imgHSV);
         
-        for (int i=0; i<3; i++) {
-            switch (i) {
-                case 1:
-                    imshow("Thresholded Image", imgThresholded);
-                    break;
-                case 2:
-                    imshow("Original", imgOriginal);
-                    if (waitKey(30) == 30)// wait for 'esc' key press for 30ms. If 'esc' pressed
-                    break;
-                case 3:
-                    imshow("HSVImage", imgHSV);
-                    break;
-                    
-                default:
-                    break;
-            }
-        
-        
-        if (waitKey(30) == 27)// wait for 'esc' key press for 30ms. If 'esc' pressed break the loop
-        {
-            cout<<"esc key is pressed by user" <<endl;
-            break;
-        }
-            }
+	imshow("Thresholded Image", imgThresholded);
+	imshow("Original", imgOriginal);
+	imshow("HSVImage", imgHSV);
 
-    
+   	if (waitKey(1) != -1)// wait for 'esc' key press for 30ms. If 'esc' pressed break the loop
+    	{
+        	cout<<"esc key is pressed by user" <<endl;
+        	break;
+    	}
     }
     
     return 0;
-    
 }
-
