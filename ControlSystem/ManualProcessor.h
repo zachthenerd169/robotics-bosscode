@@ -9,7 +9,11 @@
 #define MANUALPROCESSOR_H_
 
 
-
+class ManualProcessor
+{
+	public:
+	private:
+};
 
 
 #endif /* MANUALPROCESSOR_H_ */

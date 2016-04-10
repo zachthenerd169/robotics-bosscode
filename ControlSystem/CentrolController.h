@@ -8,6 +8,12 @@
 #ifndef CENTROLCONTROLLER_H_
 #define CENTROLCONTROLLER_H_
 
+class CentralControl
+{
+	public:
+	private:
+
+};
 
 
 
