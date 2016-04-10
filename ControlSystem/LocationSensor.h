@@ -8,7 +8,15 @@
 #ifndef LOCATIONSENSOR_H_
 #define LOCATIONSENSOR_H_
 
-
+class ImageCollector : Sensor
+{
+	public:
+		std::string readCurrentValue();
+		bool updateValue();
+	private:
+		double m_x;
+		double m_y;
+};
 
 
 

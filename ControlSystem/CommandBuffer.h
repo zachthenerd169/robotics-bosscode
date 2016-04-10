@@ -18,11 +18,11 @@ class CommandBuffer : Buffer
 		//
 		// adds the command to the end of the queue
 		//
-		bool readFromBuffer(std::string command);
+		std::string readFromBuffer();
 		//
 		// removes command from the beginning of the queue
 		//
-		std::string addToBuffer();
+		void  addToBuffer(std::string command);
 		//
 		// returns the number of elements in the buffer
 		//

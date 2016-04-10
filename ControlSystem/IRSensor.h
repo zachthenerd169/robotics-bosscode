@@ -9,7 +9,14 @@
 #define IRSENSOR_H_
 
 
-
+class IRSensor : Sensor
+{
+	public:
+		std::string readCurrentValue();
+		bool updateValue();
+	private:
+		double m_value;
+};
 
 
 #endif /* IRSENSOR_H_ */

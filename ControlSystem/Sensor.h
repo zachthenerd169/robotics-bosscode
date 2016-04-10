@@ -11,11 +11,9 @@
 class Sensor
 {
 	public:
-		virtual void * readCurrentValue();
+		virtual ~Sensor(){};
+		virtual std::string readCurrentValue() = 0;
 		virtual  bool updateValue() = 0;
-
-	private:
-		//DataBuffer* m_databuffer;
 };
 
 

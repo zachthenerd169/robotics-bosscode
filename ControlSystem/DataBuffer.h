@@ -14,11 +14,11 @@ class DataBuffer
 		//
 		// adds the command to the end of the queue
 		//
-		bool readFromBuffer(std::string data);
+		std::string readFromBuffer();
 		//
 		// removes command from the beginning of the queue
 		//
-		std::string addToBuffer();
+		 void addToBuffer(std::string data);
 		//
 		// returns the number of elements in the buffer
 		//

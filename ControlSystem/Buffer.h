@@ -12,8 +12,8 @@ class Buffer
 {
 	public:
 		virtual ~Buffer() {}
-		virtual void * readFromBuffer() = 0;
-		virtual void addToBuffer() = 0;
+		virtual std::string readFromBuffer() = 0;
+		virtual void addToBuffer(std::string val) = 0;
 		virtual int  getSize() = 0;
 };
 #endif /* BUFFER_H_ */
