@@ -8,6 +8,15 @@
 #ifndef SENSOR_H_
 #define SENSOR_H_
 
+class Sensor
+{
+	public:
+		virtual void * readCurrentValue();
+		virtual  bool updateValue() = 0;
+
+	private:
+		//DataBuffer* m_databuffer;
+};
 
 
 
