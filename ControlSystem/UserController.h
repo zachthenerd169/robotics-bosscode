@@ -9,6 +9,17 @@
 #define USERCONTROLLER_H_
 
 
+class UserController
+{
+	public:
+		virtual ~UserController(){}
+		char* receiveData();
+		char* sendData(char* data);
+		virtual bool processInput() = 0;
+
+	private:
+		//TCPSocket m_socket;
+};
 
 
 
