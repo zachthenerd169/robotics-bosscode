@@ -23,6 +23,18 @@ class MenuController : UserController
 {
 	public:
 		/**
+		 * Description: constructor copies TCPSocket, initializes the m_input to null and m_menu_state to main
+		 * Inputs: a TCPSocket object
+		 */
+		MenuController(TCPSocket* socket):UserController(socket), m_input(nullptr), m_menu_state(main){};
+		/**
+		 * Description: creates a TCPSocket objects, initializes the m_input to null and m_menu_state to main
+		 * Inputs: the IP Address of the NUC (the computer on the robot)
+	     * 		   the port number the NUC is listening on
+		 */
+		MenuController(std::string address, unsigned short port):
+			UserController(address, port), m_input(nullptr), m_menu_state(main){};
+		/**
 		 * Description: displays the main menu
 		 * 				1) Control Robot
 		 * 				2) Send Test Message To Robot
@@ -63,7 +75,7 @@ class MenuController : UserController
 		 * 			   error message will be displayed.
 		 * 			2) there wasn't a user input to interpret
 		 */
-		bool processInput(std::string &command);
+		bool processInput(std::string &processed_input);
 
 	private:
 
