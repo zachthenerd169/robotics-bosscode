@@ -1,10 +1,10 @@
 /*
  * UserController.h
+ * Created on: Apr 7, 2016
+ * Author: stephaniesmith
  *
- *  Created on: Apr 7, 2016
- *      Author: stephaniesmith
+ * Class description:
  */
-
 #include "lib/PracticalSocket.h"
 
 #ifndef USERCONTROLLER_H_
@@ -13,6 +13,12 @@
 class UserController
 {
 	public:
+		/**
+		 * Constructor that uses another TCPSocket that already existed outside of this
+		 * class
+		 */
+	    UserController(TCPSocket* socket){m_socket=socket;}
+	    UserController(std::string ip_address, unsigned short port_number);
 		virtual ~UserController(){}
 		/**
 		 * Description: receives data from the robot. The type of data the user will
