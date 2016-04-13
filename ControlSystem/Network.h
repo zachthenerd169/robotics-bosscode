@@ -2,8 +2,10 @@
  * Network.h
  * Created on: Apr 7, 2016
  * Author: stephaniesmith
- * Class Description:
- *
+ * Class Description: Network receives requests and commands from the UserController.
+ * 				      Network if is in DEBUG mode if will automatically echo the messages
+ * 				      back to the user. If there is any data in the m_out_buffer then
+ * 				      Network will send that data back to the user.
  */
 
 #include "lib/PracticalSocket.h" //for m_socket
@@ -16,18 +18,20 @@ class Network
 {
 	public:
 		/**
-		 * Description:
-		 * Inputs:
-		 * Outputs:
+		 * Description: constructs and new TCPSocket from info provided by the user &
+		 * 				and creates a new reference to the data buffer & command buffer
+		 * Inputs: the IP Address of the NUC (the computer on the robot)
+	     * 		   the port number the NUC is listening on
+	     * 		   a CommandBuffer object
+	     * 		   a DataBuffer object
 		 */
-		Network(std::string address, unsigned short port, const CommandBuffer& in_buffer, DataBuffer& out_buffer):
+		Network(std::string address, unsigned short port, const CommandBuffer& in_buffer, const DataBuffer& out_buffer):
 				m_socket(new TCPSocket(address, port)), m_in_buffer(in_buffer), m_out_buffer(out_buffer){}
 		/**
-		 * Description:
-		 * Inputs:
-		 * Outputs:
+		 * Description: creates a new reference to a TCPSocket, DataBuffer & CommandBuffer
+		 * Inputs: TCPSocket object, CommandBuffer object, & DataBuffer & CommandBuffer
 		 */
-		Network(TCPSocket& socket, CommandBuffer& in_buffer, DataBuffer& out_buffer):
+		Network(const TCPSocket& socket, const CommandBuffer& in_buffer, const DataBuffer& out_buffer):
 			m_socket(socket), m_in_buffer(in_buffer), m_out_buffer(out_buffer){}
 		/**
 		 * Decription: receives data from the user through the TCPSocket. after the data

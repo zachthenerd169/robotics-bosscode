@@ -5,8 +5,8 @@
  *      Author: stephaniesmith
  */
 
-#ifndef CENTROLCONTROLLER_H_
-#define CENTROLCONTROLLER_H_
+#ifndef CENTRALCONTROLLER_H_
+#define CENTRALCONTROLLER_H_
 
 class CentralControl
 {
@@ -18,4 +18,4 @@ class CentralControl
 
 
 
-#endif /* CENTROLCONTROLLER_H_ */
+#endif /* CENTRALCONTROLLER_H_ */

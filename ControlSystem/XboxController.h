@@ -16,7 +16,7 @@ class XboxController : UserController
 		 * Description: constructor copies TCPSocket, xbox controller is initialized so the nothing is pressed
 		 * Inputs: a TCPSocket object
 		 */
-		XboxController(TCPSocket* socket):UserController(socket),m_xbox_controller({0,0,0,0,0,0,0,0,0,0,0,0}){};
+		XboxController(TCPSocket& socket):UserController(socket),m_xbox_controller({0,0,0,0,0,0,0,0,0,0,0,0}){};
 		/**
 		 * Description: creates a TCPSocket objects, xbox controller is initialized so the nothing is pressed
 		 * Inputs: the IP Address of the NUC (the computer on the robot)

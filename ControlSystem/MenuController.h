@@ -26,7 +26,7 @@ class MenuController : UserController
 		 * Description: constructor copies TCPSocket, initializes the m_input to null and m_menu_state to main
 		 * Inputs: a TCPSocket object
 		 */
-		MenuController(TCPSocket* socket):UserController(socket), m_input(nullptr), m_menu_state(main){};
+		MenuController(TCPSocket& socket):UserController(socket), m_input(nullptr), m_menu_state(main){};
 		/**
 		 * Description: creates a TCPSocket objects, initializes the m_input to null and m_menu_state to main
 		 * Inputs: the IP Address of the NUC (the computer on the robot)

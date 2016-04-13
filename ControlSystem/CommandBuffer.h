@@ -1,8 +1,9 @@
 /*
- * CommandBuffer.h
-
- *Created on: Apr 10, 2016
- *      Author: stephaniesmith
+ *  CommandBuffer.h
+ *  Created on: Apr 10, 2016
+ *  Author: stephaniesmith
+ *
+ *  Class description:
  */
 
 #include <iostream>
@@ -15,20 +16,29 @@
 class CommandBuffer : Buffer
 {
 	public:
-		//
-		// adds the command to the end of the queue
-		//
+		/**
+		 * Description: reads the data from the top of the queue and removes it (dequeue)
+		 * Input: none
+		 * Output: string
+		 */
 		std::string readFromBuffer();
-		//
-		// removes command from the beginning of the queue
-		//
+		/**
+		 * Description: adds the data to the end of the queue (enqueue)
+		 * Input: string command to be sent
+		 * Output: none
+		 */
 		void  addToBuffer(std::string command);
-		//
-		// returns the number of elements in the buffer
-		//
+		/**
+		 * Description: gets the number of elements in the queue
+		 * Input: none
+		 * Output: the number of elements in the queue
+		 */
 		int getSize();
 
 	private:
+		/**
+		 *
+		 */
 		std::deque<std::string> m_command_queue;
 
 };

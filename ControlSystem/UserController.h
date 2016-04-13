@@ -8,6 +8,7 @@
  * 					  sending and receiving data from the robot through a TCPSocket.
  */
 #include "lib/PracticalSocket.h" //for TCPSocket
+#include <memory> //for smart pointers
 
 #ifndef USERCONTROLLER_H_
 #define USERCONTROLLER_H_
@@ -19,7 +20,7 @@ class UserController
 		 * Description: constructor that uses another TCPSocket that already existed outside of this
 		 * 				class
 		 */
-	    UserController(TCPSocket* socket){m_socket=socket;}
+	    UserController(TCPSocket& socket){m_socket=socket;}
 	    /**
 	     * Description: constructor creates TCPSocket object
 	     * Inputs: the IP Address of the NUC (the computer on the robot)
@@ -56,7 +57,7 @@ class UserController
 		/**
 		 * TCP connection between the user and the robot
 		 */
-		TCPSocket* m_socket;
+		std::shared_ptr<TCPSocket> m_socket;
 };
 
 
