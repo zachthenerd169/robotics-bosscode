@@ -3,7 +3,7 @@
  * Created on: Apr 7, 2016
  * Author: stephaniesmith
  */
-#include<memory>
+#include<memory> //for smart
 #ifndef MANUALPROCESSOR_H_
 #define MANUALPROCESSOR_H_
 
