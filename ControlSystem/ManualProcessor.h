@@ -4,13 +4,15 @@
  * Author: stephaniesmith
  *
  * Class Description: ManualProcessor
+ * Command Key:
+ *
  */
 #include<memory> //for smart pointers
 #ifndef MANUALPROCESSOR_H_
 #define MANUALPROCESSOR_H_
 
 
-class ManualProcessor
+class ManualProcessor : Processor
 {
 	public:
 		/**
@@ -19,15 +21,23 @@ class ManualProcessor
 		 * Input: 3 buffer objects
 		 */
 		ManualProcessor(const CommandBuffer& command_buffer, const CommandBuffer& autonomous_buffer,
-				const DataBuffer& data_buffer, const CommandBuffer& central_control_buffer, bool autonomous_on=false):m_command_buffer(command_buffer), m_data_buffer(data_buffer),
-				m_autonomous_buffer(autonomous_buffer), m_central_control_buffer(central_control_buffer),
+				const DataBuffer& data_buffer, const CommandBuffer& central_control_buffer,
+				bool autonomous_on=false):
+				Processor(central_control_buffer),
+				m_command_buffer(command_buffer),
+				m_data_buffer(data_buffer),
+				m_autonomous_buffer(autonomous_buffer),
 				m_autonomous_on(autonomous_on){}
 		/**
 		 * Description: default constructor
 		 * Input: optionally can initialize autonomous to be on
 		 */
-		ManualProcessor(bool autonomous_on=false):m_command_buffer(nullptr), m_data_buffer(nullptr), m_autonomous_buffer(nullptr),
-				m_central_control_buffer(nullptr), m_autonomous_on(autonomous_on){}
+		ManualProcessor(bool autonomous_on=false):
+				Processor(),
+			    m_command_buffer(nullptr),
+				m_data_buffer(nullptr),
+				m_autonomous_buffer(nullptr),
+				m_autonomous_on(autonomous_on){}
 		/**
 		 * Description: reads a commands, interprets/translate, and pass the command along to
 		 * 				the appropriate buffer
@@ -64,11 +74,6 @@ class ManualProcessor
 		 * data to AutonomousProcessor
 		 */
 		std::shared_ptr<CommandBuffer> m_autonomous_buffer;
-		/**
-		 * buffer between ManualProcessor and CentralController (ManualProcessor will send
-		 * data to CentralController)
-		 */
-		std::shared_ptr<CommandBuffer> m_central_control_buffer;
 		/**
 		 * keeps track of whether AutonomousProcessor is currently communicating with
 		 * CentralController or not
