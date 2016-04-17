@@ -11,7 +11,7 @@
 class Sensor
 {
 	public:
-		virtual ~Sensor(){};
+		virtual ~Sensor(){}; //make virtual to ensure that actual instantiated object is destructed
 		/**
 		 * Description: getting a reading from the sensor
 		 * Inputs: none

@@ -64,8 +64,17 @@ class Network
 		void sendData();
 
 	private:
+		/**
+		 * socket that links Network to UserController
+		 */
 		std::shared_ptr<TCPSocket> m_socket;
+		/**
+		 * buffer between Network and ManualProcessor
+		 */
 		std::shared_ptr<CommandBuffer> m_in_buffer;
+		/**
+		 * buffer that holds data to send back to UserController
+		 */
 		std::shared_ptr<DataBuffer> m_out_buffer;
 };
 

@@ -2,7 +2,9 @@
  * XboxController.h
  * Created on: Apr 7, 2016
  * Author: stephaniesmith
- * Class Desciption:
+ * Class Description: XboxController allows the user to control the robot with and xbox controller,
+ * 					  If using an xbox controller, the client code must be loaded on a windows computer
+ *
  * Control Key:
  */
 
@@ -24,6 +26,11 @@ class XboxController : UserController
 		 */
 		XboxController(std::string address, unsigned short port):
 				UserController(address, port),m_xbox_controller({0,0,0,0,0,0,0,0,0,0,0,0}){};
+		/**
+		 * Description: default constructor
+		 * Input: none
+		 */
+		XboxController():UserController(),m_xbox_controller({0,0,0,0,0,0,0,0,0,0,0,0}){};
 		/**
 		 * Description: <<how will this method work?>>
 		 * Inputs: string that stores the processed input that is to be sent to the robot

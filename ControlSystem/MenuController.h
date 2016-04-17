@@ -35,11 +35,16 @@ class MenuController : UserController
 		MenuController(std::string address, unsigned short port):
 			UserController(address, port), m_input(nullptr), m_menu_state(main){};
 		/**
-		 * Description:
-		 * Input:
-		 * Output:
+		 * Description: default constructor
+		 * Input: none
 		 */
 		MenuController():UserController(), m_input(nullptr), m_menu_state(nullptr){};
+		/**
+		 * Description: setters for class attributes
+		 * Input: menu state or user input
+		 */
+		void setInput(std::string input){m_input=input;}
+		void setMenuState(std::string menu_state){m_menu_state=menu_state;}
 		/**
 		 * Description: displays the main menu
 		 * 				1) Control Robot
