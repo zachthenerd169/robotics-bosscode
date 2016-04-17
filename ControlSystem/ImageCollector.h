@@ -1,39 +1,39 @@
 /*
- * ImageCollector.h
+ * LocationSensor.h
+ * Created on: Apr 7, 2016
+ * Author: stephaniesmith
  *
- *  Created on: Apr 7, 2016
- *      Author: stephaniesmith
+ * Class Description: ImageCollector captures an image and stores it using the OpenCV libraries
  */
-
 #ifndef IMAGECOLLECTOR_H_
 #define IMAGECOLLECTOR_H_
 
-class LocationSensor : Sensor
+class ImageCollector : Sensor
 {
 	public:
 		/**
-		 * Description: returns m_x & m_y stored in a string format
+		 * Description: returns image as a char array
 		 * Input: none
-		 * Output: string format of m_x and m_y
-		 * 			EX) "{'x': 0, 'y': 0}" (using JSON format)
+		 * Output: image encoded into a char array
 		 */
 		std::string readCurrentValue();
 		/**
-		 * Description: analyzes the Image from the ImageCollector to determine the
-		 * 				robot's location. stores this location in m_x & m_y
+		 * Description: captures and image and stores it in m_Image
 		 * Input: none
-		 * Output: true if successfully found and stored location, false otherwise
+		 * Output: true if it could successfully capture the image, false otherwise
 		 */
 		bool updateValue();
 	private:
 		/**
-		 * y coordinate of the robot's camera relative to the bucket
+		 * Image from openCV library
 		 */
-		double m_x;
+		//Image m_Image
 		/**
-		 * x coordinate of the robot's camera relative to the bucket
+		 * Camera to take the picture (might not need this)
 		 */
-		double m_y;
+		//Camera m_Camera
 };
 
-#endif /* IMAGECOLLECTOR_H_ */
+
+
+#endif /* LOCATIONSENSOR_H_ */
