@@ -2,7 +2,10 @@
  * Sensor.h
  * Created on: Apr 7, 2016
  * Author: stephaniesmith
- * Class description: abstract base class for all of the sensors
+ *
+ * Class description: Sensor provides an interface for all the other sensors.
+ * 					  Sensor outlines how to interact with the underlying
+ * 					  datatpye.
  */
 
 #ifndef SENSOR_H_
