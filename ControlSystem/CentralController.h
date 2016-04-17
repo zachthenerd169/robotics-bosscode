@@ -6,6 +6,7 @@
  * Class Description: CentralController gets the higher level commands from ManualProcessor or
  * 					  AutonomousProcessor and converts them from low level commands
  * 	Command Key:
+ * 		ex- "move forward with speed x" -> turn motor A on with this power
  */
 
 #ifndef CENTRALCONTROLLER_H_
