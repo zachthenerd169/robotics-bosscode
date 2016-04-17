@@ -76,6 +76,12 @@ class Processor
 			 WIN,
 			 STOP,
 		 }autonomous_states;
+		 /**
+		  * struct will contain all of the sensor objects
+		  */
+		 struct Sensors{
+		 		}m_Sensors;
+		 		//state
 
 };
 

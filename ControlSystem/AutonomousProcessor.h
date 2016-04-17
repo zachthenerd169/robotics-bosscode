@@ -15,7 +15,9 @@ class AutonomousProcessor :Processor
 {
 	public:
 		/**
-		 *
+		 * Description:runs the FSM that controls the autonomous execution
+		 * Input:
+		 * Output:
 		 */
 		void execute()
 		{
@@ -32,12 +34,8 @@ class AutonomousProcessor :Processor
 		 *
 		 */
 	private:
-		/**
-		 * struct will contain all of the sensor objects
-		 */
-		struct Sensors{
-		}m_Sensors;
-		//state
+
+
 
 
 
