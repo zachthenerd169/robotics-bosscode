@@ -34,6 +34,19 @@ class Network
 		Network(const TCPSocket& socket, const CommandBuffer& in_buffer, const DataBuffer& out_buffer):
 			m_socket(socket), m_in_buffer(in_buffer), m_out_buffer(out_buffer){}
 		/**
+		 * Description: default constructor
+		 * Inputs: none
+		 */
+		Network():m_socket(nullptr),m_in_buffer(nullptr),m_out_buffer(nullptr){}
+		/**
+		 * Description: setters for all of the the objects. This will typically
+		 * 				be used if the default constructor is chosen
+		 * 	Inputs: the objec we want to be set
+		 */
+		void setSocket(TCPSocket& socket){m_socket=socket;}
+		void setInBuffer(CommandBuffer& in_buffer){m_in_buffer=in_buffer;}
+		void setOutBuffer(DataBuffer& out_buffer){m_out_buffer=out_buffer;}
+		/**
 		 * Decription: receives data from the user through the TCPSocket. after the data
 		 * 			   is received, it will add the data to the in_buffer
 		 *  Inputs: none

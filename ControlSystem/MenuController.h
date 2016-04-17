@@ -35,6 +35,12 @@ class MenuController : UserController
 		MenuController(std::string address, unsigned short port):
 			UserController(address, port), m_input(nullptr), m_menu_state(main){};
 		/**
+		 * Description:
+		 * Input:
+		 * Output:
+		 */
+		MenuController():UserController(), m_input(nullptr), m_menu_state(nullptr){};
+		/**
 		 * Description: displays the main menu
 		 * 				1) Control Robot
 		 * 				2) Send Test Message To Robot

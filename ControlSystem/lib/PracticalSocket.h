@@ -76,7 +76,6 @@ public:
    *   @exception SocketException thrown if fetch fails
    */
   unsigned short getLocalPort() throw(SocketException);
-
   /**
    *   Set the local port to the specified port and the local address
    *   to any interface
