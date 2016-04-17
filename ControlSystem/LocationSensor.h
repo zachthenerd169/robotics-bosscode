@@ -1,9 +1,11 @@
 /*
- * LocationSensor.h
+ * ImageCollector.h
  * Created on: Apr 7, 2016
  * Author: stephaniesmith
  *
- * Class Description:
+ * Class Description: LocationSensors reads in an image from ImageCollector, analyzes the image
+ * 					  and then determines the robot's location relative to the collector bin from
+ * 					  these images
  */
 
 #ifndef LOCATIONSENSOR_H_
@@ -27,6 +29,10 @@ class LocationSensor : Sensor
 		 */
 		bool updateValue();
 	private:
+		/**
+		 * image collector so LocationSensor can analyze the image
+		 */
+		ImageCollector m_image_collector;
 		/**
 		 * y coordinate of the robot's camera relative to the bucket
 		 */

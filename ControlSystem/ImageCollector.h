@@ -23,6 +23,10 @@ class ImageCollector : Sensor
 		 * Output: true if it could successfully capture the image, false otherwise
 		 */
 		bool updateValue();
+		/**
+		 * will probably want a function like this for LocationSensor
+		 */
+		//Image getImage();
 	private:
 		/**
 		 * Image from openCV library
