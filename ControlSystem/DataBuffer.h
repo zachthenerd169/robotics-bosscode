@@ -24,7 +24,5 @@ class DataBuffer
 		//
 		int getSize();
 
-	private:
-		std::deque<std::string> m_data_queue;
 };
 #endif /* DATABUFFER_H_ */

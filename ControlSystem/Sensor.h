@@ -2,7 +2,7 @@
  * Sensor.h
  * Created on: Apr 7, 2016
  * Author: stephaniesmith
- * Class description: base class for all of the sensors
+ * Class description: abstract base class for all of the sensors
  */
 
 #ifndef SENSOR_H_
