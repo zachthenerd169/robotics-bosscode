@@ -12,7 +12,7 @@
 #define MANUALPROCESSOR_H_
 
 
-class ManualProcessor : Processor
+class ManualProcessor : public Processor
 {
 	public:
 		/**

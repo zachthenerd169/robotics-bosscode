@@ -16,7 +16,7 @@
 #ifndef COMMANDBUFFER_H_
 #define COMMANDBUFFER_H_
 
-class CommandBuffer : Buffer
+class CommandBuffer : public Buffer
 {
 	public:
 		/**

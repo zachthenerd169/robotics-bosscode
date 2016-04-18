@@ -11,7 +11,7 @@
 #ifndef LOCATIONSENSOR_H_
 #define LOCATIONSENSOR_H_
 
-class LocationSensor : Sensor
+class LocationSensor : public Sensor
 {
 	public:
 		/**

@@ -19,7 +19,7 @@
 #ifndef MENUCONTROLLER_H_
 #define MENUCONTROLLER_H_
 
-class MenuController : UserController
+class MenuController : public UserController
 {
 	public:
 		/**

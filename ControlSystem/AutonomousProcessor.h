@@ -11,7 +11,7 @@
 #ifndef AUTONOMOUSPROCESSOR_H_
 #define AUTONOMOUSPROCESSOR_H_
 
-class AutonomousProcessor :Processor
+class AutonomousProcessor : public Processor
 {
 	public:
 		/**

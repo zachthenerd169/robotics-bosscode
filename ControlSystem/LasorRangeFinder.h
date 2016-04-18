@@ -9,7 +9,7 @@
 #ifndef LASORRANGEFINDER_H_
 #define LASORRANGEFINDER_H_
 
-class LasorRangeFinder : Sensor
+class LasorRangeFinder : public Sensor
 {
 	public:
 		/**

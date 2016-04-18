@@ -13,7 +13,7 @@
 #ifndef XBOXCONTROLLER_H_
 #define XBOXCONTROLLER_H_
 
-class XboxController : UserController
+class XboxController : public UserController
 {
 	public:
 		/**
