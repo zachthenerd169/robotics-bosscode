@@ -10,7 +10,7 @@
 #define IRSENSOR_H_
 
 
-class IRSensor : Sensor
+class IRSensor : public Sensor
 {
 	public:
 		/**

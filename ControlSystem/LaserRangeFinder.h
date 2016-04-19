@@ -1,15 +1,15 @@
 /*
- * LasorRangeFinder.h
+ * LaserRangeFinder.h
  * Created on: Apr 7, 2016
  * Author: stephaniesmith
  *
- * Class Description: LongRangeFinder reads long range finders and then stores that value
+ * Class Description: LaserRangeFinder reads laser range finders and then stores that value
  */
 
-#ifndef LASORRANGEFINDER_H_
-#define LASORRANGEFINDER_H_
+#ifndef LASERRANGEFINDER_H_
+#define LASERRANGEFINDER_H_
 
-class LasorRangeFinder : Sensor
+class LaserRangeFinder : public Sensor
 {
 	public:
 		/**
@@ -34,4 +34,4 @@ class LasorRangeFinder : Sensor
 		double m_value;
 };
 
-#endif /* LASORRANGEFINDER_H_ */
+#endif /* LASERRANGEFINDER_H_ */

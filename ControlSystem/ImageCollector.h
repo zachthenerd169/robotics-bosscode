@@ -8,7 +8,7 @@
 #ifndef IMAGECOLLECTOR_H_
 #define IMAGECOLLECTOR_H_
 
-class ImageCollector : Sensor
+class ImageCollector : public Sensor
 {
 	public:
 		/**
