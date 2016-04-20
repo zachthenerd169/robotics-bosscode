@@ -1,4 +1,4 @@
-/*enum DriveState
+enum DriveState
 {
   STOP,
   FORWARD,
@@ -6,5 +6,9 @@
   TURN_LEFT,
   TURN_RIGHT,
 };
-*/
 
+enum DiggerState
+{
+  UP,
+  DOWN,
+};

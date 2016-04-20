@@ -4,22 +4,15 @@
 #include "Types.h"
 
 #define MOTOR_SPEED 50
-
-enum DriveState {
-  STOP,
-  FORWARD,
-  BACKWARD,
-  TURN_LEFT,
-  TURN_RIGHT,
-};
-
-void setDrive(DriveState s);
+#define DIGGER_SPEED 70
 
 SaberWrapper drive_motors(14);
+SaberWrapper digger_motors(16);
 
 void setup() {
   // put your setup code here, to run once:
   drive_motors.begin();
+  digger_motors.begin();
 }
 
 void loop() {
@@ -73,5 +66,19 @@ void setDrive(DriveState s)
   {
     drive_motors.setMotorOne(-MOTOR_SPEED); // right motor backward
     drive_motors.setMotorTwo(MOTOR_SPEED);  // left motor forward
+  }
+}
+
+void setDigger(DiggerState s)
+{
+  if (s == UP)
+  {
+    digger_motors.setMotorOne(0); // stop digger motor
+    // raise digger
+  }
+  else if (s == DOWN)
+  {
+    digger_motors.setMotorOne(DIGGER_SPEED); // start digger motor
+    // lower digger
   }
 }

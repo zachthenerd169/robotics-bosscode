@@ -34,8 +34,8 @@ void setup()
   ST2.autobaud(); //delay to give driver time to start up
   ST1.setRamping(55); //-1683 (slowest)
   ST2.setRamping(55);
-  md.init(); // initialize motor driver
-}
+  md.init(); // initialize bucket
+  }
 /**
  * processing user input
  * Arduino expects a mode # that is 1-9. The mode # specifies what robot operation to do.
