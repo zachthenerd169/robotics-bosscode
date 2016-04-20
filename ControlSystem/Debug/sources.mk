@@ -25,4 +25,5 @@ C_DEPS :=
 SUBDIRS := \
 lib \
 src \
+tests \
 

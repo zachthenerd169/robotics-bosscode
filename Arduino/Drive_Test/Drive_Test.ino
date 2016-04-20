@@ -24,7 +24,13 @@ void loop() {
   delay(5000);
 
   setDrive(STOP);
-  delay(1000);
+  delay(500);
+
+  SetDigger(DOWN);
+  delay(3000);
+
+  setDigger(UP);
+  delay(500);
 
   setDrive(TURN_LEFT);
   delay(3000);

@@ -106,14 +106,3 @@ class MenuController : public UserController
 #endif /* MENUCONTROLLER_H_*/
 
 
-
-int main(void)
-{
-	/*testing constructors*/
-	MenuController menu;
-
-	return 0;
-}
-
-
-

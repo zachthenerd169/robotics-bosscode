@@ -31,7 +31,7 @@ class UserController
 	     * Inputs: the IP Address of the NUC (the computer on the robot)
 	     * 		   the port number the NUC is listening on
 	     */
-	    UserController(std::string ip_address, unsigned short port_number){m_socket = new TCPSocket(ip_address, port_number);}
+	    //UserController(std::string ip_address, unsigned short port_number){m_socket = new TCPSocket(ip_address, port_number);}
 		virtual ~UserController(){} //make virtual to ensure that actual instantiated object is destructed
 		/**
 		 * Description: sets the TCPSocket object (this will typically be used if the
