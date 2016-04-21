@@ -12,3 +12,9 @@ enum DiggerState
   UP,
   DOWN,
 };
+
+enum BucketState
+{
+  UP,
+  DOWN,
+};
