@@ -8,6 +8,8 @@
  * 				      Network will send that data back to the user.
  */
 
+#include "CommandBuffer.h"
+#include "DataBuffer.h"
 #include "lib/PracticalSocket.h" //for m_socket
 #include <memory> //for smart pointer
 
@@ -26,7 +28,7 @@ class Network
 	     * 		   a DataBuffer object
 		 */
 		Network(std::string address, unsigned short port, const CommandBuffer& in_buffer, const DataBuffer& out_buffer):
-				m_socket(new TCPSocket(address, port)), m_in_buffer(in_buffer), m_out_buffer(out_buffer){}
+				m_socket(new TCPServerSocket(address, port)), m_in_buffer(in_buffer), m_out_buffer(out_buffer){}
 		/**
 		 * Description: creates a new reference to a TCPSocket, DataBuffer & CommandBuffer
 		 * Inputs: TCPSocket object, CommandBuffer object, & DataBuffer & CommandBuffer
@@ -43,9 +45,9 @@ class Network
 		 * 				be used if the default constructor is chosen
 		 * 	Inputs: the objec we want to be set
 		 */
-		void setSocket(TCPSocket& socket){m_socket=socket;}
-		void setInBuffer(CommandBuffer& in_buffer){m_in_buffer=in_buffer;}
-		void setOutBuffer(DataBuffer& out_buffer){m_out_buffer=out_buffer;}
+		// void setSocket(TCPSocket& socket){m_socket=socket;}
+		// void setInBuffer(CommandBuffer& in_buffer){m_in_buffer=in_buffer;}
+		// void setOutBuffer(DataBuffer& out_buffer){m_out_buffer=out_buffer;}
 		/**
 		 * Decription: receives data from the user through the TCPSocket. after the data
 		 * 			   is received, it will add the data to the in_buffer
@@ -67,7 +69,7 @@ class Network
 		/**
 		 * socket that links Network to UserController
 		 */
-		std::shared_ptr<TCPSocket> m_socket;
+		std::shared_ptr<TCPServerSocket> m_socket;
 		/**
 		 * buffer between Network and ManualProcessor
 		 */

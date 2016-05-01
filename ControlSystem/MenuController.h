@@ -1,5 +1,6 @@
 /*
  * MenuController.h
+
  * Created on: Apr 7, 2016
  * Author: stephaniesmith
  * Class description: MenuController allows the user to control the robot through a
@@ -16,6 +17,7 @@
  * 					  processInput.
  */
 
+#include "UserController.h"
 #ifndef MENUCONTROLLER_H_
 #define MENUCONTROLLER_H_
 
@@ -28,7 +30,7 @@ class MenuController : public UserController
 		 * Description: constructor copies TCPSocket, initializes the m_input to null and m_menu_state to main
 		 * Inputs: a TCPSocket object
 		 */
-		MenuController(TCPSocket& socket):UserController(socket), m_input(nullptr), m_menu_state(main){};
+		//MenuController(TCPSocket& socket):UserController(socket), m_input(nullptr), m_menu_state(main){};
 		/**
 		 * Description: creates a TCPSocket objects, initializes the m_input to null and m_menu_state to main
 		 * Inputs: the IP Address of the NUC (the computer on the robot)
@@ -40,13 +42,13 @@ class MenuController : public UserController
 		 * Description: default constructor
 		 * Input: none
 		 */
-		MenuController():UserController(), m_input(nullptr), m_menu_state(nullptr){};
+		MenuController():UserController(), m_input(nullptr), m_menu_state(main){};
 		/**
 		 * Description: setters for class attributes
 		 * Input: menu state or user input
 		 */
 		void setInput(std::string input){m_input=input;}
-		void setMenuState(std::string menu_state){m_menu_state=menu_state;}
+		//void setMenuState(std::string menu_state){m_menu_state(menu_state);}
 		/**
 		 * Description: displays the main menu
 		 * 				1) Control Robot

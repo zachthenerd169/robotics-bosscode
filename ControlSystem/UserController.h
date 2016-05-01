@@ -9,13 +9,18 @@
  */
 #include "lib/PracticalSocket.h" //for TCPSocket
 #include <memory> //for smart pointers
-
+#include <iostream>
 #ifndef USERCONTROLLER_H_
 #define USERCONTROLLER_H_
 
 class UserController
 {
 	public:
+		UserController(std::string address, unsigned short port) :
+			m_socket(new TCPSocket(address, port))
+		{
+			
+		}
 		/**
 		 * Description: default constructor
 		 * Inputs: none
@@ -25,7 +30,7 @@ class UserController
 		 * Description: constructor that uses another TCPSocket that already existed outside of this
 		 * 				class
 		 */
-	    UserController(TCPSocket& socket){m_socket(socket);}
+	    //UserController(TCPSocket& socket){m_socket(socket);}
 	    /**
 	     * Description: constructor creates TCPSocket object
 	     * Inputs: the IP Address of the NUC (the computer on the robot)
@@ -39,7 +44,7 @@ class UserController
 		 * Input:  TCPSocket
 		 * Output: none
 		 */
-		void setSocket(TCPSocket& socket){m_socket(socket);}
+		//void setSocket(TCPSocket& socket){m_socket(socket);}
 		/**
 		 * Description: changes the port number for this socket
 		 * Input: the new port number
