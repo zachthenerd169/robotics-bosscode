@@ -76,16 +76,35 @@ class UserController
 		/**
 		 * Description: method is to implementd in MenuController & XboxController. it will process the user's
 		 *              input whether the input is something like a button press or a command line input
-		 * Input: string that will hold the processed input
+		 * Input: void
 		 * Output: returns true if processed input successfully, false otherwise
 		 */
-		virtual bool processInput(std::string &processed_input) = 0;
+		virtual bool processInput() = 0;
+		
+		/**
+		 * Description: method sets the input
+		 * Input: string that will be placed in the input
+		 * Output: void
+		 */
+		void setInput(std::string input) {m_input = input};
+		
+		/**
+		 * Description: method gets the input
+		 * Input: void
+		 * Output: void
+		 */
+		std::string getInput() {return m_input};
 
 	private:
 		/**
 		 * TCP connection between the user and the robot
 		 */
 		std::shared_ptr<TCPSocket> m_socket;
+		
+		/**
+		 * user's command input (can result from keyboard or button press on xbox controller)
+		 */
+		std::string m_input;
 };
 
 

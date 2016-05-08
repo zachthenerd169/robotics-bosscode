@@ -93,10 +93,6 @@ class MenuController : public UserController
 	private:
 
 		/**
-		 * user's command-line input
-		 */
-		std::string m_input;
-		/**
 		 * hold's the state of the menu display, i.e., if the user is looking at the
 		 * main menu m_menu_state==main
 		 */
