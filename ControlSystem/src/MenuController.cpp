@@ -11,7 +11,6 @@ bool MenuController::processInput(std::string &processed_input)
 //}
 std::string getMainMenu()
 {
-	//need to change enum state
 	m_menu_state = main;
 	return "1) CONTROL ROBOT\n2) Change Server's IP Address\n3) Change Server's Port Number\n
 			4) Send Test Message To Server Without Arduino\n5) Send Test Message To Server With Arduino\n
@@ -19,7 +18,6 @@ std::string getMainMenu()
 }
 std::string getRobotMenu()
 {
-	//need to change enum state
 	m_menu_state = robot_control;
 	return "1) request image\n2) request other data\n3) move forward\n4) move backwards\n5) stop\n6) turn right\n7) turn left\n
 			8) lower digger\n9) raise digger\n
@@ -111,6 +109,7 @@ bool processInput(std::string &processed_input)
 	else
 	{
 		cout << "no state" << endl;
+		return false;
 	}
 
 }
