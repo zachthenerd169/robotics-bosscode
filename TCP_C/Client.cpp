@@ -6,6 +6,7 @@
 //
 //  To Compile: g++ -o Client.exe Client.cpp PracticalSocket.cpp
 //  To Run: ./Client.exe 'Server's IP Address' 'Server's Port Number'
+//  To Compiler for Windows: g++ -std=c++11 -o Client.exe Client.cpp PracticalSocket.cpp -lwsock32
 
 
 #include "PracticalSocket.h"  // For Socket and SocketException
@@ -15,6 +16,7 @@
 #include <string.h>           // For user inputs
 #include <sstream>            // for split(string)
 #include <vector>             // also for split(string)
+#include <limits>
 
 
 

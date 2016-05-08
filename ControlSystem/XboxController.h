@@ -34,10 +34,10 @@ class XboxController : public UserController
 		 */
 		XboxController():UserController(),m_xbox_controller({1,1,1,1,1,1,1,1,1,1,1,1}){};
 		/**
-		 * Description: <<how will this method work?>>
+		 * Description: Checks if the user has pressed a button that hasn't been pressed.
 		 * Inputs: string that stores the processed input that is to be sent to the robot
 		 * Outputs: returns true if command was successfully processed, returns false
-		 * 			otherwise.
+		 * 			otherwise. Note, power change button presses are not commands.
 		 */
 		bool processInput(std::string &processed_input);
 		/**
@@ -45,6 +45,7 @@ class XboxController : public UserController
 		 * Input: menu state or user input
 		 */
 		void setPowerLevel(std::string powerLevel){m_power_level=powerLevel;}
+
 
 		/**
 		* constant that specifies the absolute largest power level
@@ -86,6 +87,11 @@ class XboxController : public UserController
 		* points to the controller being used
 		*/
 		CXBOXController* m_player_controller;
+		
+		/**
+		 * user's button input
+		 */
+		std::string m_input;
 
 };
 #endif /* XBOXCONTROLLER_H_ */
