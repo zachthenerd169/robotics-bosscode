@@ -45,9 +45,9 @@ class Network
 		 * 				be used if the default constructor is chosen
 		 * 	Inputs: the objec we want to be set
 		 */
-		// void setSocket(TCPSocket& socket){m_socket=socket;}
-		// void setInBuffer(CommandBuffer& in_buffer){m_in_buffer=in_buffer;}
-		// void setOutBuffer(DataBuffer& out_buffer){m_out_buffer=out_buffer;}
+		 void setSocket(std::shared_ptr<TCPServerSocket> socket){m_socket = socket;}
+		 void setInBuffer(std::shared_ptr<CommandBuffer> in_buffer){m_in_buffer = in_buffer;}
+		 void setOutBuffer(std::shared_ptr<DataBuffer> out_buffer){m_out_buffer = out_buffer;}
 		/**
 		 * Decription: receives data from the user through the TCPSocket. after the data
 		 * 			   is received, it will add the data to the in_buffer
