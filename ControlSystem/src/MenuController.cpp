@@ -22,8 +22,8 @@ std::string getRobotMenu()
 	//need to change enum state
 	m_menu_state = robot_control;
 	return "1) request image\n2) request other data\n3) move forward\n4) move backwards\n5) stop\n6) turn right\n7) turn left\n
-			8) lower digger\n9) start digging\n10) stop digging\n11) raise digger\n
-			choose a number 1-11"; 
+			8) lower digger\n9) raise digger\n
+			choose a number 1-9"; 
 }
 bool processInput(std::string &processed_input)
 {
@@ -71,47 +71,37 @@ bool processInput(std::string &processed_input)
 			break;
 		case 3:
 			//move forward
-			setinput(forward);
+			setinput("2 " + defaultPowerLevel);
 			return true;
 			break;
 		case 4:
 			//move back
-			setinput(backwards);
+			setinput("3 " + defaultPowerLevel);
 			return true;
 			break;
 		case 5:
 			//stop
-			setinput(stop);
+			setinput("1");
 			return true;
 			break;
 		case 6:
 			//turn right
-			setinput(right);
+			setinput("4 " + defaultPowerLevel);
 			return true;
 			break;
 		case 7:
 			//turn left
-			setinput(left);
+			setinput("5 " + defaultPowerLevel);
 			return true;
 			break;
 		case 8:
-			//lower digger
-			setinput(lowerDigger);
+			//lower digger, automatically starts digging
+			setinput("6");
 			return true;
 			break;
 		case 9:
-			//start digging
-			setinput(startDigger);
-			return true;
-			break;
-		case 10:
-			//stop digging
-			setinput(stopDigger);
-			return true;
-			break;
-		case 11:
-			//raise digger
-			setinput(raiseDigger);
+			//raise digger, automatically stops digging
+			setinput("7");
 			return true;
 			break;
 		default:
