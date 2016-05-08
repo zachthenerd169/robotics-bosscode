@@ -27,13 +27,13 @@ class Network
 	     * 		   a CommandBuffer object
 	     * 		   a DataBuffer object
 		 */
-		Network(std::string address, unsigned short port, const CommandBuffer& in_buffer, const DataBuffer& out_buffer):
-				m_socket(new TCPServerSocket(address, port)), m_in_buffer(in_buffer), m_out_buffer(out_buffer){}
+		Network(unsigned int port, CommandBuffer* in_buffer, DataBuffer* out_buffer):
+				m_socket(new TCPServerSocket(port)), m_in_buffer(in_buffer), m_out_buffer(out_buffer){}
 		/**
 		 * Description: creates a new reference to a TCPSocket, DataBuffer & CommandBuffer
 		 * Inputs: TCPSocket object, CommandBuffer object, & DataBuffer & CommandBuffer
 		 */
-		Network(const TCPSocket& socket, const CommandBuffer& in_buffer, const DataBuffer& out_buffer):
+		Network(TCPServerSocket* socket, CommandBuffer* in_buffer, DataBuffer* out_buffer):
 			m_socket(socket), m_in_buffer(in_buffer), m_out_buffer(out_buffer){}
 		/**
 		 * Description: default constructor
