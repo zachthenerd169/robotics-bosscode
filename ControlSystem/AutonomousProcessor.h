@@ -7,11 +7,11 @@
  * States Description:
  * Command Key
  */
-
+#include "Processor.h"
 #ifndef AUTONOMOUSPROCESSOR_H_
 #define AUTONOMOUSPROCESSOR_H_
 
-class AutonomousProcessor : public Processor
+class AutonomousProcessor : Processor
 {
 	public:
 		/**
@@ -21,7 +21,7 @@ class AutonomousProcessor : public Processor
 		 */
 		void execute()
 		{
-
+					//
 		}
 		/**
 		 * Description: reads a commands, interprets/translate, and pass the command along to

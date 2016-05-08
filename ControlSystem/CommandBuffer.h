@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string.h>
 #include <deque>
+ #include "Buffer.h"
 
 #ifndef COMMANDBUFFER_H_
 #define COMMANDBUFFER_H_
@@ -30,7 +31,7 @@ class CommandBuffer : public Buffer
 		 * Input: string command to be sent
 		 * Output: none
 		 */
-		void  addToBuffer(std::string command);
+		void addToBuffer(std::string command);
 		/**
 		 * Description: gets the number of elements in the queue
 		 * Input: none

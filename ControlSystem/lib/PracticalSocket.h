@@ -119,7 +119,7 @@ public:
   static unsigned short resolveService(const string &service,
                                        const string &protocol = "tcp");
 
-private:
+protected:
   // Prevent the user from trying to use value semantics on this object
   Socket(const Socket &sock);
   void operator=(const Socket &sock);
@@ -204,6 +204,11 @@ public:
   TCPSocket(const string &foreignAddress, unsigned short foreignPort) 
       throw(SocketException);
 
+  /*TCPSocket operator()(const string &foreignAddress, unsigned short foreignPort)
+  {
+
+  }*/    
+
 private:
   // Access for TCPServerSocket::accept() connection creation
   friend class TCPServerSocket;
@@ -226,6 +231,12 @@ public:
    */
   TCPServerSocket(unsigned short localPort, int queueLen = 5) 
       throw(SocketException);
+
+  TCPServerSocket operator()(unsigned short localPort)
+  {
+      TCPServerSocket tcp(localPort);
+      return tcp;
+  }    
 
   /**
    *   Construct a TCP socket for use with a server, accepting connections

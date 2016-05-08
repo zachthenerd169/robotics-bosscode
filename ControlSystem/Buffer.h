@@ -8,7 +8,7 @@
  * 					  datatpye.
  *
  */
-
+#include <string.h>
 #ifndef BUFFER_H_
 #define BUFFER_H_
 
@@ -22,13 +22,13 @@ class Buffer
 		 * Input: none
 		 * Output: whatever data is returned from the buffer (determined by derived class)
 		 */
-		virtual void* readFromBuffer() = 0;
+		virtual std::string readFromBuffer() = 0;
 		/**
 		 * Description: adds data to the buffer
 		 * Input: whatever data is added to the buffer (determined by the derived class)
 		 * Output: none
 		 */
-		virtual void addToBuffer(void* val) = 0;
+		virtual void addToBuffer(std::string val) = 0;
 		/**
 		 * Description: determines how many elements are in the buffer
 		 * Input: none

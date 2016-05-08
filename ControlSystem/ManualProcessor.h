@@ -11,6 +11,9 @@
 #ifndef MANUALPROCESSOR_H_
 #define MANUALPROCESSOR_H_
 
+#include "Processor.h"
+#include "CommandBuffer.h"
+#include "DataBuffer.h"
 
 class ManualProcessor : public Processor
 {

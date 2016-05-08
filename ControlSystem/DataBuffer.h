@@ -8,11 +8,16 @@
  *  				  type is a queue of strings. It is up to the classes that use the Data
  *  				  Buffer to interpret the strings as different data types if necessary.
  */
+ #include <deque>
+ #include <iostream>
+ #include <string.h>
+ #include "Buffer.h"
 
 #ifndef DATABUFFER_H_
 #define DATABUFFER_H_
 
-class DataBuffer
+
+class DataBuffer : public Buffer
 {
 	public:
 		/**
@@ -37,7 +42,7 @@ class DataBuffer
 		 /**
 		  * queue of strings
 		  */
-		 std::deque<std::string> m_command_queue;
+		 std::deque<std::string> m_data_queue;
 
 
 };
