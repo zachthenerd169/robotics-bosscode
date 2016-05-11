@@ -64,7 +64,7 @@ class MenuController : public UserController
 		 * 			   error message will be displayed.		
 		 */
 		 bool processInput();
-		 
+
 	private:
 		/**
 		 * hold's the state of the menu display, i.e., if the user is looking at the
@@ -73,11 +73,9 @@ class MenuController : public UserController
 		enum MenuState {main, robot_control, request} m_menu_state;
 
 		//private helper functions
-		bool isValidAddress(std::string address);
-		void obtainAndSetAddress();
-		void obtainAndSetPort();
+	
 		std::string obtainAndFormatTestMessage(bool to_arduino=false);
-		bool isValidPort(unsigned short);
+
 		bool isMainInputValid(std::string input);
 
 };

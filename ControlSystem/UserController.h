@@ -24,30 +24,7 @@ class UserController
 		UserController(std::string address, unsigned short port) :
 			m_socket(new TCPSocket(address, port)), m_input(""){}
 		//make virtual to ensure that actual instantiated object is destructed
-		
 		virtual ~UserController(){}
-		 /* Description: sets the TCPSocket object (this will typically be used if the
-		 * 				default constructor is used
-		 * Input:  TCPSocket
-		 * Output: none
-		 */
-		//void setSocket(TCPSocket& socket){m_socket(socket);}
-		/**
-		 * Description: changes the port number for this socket
-		 * Input: the new port number
-		 * Output: true if it successfully changed the port number, false otherwise
-		 * 		   the port number will not successfully change if PracticalSocket throws
-		 * 		   an exception or if m_socket is nullptr
-		 */
-		//bool changePort(unsigned short new_port);
-		/**
-	     * Description: changes the ip address for this socket
-	     * Input: the new ip addess
-		 * Output: true if it successfully changed the address, false otherwise
-		 * 		   the address will not successfully change if PracticalSocket throws
-		 * 		   an exception or if m_socket is nullptr
-		 */
-		//bool changeIPAddress(std::string new_ip);
 		/**
 		 * Description: receives data from the robot. The type of data the user will
 		 * 				receive is sensor data if the Control System is not in debug mode. If the
@@ -72,21 +49,21 @@ class UserController
 		 * Output: returns true if processed input successfully, false otherwise
 		 */
 		virtual bool processInput()=0;
-		
 		/**
 		 * Description: method sets the input
 		 * Input: string that will be placed in the input
 		 * Output: void
 		 */
 		void setInput(std::string input) {m_input = input;};
-		
 		/**
 		 * Description: method gets the input
 		 * Input: void
 		 * Output: void
 		 */
 		std::string getInput() {return m_input;}
-
+		/**
+		 * for the user to change ip addresses and stuff (maybe won't do it)
+		 */
 		std::shared_ptr<TCPSocket> getSocket(){return m_socket;}
 
 	private:

@@ -4,7 +4,7 @@
 std::string MenuController::getMainMenu()
 {
 	m_menu_state = main;
-	std::string menu_text = "1) CONTROL ROBOT\n2) Change Server's IP Address\n3) Change Server's Port Number\n4) Send Test Message To Server Without Arduino\n5) Send Test Message To Server With Arduino\n\nEnter a number that is 1-5";
+	std::string menu_text = "1) CONTROL ROBOT\n2) Send Test Message To Server Without Arduino\n3) Send Test Message To Server With Arduino\n\nEnter a number that is 1-3";
 	return menu_text;
 }
 std::string MenuController::getRobotMenu()
@@ -18,32 +18,27 @@ bool MenuController::processInput()
 	if(!isMainInputValid(input)) return false; //if the input is the incorrect level don't proccess it
 	if(m_menu_state == main) //if we are procesing an input to the main menu
 	{
-		char input_switch = input.at(0); //can't switch a string so make it a char
+		int input_switch = stoi(input); //can't switch a string so making it an int
+		std::cout<<input_switch<<std::endl;
 		switch(input_switch)
 		{
 			case 1:
 				getRobotMenu();
 				break;
 			case 2:
-				obtainAndSetAddress();
-				break;
-			case 3:
-				obtainAndSetPort();
-				break;
-			case 4:
-			{
+			{	
 				std::string message = obtainAndFormatTestMessage();
 				sendData(message);
 				break;
 			} //need brackets in order to set var message
-			case 5:
+			case 3:
 			{
 				std::string message = obtainAndFormatTestMessage();
 				sendData(message);
 				break;
 			}
 			default:
-				std::cerr << "invalid input\nmust be a single digit 1-5" << std::endl;
+				std::cerr << "invalid input\nmust be a single digit 1-3" << std::endl;
 				return false; //did not successfully process input
 				break;
 		}	
@@ -59,39 +54,10 @@ bool MenuController::processInput()
 		return false;
 	}
 }
-void MenuController::obtainAndSetPort()
-{
-	// std::cout<<"current port is: "<< getSocket()->GetLocalPort()<<
-	// "\nenter new port: "<<std::endl;
-	// std::string new_port;
-	// std::cin.ignore();
-	// getline(std::cin,new_port);
-	// if(isValidAddress(new_port) getSocket() -> SetLocalAddress(new_address)
-	// else std::cout<<"did not set address b/c address was invalid"<<std::endl;
-}
-void MenuController::obtainAndSetAddress()
-{
-	// std::cout<<"current address is: " << getSocket()->GetLocalAddress()<<
-	// "\nenter new address: "<<std::endl;
-	// std::string new_address;
-	// std::cin.ignore();
-	// getline(std::cin,new_address);
-	// if(isValidAddress(new_address)) getSocket() -> SetLocalAddress(new_address)
-	// else std::cout<<"did not set address b/c address was invalid"<<std::endl;
-}				
-bool MenuController::isValidAddress(std::string address)
-{
-	return true;
-}
-bool MenuController::isValidPort(unsigned short)
-{
-	return true;
-}
 std::string MenuController::obtainAndFormatTestMessage(bool to_arduino)
 {
 	std::cout<<"enter message to send: "<<std::endl;
 	std:string message;
-	std::cin.ignore();
 	getline(std::cin, message);
 	return message;
 }
@@ -99,7 +65,8 @@ bool MenuController::isMainInputValid(std::string input)
 {
 	if(input.length()>1)
 	{
-		std::cerr << "invalid input\nmust be a single digit 1-5" << std::endl;
+		std::cerr<<"in isValid"<<std::endl;
+		std::cerr << "invalid input\nmust be a single digit 1-3" << std::endl;
 		return false;
 	} 
 	else return true;
