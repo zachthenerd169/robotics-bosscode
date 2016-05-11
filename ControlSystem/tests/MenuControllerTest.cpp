@@ -28,8 +28,8 @@ int main (void)
     	std::string user_input;
 		getline(std::cin, user_input);
 		menu.setInput(user_input);
-		std::cout<<menu.getInput()<<std::endl;
 		bool success=menu.processInput();
+		if(menu.inMainMenu()){std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;}
 		//if(!success)std::cout<<"didn't process input correctly"<<std::endl;
     }
 

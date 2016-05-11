@@ -65,6 +65,8 @@ class MenuController : public UserController
 		 */
 		 bool processInput();
 
+		bool inMainMenu();
+
 	private:
 		/**
 		 * hold's the state of the menu display, i.e., if the user is looking at the

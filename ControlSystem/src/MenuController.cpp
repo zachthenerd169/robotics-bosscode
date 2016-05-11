@@ -19,7 +19,6 @@ bool MenuController::processInput()
 	if(m_menu_state == main) //if we are procesing an input to the main menu
 	{
 		int input_switch = stoi(input); //can't switch a string so making it an int
-		std::cout<<input_switch<<std::endl;
 		switch(input_switch)
 		{
 			case 1:
@@ -65,10 +64,13 @@ bool MenuController::isMainInputValid(std::string input)
 {
 	if(input.length()>1)
 	{
-		std::cerr<<"in isValid"<<std::endl;
 		std::cerr << "invalid input\nmust be a single digit 1-3" << std::endl;
 		return false;
 	} 
 	else return true;
+}
+bool MenuController::inMainMenu()
+{
+	 return m_menu_state == main ?  true : false;
 }
 
