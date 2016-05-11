@@ -1,13 +1,17 @@
 #include "../UserController.h"
 #include <iostream>
 
-bool UserController::changePort(unsigned short new_port)
+
+void UserController::sendData(std::string data)
 {
-	if (m_socket != nullptr) {
-			m_socket->setLocalPort(new_port);
-			return true;
-		} else
-			return false;
+	std::cout<<"sending data: "<<data<<std::endl;
 }
+std::string UserController::receiveData()
+{
+	std:cout<<"received data"<<std::endl;
+	std::string test="test";
+	return test;
+}
+
 
 

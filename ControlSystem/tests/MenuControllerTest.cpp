@@ -1,35 +1,35 @@
 #include "../lib/PracticalSocket.h"
 #include "../MenuController.h"
+
 #include <iostream>
 #include <string.h>
 #include <memory>
 
+// To compile: g++ -std=c++11 -o menutest.exe tests/MenuControllerTest.cpp src/UserController.cpp lib/PracticalSocket.cpp
 int main (void)
 {
-    //MenuController m;
-    MenuController menu("127.0.0.1", 1024);
+	std::string address;
+	unsigned short port;
+	
+	std::cout<<"Enter IP address of the server: "<<std::endl;
+	std::cin.ignore();
+	getline(std::cin, address);
+	std::cout<<"Enter the port the server is listening on"<<std::endl;
+	std::cin>>port;
 
-	//TCPServerSocket* socket = new TCPServerSocket(1024);
+    MenuController menu(address, port); //construct menu object
+  	std::cout<<menu.getMainMenu();
+    while(true)
+    {
+    	std::string user_input;
+    	std::cin.ignore();
+		getline(std::cin, user_input);
+		menu.setInput(user_input);
+		bool success=menu.processInput();
+		if(!success)std::cout<<"didn't process input correctly"<<std::endl;
+    }
 
-     //std::shared_ptr<TCPServerSocket> socket;
-
-     //std::shared_ptr<TCPServerSocket> socket2(new TCPServerSocket(1024));
-	 //socket=socket2;
-
-    //TCPServerSocket* sock = new TCPServerSocket(1026);
-    //TCPServerSocket* sock2=&(sock(1025));
-   
-     
-
-	//socket(new TCPServerSocket(1024));
-
-	 //TCPServerSocket* socket;
-	 //socket=new TCPServerSocket(1024);
-
-	//TCPServerSocket socket2=socket(1025);
-
-	std::cout<< sock->getLocalPort() <<std::endl;
-	std::cout<< sock2->getLocalPort() <<std::endl;
+	
     return 0;
 }
 
