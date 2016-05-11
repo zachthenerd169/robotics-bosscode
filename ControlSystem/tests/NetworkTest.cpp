@@ -10,7 +10,7 @@
 int main(int argc, char** argv)
 {
 	DataBuffer* network_databuffer = new DataBuffer;
-	CommandBuffer* network_commandbuffer =new CommandBuffer;
+	CommandBuffer* network_commandbuffer = new CommandBuffer;
 	unsigned int port=1024; 
 	TCPServerSocket* socket = new TCPServerSocket(1025); //data that we need to test constructors
 

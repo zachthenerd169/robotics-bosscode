@@ -91,7 +91,7 @@ void handleClient(TCPSocket *sock, int fd)
             //cout<<"ardMessage is: "<<ardMessage<<endl;
             //cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
             sock->send(message, strlen(message)); //send message returned from arduino*/
-       // }
+        // }
         //else{sock->send(buffer, recvMsgSize);} //send message as is*/
         sock->send(buffer, recvMsgSize);
     }

@@ -1,48 +1,51 @@
 #include "../MenuController.h"
+#include <regex> //for error checking
 
-bool MenuController::processInput(std::string &processed_input)
-{
-	return true;
-}
+
 //std::string getRequestMenu()
 //{
 //	//will possibly have more requests later
 //	return "1) Get Image & Location\n2) Get Immediate Threats\n3) Return to Robot Control Menu\nEnter a number between 1-3";
 //}
-std::string getMainMenu()
+std::string MenuController::getMainMenu()
 {
 	m_menu_state = main;
 	return "1) CONTROL ROBOT\n2) Change Server's IP Address\n3) Change Server's Port Number\n
 			4) Send Test Message To Server Without Arduino\n5) Send Test Message To Server With Arduino\n
 			6) Quit Program\nEnter a number that is 1-6";
 }
-std::string getRobotMenu()
+std::string MenuController::getRobotMenu()
 {
 	m_menu_state = robot_control;
-	return "1) request image\n2) request other data\n3) move forward\n4) move backwards\n5) stop\n6) turn right\n7) turn left\n
-			8) lower digger\n9) raise digger\n
-			choose a number 1-9"; 
+
+	// return "1) request image\n2) request other data\n3) move forward\n4) move backwards\n5) stop\n6) turn right\n7) turn left\n
+	// 		8) lower digger\n9) raise digger\n
+	// 		choose a number 1-9";
+
+	return "\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <1>\n"+
+	"MOVE STRAIGHT FORWARD: <2 powerLevel>\nMOVE STRAIGHT REVERSE: <3 powerLevel>\n"+
+	"TURN RIGHT: <4 powerLevel>\nTURN LEFT: <5 powerLevel>\nDIGGER DROP: <6>\nRAISE DIGGER:"+ 
+	"<7>\nDUMP BUCKET: <8>\nLOWER BUCKET: <9>\nREQUEST SENSOR DATA <10>"+
+	"REQUEST IMAGE: <spacebar>\n\nPRINT KEY <help>";
+
 }
-bool processInput(std::string &processed_input)
+bool MenuController::processInput(std::string &processed_input)
 {
 	if(m_menu_state == main)
 	{
 		switch(processed_input)
 		case 1:
 			getRobotMenu();
-			return true;
 			break;
 		case 2:
-			//change server IP address
-			return true;
+			obtainAndSetAddress();
 			break;
 		case 3:
-			//change server port number
-			return true;
+			obtainAndSetPort();
 			break;
 		case 4:
-			//send test message to server sans arduino
-			return true;
+			std::cout<<"enter message to send to NUC: "<<std::endl;
+			sendData();
 			break;
 		case 5:
 			//send test message to server with arduino
@@ -111,6 +114,44 @@ bool processInput(std::string &processed_input)
 		cout << "no state" << endl;
 		return false;
 	}
+}
+void obtainAndSetPort()
+{
+	std::cout<<"current port is: "<<m_socket->GetLocalPort()<<
+	"\nenter new port: "<<std::endl;
+	std::string new_port;
+	std::cin.ignore();
+	getline(std::cin,new_port);
+	if(isValidAddress(new_port) m_socket -> SetLocalAddress(new_address)
+	else std::cout<<"did not set address b/c address was invalid"<<std::endl;
+}
+void MenuController::obtainAndSetAddress()
+{
+	std::cout<<"current address is: "<<m_socket->GetLocalAddress()<<
+	"\nenter new address: "<<std::endl;
+	std::string new_address;
+	std::cin.ignore();
+	getline(std::cin,new_address);
+	if(isValidAddress(new_address)) m_socket -> SetLocalAddress(new_address)
+	else std::cout<<"did not set address b/c address was invalid"<<std::endl;
+}				
+bool MenuController::isValidAddress(std::string address)
+{
+	return true;
+}
+bool MenuController::isValidPort(unsigned short)
+{
+	return true;
+}
+std::string MenuControlller::obtainAndFormatTestMessage(to_arduino)
+{
+	std::cout<<"enter message to send"<<std::endl;
+	std:string message;
+	std::cin.ignore();
+	getline(std::cin, message);
+}
+std::string getUserInput()
+{
 
 }
 

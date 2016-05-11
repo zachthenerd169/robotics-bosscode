@@ -100,6 +100,14 @@ class MenuController : public UserController
 		 */
 		enum MenuState {main, robot_control, request} m_menu_state;
 
+		bool isValidAddress(std::string address);
+
+		void obtainAndSetAddress();
+
+		void obtainAndSetPort();
+		std::string obtainAndFormatTestMessage(to_arduino=false);
+		bool isValidPort(unsigned short)
+
 };
 #endif /* MENUCONTROLLER_H_*/
 
