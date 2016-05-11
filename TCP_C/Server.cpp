@@ -14,6 +14,7 @@
 #include <vector>             // also for split(string)
 #include <sstream>            // for split(string)
 #include <string>
+#include <cstring>
 
 #define BAUDRATE 9600 // default baudrate
 #define BUF_MAX 256   // default max buffer size
