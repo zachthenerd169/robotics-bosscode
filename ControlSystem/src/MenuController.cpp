@@ -12,7 +12,7 @@ std::string MenuController::getMainMenu()
 	m_menu_state = main;
 	return "1) CONTROL ROBOT\n2) Change Server's IP Address\n3) Change Server's Port Number\n
 			4) Send Test Message To Server Without Arduino\n5) Send Test Message To Server With Arduino\n
-			6) Quit Program\nEnter a number that is 1-6";
+			\nEnter a number that is 1-5";
 }
 std::string MenuController::getRobotMenu()
 {
@@ -44,20 +44,19 @@ bool MenuController::processInput(std::string &processed_input)
 			obtainAndSetPort();
 			break;
 		case 4:
-			std::cout<<"enter message to send to NUC: "<<std::endl;
-			sendData();
+			std::string message = obtainAndFormatTestMessage()
+			sendData(message);
 			break;
 		case 5:
-			//send test message to server with arduino
-			return true;
-			break;
-		case 6:
-			//quit program
-			return true;
+			std::string message = obtainAndFormatTestMessage()
+			sendData(message);
 			break;
 		default:
-			cout << "inproper input" << endl
-			return false;
+			std::cout << "improper input" << std::endl
+			return false; //did not successfully process input
+			break;
+
+		return true; //successfully processed input	
 	} 
 	else if (m_menu_state == robot_control) 
 	{
@@ -145,7 +144,7 @@ bool MenuController::isValidPort(unsigned short)
 }
 std::string MenuControlller::obtainAndFormatTestMessage(to_arduino)
 {
-	std::cout<<"enter message to send"<<std::endl;
+	std::cout<<"enter message to send: "<<std::endl;
 	std:string message;
 	std::cin.ignore();
 	getline(std::cin, message);
