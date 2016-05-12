@@ -1,6 +1,7 @@
 #include <iostream>
-#include <string>
+#include <string.h>
 #include <vector>
+#include <sstream> 
 #define DEBUG 1
 
 /**
@@ -11,7 +12,7 @@
 std::vector<std::string> splitString(std::string str)
 {
     std::string buf; // Have a buffer string
-    stringstream ss(str); // Insert the string into a stream
+    std::stringstream ss(str); // Insert the string into a stream
     std::vector<std::string> tokens; // Create vector to hold our words
     
     while (ss >> buf)

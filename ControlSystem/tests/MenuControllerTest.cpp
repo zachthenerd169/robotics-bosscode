@@ -5,7 +5,7 @@
 #include <string.h>
 #include <memory>
 #define DEBUG 1
-// To compile: g++ -std=c++11 -o menutest.exe tests/MenuControllerTest.cpp src/UserController.cpp lib/PracticalSocket.cpp
+// To compile: g++ -o menutest.exe tests/MenuControllerTest.cpp src/UserController.cpp src/MenuController.cpp lib/PracticalSocket.cpp
 int main (void)
 {
 	std::string address;
