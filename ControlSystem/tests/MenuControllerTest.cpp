@@ -29,7 +29,7 @@ int main (void)
 		menu.setInput(user_input);
 		bool success=menu.processInput(); //not really doing anything with success right now
 		if(menu.inMainMenu()){std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;}
-		else if(user_input == "help") {std::cout<<"\n\n"<<menu.getRobotMenu()<<std::endl;}
+		
 
     }
     return 0;

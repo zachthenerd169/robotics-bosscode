@@ -18,7 +18,11 @@ bool MenuController::processInput()
 	std::string input=getInput(); //getting the input that was set in the main loop
 	if(m_menu_state == main) //if we are procesing an input to the main menu
 	{
-		if(!isMainInputValid(input)) return false; //if the input is the incorrect level don't proccess it
+		if(!isMainInputValid(input))
+		{
+			std::cerr << "invalid input\nmust be a single digit 1-3" << std::endl;
+			return false; //if the input is the incorrect level don't proccess it
+		} 
 		int input_switch = stoi(input); //can't switch a string so making it an int
 		switch(input_switch)
 		{
@@ -46,7 +50,17 @@ bool MenuController::processInput()
 	} 
 	else if (m_menu_state == robot_control) 
 	{
-		if(!isRobotInputValid(getInput())) return false; //didn't process input
+		if(!isRobotInputValid(getInput())) //didn't process input
+		{ 
+			std::cerr<<"invalid input\n"<<getRobotMenu()<<std::endl;
+			return false; 
+		}
+		if(getInput() == "help") std::cout<<"\n"<<getRobotMenu()<<std::endl;
+		else
+		{
+			std::string packet = formatPacketToRobot(getInput());
+			sendData(packet);
+		}
 
 		
 		return true;
@@ -66,12 +80,7 @@ std::string MenuController::obtainAndFormatTestMessage(bool to_arduino)
 }
 bool MenuController::isMainInputValid(std::string input)
 {
-	if(input.length()>1)
-	{
-		std::cerr << "invalid input\nmust be a single digit 1-3" << std::endl;
-		return false;
-	} 
-	else return true;
+	return input.length()>1 ? false : true;
 }
 bool MenuController::isRobotInputValid(std::string input)
 {
@@ -90,7 +99,6 @@ bool MenuController::isRobotInputValid(std::string input)
 		if(commands.size()!=1) return false; //make sure it is the right size
 	}
 	return true; //commamd was valid!
-
 }
 bool MenuController::inMainMenu()
 {
