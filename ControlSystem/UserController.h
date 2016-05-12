@@ -41,7 +41,7 @@ class UserController
 		 * 	Input: a character array of that will either contain a command or request
 		 * 	Output: none
 		 */
-		void sendData(std::string data);
+		bool sendData(std::string data);
 		/**
 		 * Description: method is to implementd in MenuController & XboxController. it will process the user's
 		 *              input whether the input is something like a button press or a command line input

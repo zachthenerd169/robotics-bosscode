@@ -2,7 +2,7 @@
 #include <string.h>
 #include <vector>
 #include <sstream> 
-#define DEBUG 1
+#define DEBUG 0
 
 /**
  * Description: function splits the string at the spaces and stores it into a vector
