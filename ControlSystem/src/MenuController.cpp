@@ -61,8 +61,6 @@ bool MenuController::processInput()
 			std::string packet = formatPacketToRobot(getInput());
 			sendData(packet);
 		}
-
-		
 		return true;
 	}
 	else
@@ -73,10 +71,13 @@ bool MenuController::processInput()
 }
 std::string MenuController::obtainAndFormatTestMessage(bool to_arduino)
 {
-	std::cout<<"enter message to send: "<<std::endl;
+	std::string packet="[T";
 	std:string message;
+	std::cout<<"enter message to send: "<<std::endl;
 	getline(std::cin, message);
-	return message;
+	packet += to_arduino ? "A"+message : message;
+	packet +=']' //ending packet
+	return packet;
 }
 bool MenuController::isMainInputValid(std::string input)
 {

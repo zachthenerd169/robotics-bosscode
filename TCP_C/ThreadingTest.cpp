@@ -1,6 +1,5 @@
 /* Compile with: g++ -Wall -std=c++11 -o ThreaddedNetworkTest.exe ThreadingTest.cpp  ThreaddedNetwork.cpp PracticalSocket.cpp -lpthread
 */
-
 #include "ThreaddedNetwork.h"
 
 int main(int argc, char *argv[])
