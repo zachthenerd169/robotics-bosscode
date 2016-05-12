@@ -7,8 +7,8 @@ bool UserController::sendData(std::string data)
 	std::cout<<"sending: "<<data<<std::endl;
     try
     {
-
-        m_socket -> send(data.c_str(), strlen(data.c_str())); //send message to server
+        const char* packet=data.c_str();
+        m_socket -> send(packet, strlen(packet)); //send message to server
         return true;
     }
     catch(SocketException &e)
