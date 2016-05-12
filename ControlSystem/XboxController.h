@@ -88,10 +88,6 @@ class XboxController : public UserController
 		*/
 		CXBOXController* m_player_controller;
 		
-		/**
-		 * user's button input
-		 */
-		std::string m_input;
 
 };
 #endif /* XBOXCONTROLLER_H_ */

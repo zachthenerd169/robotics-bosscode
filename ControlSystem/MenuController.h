@@ -21,34 +21,16 @@
 #ifndef MENUCONTROLLER_H_
 #define MENUCONTROLLER_H_
 
-
-
 class MenuController : public UserController
 {
 	public:
-		/**
-		 * Description: constructor copies TCPSocket, initializes the m_input to null and m_menu_state to main
-		 * Inputs: a TCPSocket object
-		 */
-		//MenuController(TCPSocket& socket):UserController(socket), m_input(nullptr), m_menu_state(main){};
 		/**
 		 * Description: creates a TCPSocket objects, initializes the m_input to null and m_menu_state to main
 		 * Inputs: the IP Address of the NUC (the computer on the robot)
 	     * 		   the port number the NUC is listening on
 		 */
 		MenuController(std::string address, unsigned short port):
-			UserController(address, port), m_input(nullptr), m_menu_state(main){};
-		/**
-		 * Description: default constructor
-		 * Input: none
-		 */
-		MenuController():UserController(), m_input(nullptr), m_menu_state(main){};
-		/**
-		 * Description: setters for class attributes
-		 * Input: menu state or user input
-		 */
-		void setInput(std::string input){m_input=input;}
-		//void setMenuState(std::string menu_state){m_menu_state(menu_state);}
+			UserController(address, port), m_menu_state(main){};
 		/**
 		 * Description: displays the main menu
 		 * 				1) Control Robot
@@ -60,6 +42,8 @@ class MenuController : public UserController
 		 * Outputs: string that holds the main menu
 		 */
 		std::string getMainMenu();
+		//DESTRUCCTTTIOOOON!!!
+		 ~MenuController(){}
 		/**
 		 * Description: displays the robot control menu
 		 * 				<<I don't know what the commands will be yet>>
@@ -69,40 +53,60 @@ class MenuController : public UserController
 		 */
 		std::string getRobotMenu();
 		/**
-		 * Description: displays the request data menu
-		 * 			    1) Get Image & Location
-		 * 			    2) Get Immediate Threats
-		 * 			    3) Return to Robot Control Menu
-		 * 			    <<I'm not really sure what all of the requests will be yet>>
-		 *  Inputs: none
-		 *  Outputs: string that holds the request control menu
-		 */
-		std::string getRequestMenu();
-		/**
 		 * Description: method looks at m_menu_state & m_input and decides what command
 		 * 				to send to the robot
 		 * Inputs: string that stores the command to be sent to the robot
-		 * Outputs: returns true if command was successfully processed, returns false
+		 * Output: returns true if command was successfully processed, returns false
 		 * 			otherwise.
 		 * 			Reasons a command was not successfully processed would be:
 		 * 			1) user did not input the command correctly (m_user_input does not
 		 * 			   match any of the acceptable command formats). in this case an
-		 * 			   error message will be displayed.
-		 * 			2) there wasn't a user input to interpret
+		 * 			   error message will be displayed.		
 		 */
-		bool processInput(std::string &processed_input);
+		 bool processInput();
+		 /**
+		  * Description: returns true if it's in the main menu; false otherwise
+		  * Input: none
+		  * Output: true of false
+		  */
+		 bool inMainMenu();
 
 	private:
-
-		/**
-		 * user's command-line input
-		 */
-		std::string m_input;
 		/**
 		 * hold's the state of the menu display, i.e., if the user is looking at the
 		 * main menu m_menu_state==main
 		 */
 		enum MenuState {main, robot_control, request} m_menu_state;
+		/**
+		 * Description: function asks the user for an input and appends [Tmessage] on it
+		 * Input: by default  the message will not go to the arduino
+		 * Output: the formatted message
+		 */
+		std::string obtainAndFormatTestMessage(bool to_arduino=false);
+		/**
+		 * Description: determines whether or not the main menu input is valid by making
+		 * 				sure that it is only one character; prints an error message if it
+		 *              isn't valid
+		 * Input: the user's input
+		 * Output: true if valid, false otherwise
+		 */
+		bool isMainInputValid(std::string input);
+		/**
+		 * Description: determines whether or not the robot menu input is valid by making
+		 * 				sure that it is the correct mode and powerlevel; prints an error message if it
+		 *              isn't valid
+		 * Input: the user's input
+		 * Output: true if valid, false otherwise
+		 */
+		bool isRobotInputValid(std::string input);
+		/**
+		 * Description: checks the input from the user and puts the input in the correct
+		 *				format to send to the robot. You should only use this function after
+		 * 				the input has been validated
+		 * Input: the unformated valid input, eg. 2 120
+		 * Output: the the packet in the correct format [M02120]
+		 */
+		std::string formatPacketToRobot(std::string input);
 
 };
 #endif /* MENUCONTROLLER_H_*/

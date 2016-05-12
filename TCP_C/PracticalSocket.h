@@ -21,6 +21,7 @@
 #define __PRACTICALSOCKET_INCLUDED__
 
 #include <string>            // For string
+#include <cstring>
 #include <exception>         // For exception class
 
 using namespace std;

@@ -1,158 +1,155 @@
 #include "../UserController.h"
 #include <iostream>
+#include <xinput.h>
 
-/*UserController::changePort(unsigned short new_port)
-
-{
-	if(m_socket!=nullptr)
-	{
-		m_socket->setLocalPort(new_port);
-		return true;
-	}
-	else return false;
-}*/
-
-UserController::processInput(std::string &processed_input)
+UserController::processInput()
 {
 	if(Player1->IsConnected())
 	{
 		m_state = Player1->GetState();
 
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && (endUp == true) )
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && (m_xbox_controller.endUp == true) )
 		{
 			endUp = false;
 			powerLevel = powerLevel + 10 < maxPowerLevel ? powerLevel + 10 : maxPowerLevel;
 			std::cout << "Power Level: " << powerLevel << std::endl;
-			return true;
+			return false;
 		}
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) {
-			endUp = true;
+			m_xbox_controller.endUp = true;
 		}
 
 		// Check for d-pad down button (power level decrease)
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) && (endDown == true) )
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) && (m_xbox_controller.endDown == true) )
 		{
-			endDown = false;
+			m_xbox_controller.endDown = false;
 			powerLevel = powerLevel - 10 > 0 ? powerLevel - 10 : 0;
 			std::cout << "Power Level: " << powerLevel << std::endl;
-			return true;
+			return false;
 		}
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) {
-			endDown = true;
+			m_xbox_controller.endDown = true;
 		}
 
 		// Check for A button (forward)
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (endA == true) )
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (m_xbox_controller.endA == true) )
 		{
-			userInput = "2 " + powerLevel;
-			controlRobo(userInput, "moving forward at power level " + powerLevel, servAddress, servPort);
-			endA = false;
+			setInput("2 " + powerLevel);
+			//controlRobo(userInput, "moving forward at power level " + powerLevel, servAddress, servPort);
+			m_xbox_controller.endA = false;
 			std::cout << "Go forward at power level: " << powerLevel << std::endl;
 			return true;
 		}
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-			endA = true;
+			m_xbox_controller.endA = true;
 		}
 
 		// Check for B button (turn right)
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (endB == true))
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (m_xbox_controller.endB == true))
 		{
-			userInput = "4 " + powerLevel
-			controlRobo(userInput, "turning right at power level " + powerLevel, servAddress, servPort);
-			endB = false;
+			setInput("4 " + powerLevel);
+			//controlRobo(userInput, "turning right at power level " + powerLevel, servAddress, servPort);
+			m_xbox_controller.endB = false;
 			std::cout << "Turn right at power level: " << powerLevel << std::endl;
 			return true;
 		}
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
-			endB = true;
+			m_xbox_controller.endB = true;
 		}
 
 		// Check for X button (turn left)
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_X) && (endX == true))
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_X) && (m_xbox_controller.endX == true))
 		{
-			userInput = "5 " + powerLevel;
-			controlRobo(userInput, "turning left at power level " + powerLevel, servAddress, servPort);
-			endX = false;
+			setInput("5 " + powerLevel);
+			//controlRobo(userInput, "turning left at power level " + powerLevel, servAddress, servPort);
+			m_xbox_controller.endX = false;
 			std::cout << "Turn left at power level: " << powerLevel << std::endl;
 			return true;
 		}
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
-			endX = true;
+			m_xbox_controller.endX = true;
 		}
 
 		// Check for Y button (backward)
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && (endY == true))
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && (m_xbox_controller.endY == true))
 		{
-			userInput = "3 " + powerLevel;
-			controlRobo(userInput, "moving backward at power level " + powerLevel, servAddress, servPort);
-			endY = false;
+			setInput("3 " + powerLevel);
+			//controlRobo(userInput, "moving backward at power level " + powerLevel, servAddress, servPort);
+			m_xbox_controller.endY = false;
 			std::cout << "Go backward at power level: " << powerLevel << std::endl;
 			return true;
 		}
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_Y)) {
-			endY = true;
+			m_xbox_controller.endY = true;
 		}
 
 		// Check for RB button (digger drop)
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && (endRB == true))
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && (m_xbox_controller.endRB == true))
 		{
-			userInput = "6";
-			controlRobo(userInput, "dropping digger", servAddress, servPort);
-			endRB = false;
+			setInput("6");
+			//controlRobo(userInput, "dropping digger", servAddress, servPort);
+			m_xbox_controller.endRB = false;
 			std::cout << "Dropping Digger" << std::endl;
 			return true;
 		}
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-			endRB = true;
+			m_xbox_controller.endRB = true;
 		}
 
 		// Check for LB button (digger raise)
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) && (endLB == true))
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) && (m_xbox_controller.endLB == true))
 		{
-			userInput = "7";
-			controlRobo(userInput, "raising digger", servAddress, servPort);
-			endLB = false;
+			setInput("7");
+			//controlRobo(userInput, "raising digger", servAddress, servPort);
+			m_xbox_controller.endLB = false;
 			std::cout << "Raising Digger" << std::endl;
 			return true;
 		}
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)) {
-			endLB = true;
+			m_xbox_controller.endLB = true;
 		}
-
-		// Check for Right Thumb button (dump bucket)
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) && (endRThumb == true))
+		
+		// The following buttons were removed since the robot is built
+		// to have the digger and bucket work with the same button press
+		// instead these buttons will be for data aquisition (image, ir, and laser range finder)
+		
+		// Check for Right Thumb button (image)
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) && (m_xbox_controller.endRThumb == true))
 		{
-			userInput = "8";
-			controlRobo(userInput, "dump bucket", servAddress, servPort);
-			endRThumb = false;
+			// TODO: figure out what the input is for this setInput("8");
+			//controlRobo(userInput, "dump bucket", servAddress, servPort);
+			m_xbox_controller.endRThumb = false;
 			return true;
 		}
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)) {
-			endRThumb = true;
+			m_xbox_controller.endRThumb = true;
 		}
 
-		// Check for Left Thumb button (raise bucket)
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB) && (endLThumb == true))
+		// Check for Left Thumb button (ir and laser)
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB) && (m_xbox_controller.endLThumb == true))
 		{
-			userInput = "9";
+			// TODO: figure out what the input is for this setInput("9");
 			controlRobo(userInput, "raise bucket", servAddress, servPort);
-			endLThumb = false;
+			m_xbox_controller.endLThumb = false;
 			return true;
 		}
+		
+		
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB)) {
-			endLThumb = true;
+			m_xbox_controller.endLThumb = true;
 		}
+		
 
 		// Check for start button (stop). I know what you're thinking. Why is start stop? It's close to the right thumb, but still far from the control buttons.
-		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_START) && (endStart == true))
+		if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_START) && (m_xbox_controller.endStart == true))
 		{
-			userInput = "1";
+			setInput("1");
 			controlRobo(userInput, "stopping robot", servAddress, servPort);
-			endStart = false;
+			m_xbox_controller.endStart = false;
 			return true;
 		}
 		else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_START)) {
-			endStart = true;
+			m_xbox_controller.endStart = true;
 		}
 
 		// Check for start button (exit)
@@ -171,19 +168,3 @@ UserController::processInput(std::string &processed_input)
 		return false;
 	}
 }
-
-// TODO: move this polling loop to a more appropriate location
-/*
-int main(void)
-{
-	while(!done)
-	{
-		if(processInput(&m_input))
-		{
-			sendData(m_input);
-		}
-		
-	}
-	return 0;
-}
-*/

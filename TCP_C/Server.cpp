@@ -14,6 +14,7 @@
 #include <vector>             // also for split(string)
 #include <sstream>            // for split(string)
 #include <string>
+#include <cstring>
 
 #define BAUDRATE 9600 // default baudrate
 #define BUF_MAX 256   // default max buffer size
@@ -91,7 +92,7 @@ void handleClient(TCPSocket *sock, int fd)
             //cout<<"ardMessage is: "<<ardMessage<<endl;
             //cout<<"length of ardMessage: "<<strlen(ardMessage)<<endl;
             sock->send(message, strlen(message)); //send message returned from arduino*/
-       // }
+        // }
         //else{sock->send(buffer, recvMsgSize);} //send message as is*/
         sock->send(buffer, recvMsgSize);
     }
