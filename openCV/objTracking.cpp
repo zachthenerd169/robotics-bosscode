@@ -4,7 +4,9 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/videoio/videoio.hpp"
 #include <string>
+#include <math.h>
 #include "ContinuousUpdater.h"
+#include "ConfigReader.h"
 
 /**
  
@@ -16,62 +18,22 @@
 using namespace cv;
 using namespace std;
 
-
-
-
-int theObject[2] = {0,0};
-
-//bounding the rectangle of object, we will use the center of it as its position
-Rect objectBoundingRectangle = Rect(0,0,0,0);
-
-//
-void searchForMovement (Mat thresholdImage, Mat &cameraFeed)
+struct ImageData
 {
-    
-    bool objectDetected = false;
-    Mat temp;
-    thresholdImage.copyTo(temp);
-    
-    //These two vectors needed for output of findContours
-    vector< vector<Point> > contours;
-    vector<Vec4i> hierarachy;
-    
-    findContours( temp, contours, hierarachy, CV_RETR_EXTERNAL ,CV_CHAIN_APPROX_SIMPLE);
-    //if contours vector is not empty we have found some objects
-    if (contours.size() > 0)objectDetected=true;
-    else objectDetected = false;
-    if (objectDetected){
-        //the largest contour is found at the end of the contours vector
-        //we will assume that the biggest contour is the object we are looking for
-        vector< vector<Point> > largestContourVec;
-        largestContourVec.push_back(contours.at(contours.size() - 1));
-        objectBoundingRectangle = boundingRect(largestContourVec.at(0));
-        
-        //make a bounding rectangle around the largest contour then find its centeroid
-        //this will be the object's final estimated position
-        int xpos= objectBoundingRectangle.x + objectBoundingRectangle.width / 2;
-        int ypos= objectBoundingRectangle.y + objectBoundingRectangle.height /2;
-        
-        //update the object position by changing the 'theObject values'
-        theObject[0] = xpos, theObject[1]=ypos;
-    
+    Mat image;
+    Mat filtered_image;
+    Rect object;
+    ImageData() {}
+    ImageData(Mat i1, Mat i2, Rect o)
+    {
+        image = i1;
+        filtered_image = i2;
+        object = o;
     }
-    //some temp x and y
-    int x =theObject[0];
-    int y=theObject[1];
-    
-    //draw some crosshairs on the object
-    circle(cameraFeed, Point(x,y), 20, Scalar(0,255,0) , 2);
-    line (cameraFeed, Point(x,y), Point(x,y-25), Scalar(0,255,0),2);
-    line(cameraFeed, Point(x,y), Point(x,y+25), Scalar(0,255,0),2);
-    line(cameraFeed, Point(x,y), Point(x-25,y), Scalar(0,255,0),2);
-    line(cameraFeed, Point(x,y), Point(x+25,y), Scalar(0,255,0),2);
-    //putText(cameraFeed, &"tracking object at ("+ x, Point(x,y), 1,1, Scalar(0,0,255), 2);
-    
-}
+};
 
 /* encapsulate image processing into an object */
-class ImageProc : public zwlib::IUpdater<Mat>
+class ImageProc : public zwlib::IUpdater<ImageData>
 {
     struct Threshold
     {
@@ -86,37 +48,93 @@ public:
         {
             cout << "Cannot open webcam" << endl;
             return -1;
-	}
+        }
 
-        tHue.low = 106;
-        tHue.high = 126;
+        tHue.low = 0;
+        tHue.high = 179;
         tSat.low = 68;
         tSat.high = 255;
         tVal.low = 60;
         tVal.high = 255;
     }
 
-    Mat update()
+    ImageData update()
     {
         cap.read(cameraImage);
-        return cameraImage;
+        Mat filteredImage;
+        cameraImage.copyTo(filteredImage);
+        applyThreshold(filteredImage);
+        applyFilter(filteredImage);
+        Rect largestRectangle;
+        if(findLargestObjectBoundingRectangle(filteredImage, largestRectangle) == -1)
+        {
+            largestRectangle = Rect(0,0,0,0);
+        }
+
+        return ImageData(cameraImage, filteredImage, largestRectangle);
     }
 private:
     VideoCapture cap;
 
     Mat cameraImage;
-
 public:
     Threshold tHue;
     Threshold tSat;
     Threshold tVal;
+private:
+    void applyThreshold(Mat &inputOutputImage)
+    {
+        cvtColor(inputOutputImage, inputOutputImage, COLOR_BGR2HSV);
+
+        inRange(inputOutputImage, Scalar(tHue.low,tSat.low,tVal.low), Scalar(tHue.high,tSat.high,tVal.high), inputOutputImage);
+    }
+
+    void applyFilter(Mat &inputOutputImage)
+    {
+        morphologyEx(inputOutputImage, inputOutputImage, MORPH_OPEN, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
+        morphologyEx(inputOutputImage, inputOutputImage, MORPH_CLOSE, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
+    }
+
+    int findLargestObjectBoundingRectangle(const Mat &inputImage, Rect &outputRect)
+    {
+        typedef vector<vector<Point>> ContourType;
+        typedef vector<Vec4i>         HierarachyType;
+
+        ContourType contours;
+        HierarachyType hierarachy;
+
+        Mat tmpImage;
+        inputImage.copyTo(tmpImage);
+
+        findContours(tmpImage, contours, hierarachy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+
+        double largestArea = 0;
+        int indexOfLargestContour = 0;
+        for (int i = 0; i < contours.size(); ++i)
+        {
+            double currentArea = contourArea(contours[i], false);
+            if(currentArea > largestArea)
+            {
+                largestArea = currentArea;
+                indexOfLargestContour = i;
+            }
+        }
+	
+	if(contours.size() == 0)
+        {
+            return -1;
+        }	
+        outputRect = boundingRect(contours[indexOfLargestContour]);
+
+        return 1;
+    }
 };
 
 /* new main function that tests using the image processing object
  * with the multithreadded updater
  */
 int main(int argc, char* argv[])
-{
+{   
     ImageProc improc;
     if(improc.init() == -1)
     {
@@ -124,10 +142,45 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    namedWindow("CameraImage", CV_WINDOW_NORMAL);
-    imshow("CameraImage", improc.update());
+    ConfigReader settings("../data/config.txt");
 
-    zwlib::ContinuousUpdater<Mat> cu(&improc);
+    if(settings.has("threshold_hue_low"))
+    {
+      improc.tHue.low = std::stoi(settings.get("threshold_hue_low"));
+    }
+    if(settings.has("threshold_hue_high"))
+    {
+      improc.tHue.high = std::stoi(settings.get("threshold_hue_high"));
+    }
+    if(settings.has("threshold_sat_low"))
+    {
+      improc.tSat.low = std::stoi(settings.get("threshold_sat_low"));
+    }
+    if(settings.has("threshold_sat_high"))
+    {
+      improc.tSat.high = std::stoi(settings.get("threshold_sat_high"));
+    }
+    if(settings.has("threshold_val_low"))
+    {
+      improc.tVal.low = std::stoi(settings.get("threshold_val_low"));
+    }
+    if(settings.has("threshold_val_high"))
+    {
+      improc.tVal.high = std::stoi(settings.get("threshold_val_high"));
+    }
+    namedWindow("ThresholdValues", CV_WINDOW_NORMAL);
+    cvCreateTrackbar("LowH", "ThresholdValues", &improc.tHue.low, 179);
+    cvCreateTrackbar("HighH", "ThresholdValues", &improc.tHue.high, 179);
+    cvCreateTrackbar("LowS", "ThresholdValues", &improc.tSat.low, 255);
+    cvCreateTrackbar("HighS", "ThresholdValues", &improc.tSat.high, 255);
+    cvCreateTrackbar("LowV", "ThresholdValues", &improc.tVal.low, 255);
+    cvCreateTrackbar("HighV", "ThresholdValues", &improc.tVal.high, 255);
+    
+
+    namedWindow("CameraImage", CV_WINDOW_NORMAL);
+    namedWindow("FilterImage", CV_WINDOW_NORMAL);
+
+    zwlib::ContinuousUpdater<ImageData> cu(&improc,std::chrono::milliseconds(50));
 
     cu.start();
 
@@ -135,97 +188,38 @@ int main(int argc, char* argv[])
 
     while(waitKey(1) == -1)
     {
-        imshow("CameraImage", cu.get());
+        ImageData data = cu.get();
+        Mat image = data.image;
+        Mat threshImage = data.filtered_image;
+
+        Scalar lineColor(0,255,0);
+        int lineWidth = 2;
+        double area = data.object.width * data.object.height;
+        double meanLength = sqrt(area);
+
+        circle(
+            image, 
+            Point(data.object.x+data.object.width/2, data.object.y+data.object.height/2), 
+            meanLength/2, 
+            lineColor, lineWidth
+        );
+        line(
+            image, 
+            Point(data.object.x, data.object.y+data.object.height/2), 
+            Point(data.object.x+data.object.width, data.object.y+data.object.height/2), 
+            lineColor, lineWidth
+        );
+        line(
+            image, 
+            Point(data.object.x+data.object.width/2, data.object.y), 
+            Point(data.object.x+data.object.width/2, data.object.y+data.object.height), 
+            lineColor, lineWidth
+        );
+
+        imshow("CameraImage", image);
+        imshow("FilterImage", threshImage);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    return 0;
-}
-
-
-int old_main(int argc, char** argv)
-{
-    VideoCapture cap(0); // capture the video from web cam
-    
-    
-    
-    if (!cap.isOpened()) // if not success exit program
-    {
-        cout<< "Cannot open the Web cam" <<endl;
-        return -1;
-    }
-    namedWindow("Control" ,CV_WINDOW_NORMAL); // create a window called "control"
-    
-    int iLowH,iHighH,iLowS,iHighS,iLowV,iHighV;
-  
-    
-    cvCreateTrackbar("LowH", "Control", &iLowH, 179);
-    cvCreateTrackbar("HighH", "Control", &iHighH, 179);
-    
-    cvCreateTrackbar("LowS", "Control", &iLowS, 255);
-    cvCreateTrackbar("HighS", "Control", &iHighS, 255);
-    
-    cvCreateTrackbar("LowV", "Control", &iLowV, 255);
-    cvCreateTrackbar("HighV", "Control", &iHighV, 255);
-    
-    /*int iLowH= 100;
-    int iHighH=140;//pure red is at 120 angle
-    int iLowS=230;//
-    int iHighS=255;//
-    int iLowV=230;//
-    int iHighV=250;//*/
-    
-    
-    while (true)
-    {
-        Mat imgOriginal;
-        
-        bool bSuccess = cap.read(imgOriginal); // read a new frame from video
-        
-        if (!bSuccess)
-        {
-            cout<< "Cannnot read a frame video from stream" << endl;
-            break;
-        }
-        
-        Mat imgHSV;
-        
-        cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); // convert bgr to hsv
-        
-        Mat imgThresholded;
-        
-        inRange(imgHSV, Scalar(iLowH,iLowS,iLowV), Scalar(iHighH,iHighS,iHighV), imgThresholded);
-        
-        //morphological opening (remove small objects from foreground)
-        erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-        dilate (imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-        
-        
-        //morphological closing (fill small holes in the foreground)
-        dilate (imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-        erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-        
-        searchForMovement(imgThresholded, imgOriginal);
-        
-        namedWindow ("Thresholded Image", WINDOW_NORMAL);
-        namedWindow ("Original", WINDOW_NORMAL);
-        namedWindow ("HSVImage", WINDOW_NORMAL);
-        
-        
-        //imshow("Thresholded Image", imgThresholded);
-        //imshow("Original", imgOriginal);
-        //imshow("HSVImage", imgHSV);
-        
-	imshow("Thresholded Image", imgThresholded);
-	imshow("Original", imgOriginal);
-	imshow("HSVImage", imgHSV);
-
-   	if (waitKey(1) != -1)// wait for 'esc' key press for 30ms. If 'esc' pressed break the loop
-    	{
-        	cout<<"esc key is pressed by user" <<endl;
-        	break;
-    	}
-    }
-    
     return 0;
 }
