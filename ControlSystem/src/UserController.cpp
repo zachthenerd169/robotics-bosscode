@@ -1,5 +1,7 @@
 #include "../UserController.h"
 #include <iostream>
+//#include <stdio.h>
+//#include <string.h>
 
 
 bool UserController::sendData(std::string data)
@@ -16,6 +18,7 @@ bool UserController::sendData(std::string data)
         std::cerr << e.what() << std::endl;
         return false;
     }
+
 }
 std::string UserController::receiveData()
 {
