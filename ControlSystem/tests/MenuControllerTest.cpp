@@ -4,9 +4,9 @@
 #include <iostream>
 #include <string.h>
 #include <memory>
-#define DEBUG 1
+#define DEBUG 0
 // To compile: g++ -o menutest.exe tests/MenuControllerTest.cpp src/UserController.cpp src/MenuController.cpp lib/PracticalSocket.cpp
-int main (void)
+int main (int argc, char** argv)
 {
 	std::string address;
 	unsigned short port;
@@ -14,10 +14,20 @@ int main (void)
 	port=1024;
 	address="127.0.0.1";  
 #else 
- 	std::cout<<"Enter IP address of the server: "<<std::endl;
-	getline(std::cin, address);
-	std::cout<<"Enter the port the server is listening on"<<std::endl;
-	std::cin>>port;
+	if(argc != 3)
+	{
+ 	  	cerr << "Usage: " << argv[0] << " <Server Address> <Server Port>" << endl;
+    	exit(1);
+    }
+    else
+    {
+    	address=argv[1];
+    	try{ port=atoi(argv[2]);}
+    	catch(...){ 
+    		std::cerr<<"invalid port number"<<std::endl;
+    		exit(1);
+    	}
+    }	
 #endif	
 	MenuController menu(address, port); //construct menu object
  	std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;
