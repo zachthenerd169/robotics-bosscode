@@ -1,4 +1,5 @@
 #include "../MenuController.h"
+#include "../util/splitString.h"
 
 
 std::string MenuController::getMainMenu()
@@ -15,14 +16,14 @@ std::string MenuController::getRobotMenu()
 bool MenuController::processInput()
 {
 	std::string input=getInput(); //getting the input that was set in the main loop
-	if(!isMainInputValid(input)) return false; //if the input is the incorrect level don't proccess it
 	if(m_menu_state == main) //if we are procesing an input to the main menu
 	{
+		if(!isMainInputValid(input)) return false; //if the input is the incorrect level don't proccess it
 		int input_switch = stoi(input); //can't switch a string so making it an int
 		switch(input_switch)
 		{
 			case 1:
-				getRobotMenu();
+				std::cout<<getRobotMenu()<<std::endl;
 				break;
 			case 2:
 			{	
@@ -45,6 +46,9 @@ bool MenuController::processInput()
 	} 
 	else if (m_menu_state == robot_control) 
 	{
+		if(!isRobotInputValid(getInput())) return false; //didn't process input
+
+		
 		return true;
 	}
 	else
@@ -69,8 +73,45 @@ bool MenuController::isMainInputValid(std::string input)
 	} 
 	else return true;
 }
+bool MenuController::isRobotInputValid(std::string input)
+{
+	//as of right now it doesn't check the spacebar!!!
+
+	std::vector<std::string> commands = splitString(input);
+	//if # of args is invalid or arg is out of range
+	if(commands.size()>2 || (commands < 1 || commands > 10)) return false; 
+	//if arg is supposed to have a mode and a power level
+	if(stoi(commands[0]) >=2 && stoi(commands[0]) <= 5){ //check powerlevel
+		if(commands.size()!=2) return false; //check size
+		if (stoi(commands[1] > 127) || stoi (commands[1] < 0)) return false; //make sure power level is valid
+	}
+	//if arg is just supposed to have a mode
+	if(stoi(commands[0])==1 || stoi(commands[0]) > 5 && stoi(commands[0]) < 10){
+		if(commands.size()!=1) return false; //make sure it is the right size
+	}
+	return true; //commamd was valid!
+
+}
 bool MenuController::inMainMenu()
 {
 	 return m_menu_state == main ?  true : false;
+}
+std::string MenuController::formatPacketToRobot(std::string packet)
+{
+	std::string packet="[";
+	std::vector<std::string> commands = splitString(input);
+	//if the command is meant to control the robot otherwise it's meant to get sensor data
+	packet+= (commands[0] < 10) ? "M" : "S";
+	//need another 0 if the command is only one digit
+	packet+= (commands[0].length()==1) ? "0"+commands[0] : commands[0];
+	//get the power level if there is one
+	if(commands.size()==2){
+		if(commands[1].length==1) packet+="00"+command[1];
+		else if(command[1].length==2) packet+="0"+command[1];
+		else packet+=command[1];
+	}
+	packet+="]" //closing the packet
+	return packet;
+
 }
 

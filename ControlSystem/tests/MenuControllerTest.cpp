@@ -5,7 +5,6 @@
 #include <string.h>
 #include <memory>
 #define DEBUG 1
-
 // To compile: g++ -std=c++11 -o menutest.exe tests/MenuControllerTest.cpp src/UserController.cpp lib/PracticalSocket.cpp
 int main (void)
 {
@@ -28,12 +27,13 @@ int main (void)
     	std::string user_input;
 		getline(std::cin, user_input);
 		menu.setInput(user_input);
-		bool success=menu.processInput();
+		bool success=menu.processInput(); //not really doing anything with success right now
 		if(menu.inMainMenu()){std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;}
-		//if(!success)std::cout<<"didn't process input correctly"<<std::endl;
-    }
+		else if(user_input == "help") {std::cout<<"\n\n"<<menu.getRobotMenu()<<std::endl;}
 
-	
+    }
     return 0;
 }
+
+
 
