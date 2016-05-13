@@ -16,7 +16,7 @@ std::string MenuController::getRobotMenu()
 bool MenuController::processInput()
 {
 	std::string input=getInput(); //getting the input that was set in the main loop
-	std::cout<<input<<std::endl;
+	//std::cout<<input<<std::endl;
 	if(m_menu_state == main) //if we are procesing an input to the main menu
 	{
 		if(!isMainInputValid(input))
