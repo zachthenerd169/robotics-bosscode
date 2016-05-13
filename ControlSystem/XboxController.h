@@ -8,7 +8,9 @@
  * Control Key:
  */
 
-#include "CXBOXController.h"
+#include "UserController.h"
+#include "lib/CXBOXController.h" // for xbox controller
+
 
 #ifndef XBOXCONTROLLER_H_
 #define XBOXCONTROLLER_H_
@@ -41,10 +43,15 @@ class XboxController : public UserController
 		 */
 		bool processInput(std::string &processed_input);
 		/**
-		 * Description: setters for class attributes
-		 * Input: menu state or user input
+		 * Description: setter for power level
+		 * Input: new power level
 		 */
-		void setPowerLevel(std::string powerLevel){m_power_level=powerLevel;}
+		void setPowerLevel(std::int powerLevel){m_power_level=powerLevel;}
+		/**
+		 * Description: getter for power level
+		 * Output: the current power level
+		 */
+		void getPowerLevel(){return m_power_level;}
 
 
 		/**
