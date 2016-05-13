@@ -37,10 +37,13 @@ public:
   /* getNewMessages */
   std::vector<std::string> getNewMessages();
 
+  /* sendMessage */
+  void sendMessage(std::string message);
   
 private:
   TCPServerSocket m_servSock;
   ThreadSafeQueue<std::string> q_new_messages;
+  ThreadSafeQueue<std::string> q_outgoing_messages;
   std::thread my_thread;
 
   /* function to be run in thread */

@@ -1,4 +1,4 @@
-#include "../ThreaddedNetwork.h"
+#include "ThreaddedNetwork.h"
 
 /* Constructor */
 ThreaddedNetwork::ThreaddedNetwork(int servPort) :
@@ -22,6 +22,11 @@ std::vector<std::string> ThreaddedNetwork::getNewMessages()
   }
   // return vector of new messages
   return newMessages;
+}
+
+void ThreaddedNetwork::sendMessage(std::string message)
+{
+  q_outgoing_messages.push(message);
 }
 
 void ThreaddedNetwork::inThreadUpdate()
@@ -73,9 +78,23 @@ void ThreaddedNetwork::inThreadUpdate()
           currentMessage = "";
         } // end if
       } // end for
-      sock->send(buffer,recvMsgSize);
+      //sock->send(buffer,recvMsgSize);
+      std::string outgoing = "";
+      for(int i=0; i<q_outgoing_messages.size(); i++)
+      {
+        outgoing += "[";
+        outgoing += q_outgoing_messages.at(i);
+        outgoing += "]";
+      }
+      std::cout << "outgoing:\n" << outgoing << "\n";
+      sock->send("[Good]",6);
+      if(outgoing.length() > 0)
+      {
+        sock->send(outgoing.c_str(), outgoing.length());
+      }
+      sock->send("\n",1);
+      std::cout << "Closing connection\n";
     } // end while
-    std::cout << "Closing connection\n";
     delete sock;
   } // end while
 } // end inThreadUpdate
