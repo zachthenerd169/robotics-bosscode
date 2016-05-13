@@ -13,6 +13,8 @@
 #ifndef USERCONTROLLER_H_
 #define USERCONTROLLER_H_
 
+#define RCVBUFSIZE  50 
+
 class UserController
 {
 	public:

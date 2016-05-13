@@ -13,7 +13,7 @@
 #ifndef ThreaddedNetwork_h
 #define ThreaddedNetwork_h
 
-#include "PracticalSocket.h"  // For Socket, ServerSocket, and SocketException
+#include "lib/PracticalSocket.h"  // For Socket, ServerSocket, and SocketException
 #include <iostream>           // For cerr and cout
 #include <string>
 #include <cstring>
