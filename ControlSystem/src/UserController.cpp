@@ -1,6 +1,7 @@
 #include "../UserController.h"
 #include <iostream>
 
+
 bool UserController::sendData(std::string data)
 {
 	std::cout<<"sending: "<<data<<std::endl;
@@ -19,9 +20,23 @@ bool UserController::sendData(std::string data)
 }
 std::string UserController::receiveData()
 {
-	std:cout<<"received data"<<std::endl;
-	std::string test="test";
-	return test;
+    const unsigned int BUFFER_SIZE = 1024;
+    char buffer[BUFFER_SIZE]; //createing a buffer that can capture the message received back from the server
+    int bytes_received = 0;  // Bytes read on each recv()
+    int total_bytes_received = 0;  // Total bytes read
+    while (total_bytes_received < BUFFER_SIZE)
+    {   
+        // Setup to print the echoed string
+        // Receive up to the buffer size bytes from the sender
+        if ((bytes_received = (m_socket->recv(buffer, BUFFER_SIZE))) <= 0)
+        {
+            std::cerr << "Unable to read"<<std::endl;
+            exit(1);
+        }
+        total_bytes_received += bytes_received;     // Keep tally of total bytes
+        buffer[bytes_received] = '\0';        // Terminate the string!
+    }
+    return string(buffer);
 }
 
 
