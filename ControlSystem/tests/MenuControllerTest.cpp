@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string.h>
 #include <memory>
-#define DEBUG 0
+#define DEBUG 1
 
 // To compile: g++ --std=c++11 -o menutest.exe tests/MenuControllerTest.cpp src/UserController.cpp src/MenuController.cpp lib/PracticalSocket.cpp
 int main (int argc, char** argv)
@@ -35,7 +35,8 @@ int main (int argc, char** argv)
   	
     while(true)
     {
-    	std::string user_input;
+       
+        std::string user_input;
 		getline(std::cin, user_input);
 		menu.setInput(user_input);
 		bool success=menu.processInput(); //not really doing anything with success right now

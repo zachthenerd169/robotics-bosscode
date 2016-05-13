@@ -1,8 +1,5 @@
 #include "../UserController.h"
 #include <iostream>
-//#include <stdio.h>
-//#include <string.h>
-
 
 bool UserController::sendData(std::string data)
 {
