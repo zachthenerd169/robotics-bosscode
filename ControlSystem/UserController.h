@@ -23,6 +23,11 @@ class UserController
 	     */
 		UserController(std::string address, unsigned short port) :
 			m_socket(new TCPSocket(address, port)), m_input(""){}
+
+        /**
+        * Description: constructor with no arguments for testing purposes.
+        */
+        UserController(){}
 		//make virtual to ensure that actual instantiated object is destructed
 		virtual ~UserController(){}
 		/**
@@ -71,7 +76,7 @@ class UserController
 		 * TCP connection between the user and the robot
 		 */
 		std::shared_ptr<TCPSocket> m_socket;
-		
+
 		/**
 		 * user's command input (can result from keyboard or button press on xbox controller)
 		 */

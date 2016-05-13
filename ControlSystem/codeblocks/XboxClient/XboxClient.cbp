@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="XboxClient" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/XboxClient" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/XboxClient" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../../.gitignore" />
+		<Unit filename="../../AutonomousProcessor.h" />
+		<Unit filename="../../Buffer.h" />
+		<Unit filename="../../CentralController.h" />
+		<Unit filename="../../CommandBuffer.h" />
+		<Unit filename="../../DataBuffer.h" />
+		<Unit filename="../../IRSensor.h" />
+		<Unit filename="../../ImageCollector.h" />
+		<Unit filename="../../LaserRangeFinder.h" />
+		<Unit filename="../../LocationSensor.h" />
+		<Unit filename="../../ManualProcessor.h" />
+		<Unit filename="../../MenuController.h" />
+		<Unit filename="../../Network.h" />
+		<Unit filename="../../Processor.h" />
+		<Unit filename="../../Sensor.h" />
+		<Unit filename="../../ThreaddedNetwork.h" />
+		<Unit filename="../../UserController.h" />
+		<Unit filename="../../XboxController.h" />
+		<Unit filename="../../lib/CXBOXController.cpp" />
+		<Unit filename="../../lib/CXBOXController.h" />
+		<Unit filename="../../lib/Xinput.h" />
+		<Unit filename="../../menutest.exe" />
+		<Unit filename="../../src/DataBuffer.cpp" />
+		<Unit filename="../../src/XboxController.cpp" />
+		<Unit filename="../../tests/XboxControllerTest.cpp" />
+		<Unit filename="../../util/ThreadSafeQueue.h" />
+		<Unit filename="../../util/splitstring.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

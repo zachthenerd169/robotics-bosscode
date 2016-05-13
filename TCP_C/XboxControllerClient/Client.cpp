@@ -73,7 +73,7 @@ int main (int argc, char *argv[])
 
                 // The current set power level and max power level
                 int powerLevel = 0;
-                final int maxPowerLevel = 50;
+                const int maxPowerLevel = 50;
 
                 // Set the deadzones for the analog (not being used currently)
                 float deadzoneX = 0.05f;

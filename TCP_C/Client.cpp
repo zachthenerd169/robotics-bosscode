@@ -263,11 +263,12 @@ void echoMessage(TCPSocket *sock, unsigned int bufferSize)
 {
     
     char echoBuffer[bufferSize+1]; //createing a buffer that can capture the message received back from the server
-    int bytesReceived = 0;  // Bytes read on each recv()
+    int bytesReceived = 1;  // Bytes read on each recv()
     int totalBytesReceived = 0;  // Total bytes read
-    while (totalBytesReceived < bufferSize)
+	cout << "Echoed: ";  // Setup to print the echoed string
+    //while (totalBytesReceived < bufferSize)
+	while (bytesReceived > 0)	
     {
-        cout << "Echoed: ";  // Setup to print the echoed string
         // Receive up to the buffer size bytes from the sender
         if ((bytesReceived = (sock->recv(echoBuffer, bufferSize+1))) <= 0)
         {
@@ -277,6 +278,10 @@ void echoMessage(TCPSocket *sock, unsigned int bufferSize)
         totalBytesReceived += bytesReceived;     // Keep tally of total bytes
         echoBuffer[bytesReceived] = '\0';        // Terminate the string!
         cout <<echoBuffer;
+		if(bytesReceived > 0 && echoBuffer[bytesReceived-1] == '\n')
+		{
+			bytesReceived = 0;
+		}
     }
     cout << endl;
 

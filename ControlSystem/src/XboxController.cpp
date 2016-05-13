@@ -3,19 +3,20 @@
 
 bool XboxController::processInput()
 {
-	if(Player1->IsConnected())
+    m_player_controller = new CXBOXController(1);
+	if(m_player_controller->IsConnected())
 	{
 		// continuously poll the xbox controller until a command button is pressed
-		while(true) 
+		while(true)
 		{
-			m_state = Player1->GetState();
+			m_state = m_player_controller->GetState();
 
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && (m_xbox_controller.endUp == true) )
 			{
 				m_xbox_controller.endUp = false;
-				int newPowerLevel = getPowerLevel() + 10 < MAX_POWER_LEVEL ? getPowerLevel() + 10 : maxPowerLevel;
+				int newPowerLevel = getPowerLevel() + 10 < MAX_POWER_LEVEL ? getPowerLevel() + 10 : MAX_POWER_LEVEL;
 				setPowerLevel(newPowerLevel);
-				std::cout << "Power Level: " << powerLevel << std::endl;
+				std::cout << "Power Level: " << getPowerLevel() << std::endl;
 			}
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) {
 				m_xbox_controller.endUp = true;
@@ -27,7 +28,7 @@ bool XboxController::processInput()
 				m_xbox_controller.endDown = false;
 				int newPowerLevel = getPowerLevel() - 10 > 0 ? getPowerLevel() - 10 : 0;
 				setPowerLevel(newPowerLevel);
-				std::cout << "Power Level: " << powerLevel << std::endl;
+				std::cout << "Power Level: " << getPowerLevel() << std::endl;
 			}
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) {
 				m_xbox_controller.endDown = true;
@@ -36,9 +37,9 @@ bool XboxController::processInput()
 			// Check for A button (forward)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (m_xbox_controller.endA == true) )
 			{
-				setInput("2 " + powerLevel);
+				setInput("[A button forward]");
 				m_xbox_controller.endA = false;
-				std::cout << "Go forward at power level: " << powerLevel << std::endl;
+				std::cout << "Go forward at power level: " << getPowerLevel() << std::endl;
 				return true;
 			}
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
@@ -48,9 +49,9 @@ bool XboxController::processInput()
 			// Check for B button (turn right)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (m_xbox_controller.endB == true))
 			{
-				setInput("4 " + powerLevel);
+				setInput("[B button turn right]");
 				m_xbox_controller.endB = false;
-				std::cout << "Turn right at power level: " << powerLevel << std::endl;
+				std::cout << "Turn right at power level: " << getPowerLevel() << std::endl;
 				return true;
 			}
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
@@ -60,9 +61,9 @@ bool XboxController::processInput()
 			// Check for X button (turn left)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_X) && (m_xbox_controller.endX == true))
 			{
-				setInput("5 " + powerLevel);
+				setInput("[X button turn left]");
 				m_xbox_controller.endX = false;
-				std::cout << "Turn left at power level: " << powerLevel << std::endl;
+				std::cout << "Turn left at power level: " << getPowerLevel() << std::endl;
 				return true;
 			}
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
@@ -72,9 +73,9 @@ bool XboxController::processInput()
 			// Check for Y button (backward)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && (m_xbox_controller.endY == true))
 			{
-				setInput("3 " + powerLevel);
+				setInput("[Y button backward]");
 				m_xbox_controller.endY = false;
-				std::cout << "Go backward at power level: " << powerLevel << std::endl;
+				std::cout << "Go backward at power level: " << getPowerLevel() << std::endl;
 				return true;
 			}
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_Y)) {
@@ -84,7 +85,7 @@ bool XboxController::processInput()
 			// Check for RB button (digger drop)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && (m_xbox_controller.endRB == true))
 			{
-				setInput("6");
+				setInput("[RB button digger drop]");
 				m_xbox_controller.endRB = false;
 				std::cout << "Dropping Digger" << std::endl;
 				return true;
@@ -96,7 +97,7 @@ bool XboxController::processInput()
 			// Check for LB button (digger raise)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) && (m_xbox_controller.endLB == true))
 			{
-				setInput("7");
+				setInput("[LB button digger raise]");
 				m_xbox_controller.endLB = false;
 				std::cout << "Raising Digger" << std::endl;
 				return true;
@@ -104,15 +105,15 @@ bool XboxController::processInput()
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)) {
 				m_xbox_controller.endLB = true;
 			}
-			
+
 			// The following buttons were removed since the robot is built
 			// to have the digger and bucket work with the same button press
 			// instead these buttons will be for data aquisition (image, ir, and laser range finder)
-			
+
 			// Check for Right Thumb button (image)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) && (m_xbox_controller.endRThumb == true))
 			{
-				setInput("8");
+				setInput("[Right thumb button get image]");
 				m_xbox_controller.endRThumb = false;
 				return true;
 			}
@@ -123,21 +124,21 @@ bool XboxController::processInput()
 			// Check for Left Thumb button (ir and laser)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB) && (m_xbox_controller.endLThumb == true))
 			{
-				setInput("9");
+				setInput("[Left thumb button sensors]");
 				m_xbox_controller.endLThumb = false;
 				return true;
 			}
-			
-			
+
+
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB)) {
 				m_xbox_controller.endLThumb = true;
 			}
-			
+
 
 			// Check for start button (stop). I know what you're thinking. Why is start stop? It's close to the right thumb, but still far from the control buttons.
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_START) && (m_xbox_controller.endStart == true))
 			{
-				setInput("1");
+				setInput("[start button stop]");
 				m_xbox_controller.endStart = false;
 				return true;
 			}
@@ -151,7 +152,7 @@ bool XboxController::processInput()
 				std::cout << "Exiting Client Program";
 				return false;
 			}
-			
+
 		}
 	}
 	else
