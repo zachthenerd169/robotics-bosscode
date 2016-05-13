@@ -35,13 +35,18 @@ int main (int argc, char** argv)
   	
     while(true)
     {
-       
+        std::string server_data;
         std::string user_input;
 		getline(std::cin, user_input);
 		menu.setInput(user_input);
 		bool success=menu.processInput(); //not really doing anything with success right now
 		if(menu.inMainMenu()){std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;}
-        
+        // server_data=menu.receiveData(); //try to get messages back from the server
+        // if(server_data.length()>=1){
+        //     std:cout<<"Server: "<<server_data<<std::endl;
+        // }
+
+
 	}
     return 0;
 }

@@ -1,3 +1,4 @@
+//g++ -o test.exe c_test.cpp
 #include <iostream>
 int main(void)
 {
