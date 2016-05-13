@@ -36,3 +36,4 @@ local.properties
 *.texlipse
 
 TCP_C/Server.exe
+*.exe
