@@ -13,13 +13,13 @@
 #ifndef ThreaddedNetwork_h
 #define ThreaddedNetwork_h
 
-#include "PracticalSocket.h"  // For Socket, ServerSocket, and SocketException
+#include "lib/PracticalSocket.h"  // For Socket, ServerSocket, and SocketException
 #include <iostream>           // For cerr and cout
 #include <string>
 #include <cstring>
 
 #include <thread>
-#include "ThreadSafeQueue.h"
+#include "utils/ThreadSafeQueue.h"
 
 #include <vector> 
 
@@ -37,13 +37,12 @@ public:
   /* getNewMessages */
   std::vector<std::string> getNewMessages();
 
-  /* sendMessage */
-  void sendMessage(std::string message);
+  /* hasNewMessages */
+  bool hasNewMessages();
   
 private:
   TCPServerSocket m_servSock;
   ThreadSafeQueue<std::string> q_new_messages;
-  ThreadSafeQueue<std::string> q_outgoing_messages;
   std::thread my_thread;
 
   /* function to be run in thread */

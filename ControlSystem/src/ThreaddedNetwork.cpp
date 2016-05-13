@@ -1,4 +1,4 @@
-#include "ThreaddedNetwork.h"
+#include "../ThreaddedNetwork.h"
 
 /* Constructor */
 ThreaddedNetwork::ThreaddedNetwork(int servPort) :
@@ -24,9 +24,9 @@ std::vector<std::string> ThreaddedNetwork::getNewMessages()
   return newMessages;
 }
 
-void ThreaddedNetwork::sendMessage(std::string message)
+bool ThreaddedNetwork::hasNewMessages()
 {
-  q_outgoing_messages.push(message);
+  return !q_new_messages.empty();
 }
 
 void ThreaddedNetwork::inThreadUpdate()
@@ -46,8 +46,6 @@ void ThreaddedNetwork::inThreadUpdate()
       memset(buffer, 0, RCVBUFSIZE);
       // get data from the socket
       recvMsgSize = sock->recv(buffer, RCVBUFSIZE);
-      std::cout << "msg: ";
-      std::cout << buffer << "\n";
       // iterate over the recieved data
       for(int i=0; i<recvMsgSize; i++)
       {
@@ -78,23 +76,9 @@ void ThreaddedNetwork::inThreadUpdate()
           currentMessage = "";
         } // end if
       } // end for
-      //sock->send(buffer,recvMsgSize);
-      std::string outgoing = "";
-      for(int i=0; i<q_outgoing_messages.size(); i++)
-      {
-        outgoing += "[";
-        outgoing += q_outgoing_messages.at(i);
-        outgoing += "]";
-      }
-      std::cout << "outgoing:\n" << outgoing << "\n";
-      sock->send("[Good]",6);
-      if(outgoing.length() > 0)
-      {
-        sock->send(outgoing.c_str(), outgoing.length());
-      }
-      sock->send("\n",1);
-      std::cout << "Closing connection\n";
+      sock->send(buffer,recvMsgSize);
     } // end while
+    std::cout << "Closing connection\n";
     delete sock;
   } // end while
 } // end inThreadUpdate
