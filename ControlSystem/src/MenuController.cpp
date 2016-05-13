@@ -1,116 +1,146 @@
 #include "../MenuController.h"
+#include "../util/splitString.h"
 
-bool MenuController::processInput(std::string &processed_input)
-{
-	return true;
-}
-//std::string getRequestMenu()
-//{
-//	//will possibly have more requests later
-//	return "1) Get Image & Location\n2) Get Immediate Threats\n3) Return to Robot Control Menu\nEnter a number between 1-3";
-//}
-std::string getMainMenu()
+
+std::string MenuController::getMainMenu()
 {
 	m_menu_state = main;
-	return "1) CONTROL ROBOT\n2) Change Server's IP Address\n3) Change Server's Port Number\n
-			4) Send Test Message To Server Without Arduino\n5) Send Test Message To Server With Arduino\n
-			6) Quit Program\nEnter a number that is 1-6";
+	std::string menu_text = "1) CONTROL ROBOT\n2) Send Test Message To Server Without Arduino\n3) Send Test Message To Server With Arduino\n\nEnter a number that is 1-3";
+	return menu_text;
 }
-std::string getRobotMenu()
+std::string MenuController::getRobotMenu()
 {
 	m_menu_state = robot_control;
-	return "1) request image\n2) request other data\n3) move forward\n4) move backwards\n5) stop\n6) turn right\n7) turn left\n
-			8) lower digger\n9) raise digger\n
-			choose a number 1-9"; 
+	return "\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <1>\nMOVE STRAIGHT FORWARD: <2 powerLevel>\nMOVE STRAIGHT REVERSE: <3 powerLevel>\nTURN RIGHT: <4 powerLevel>\nTURN LEFT: <5 powerLevel>\nDIGGER DROP: <6>\nRAISE DIGGER:<7>\nDUMP BUCKET: <8>\nLOWER BUCKET: <9>\nREQUEST SENSOR DATA <10>\nREQUEST IMAGE: <11>\n\nPRINT KEY <help>\nBACK TO MAIN MENU <exit>";
 }
-bool processInput(std::string &processed_input)
+bool MenuController::processInput()
 {
-	if(m_menu_state == main)
+	std::string input=getInput(); //getting the input that was set in the main loop
+	//std::cout<<input<<std::endl;
+	if(m_menu_state == main) //if we are procesing an input to the main menu
 	{
-		switch(processed_input)
-		case 1:
-			getRobotMenu();
-			return true;
-			break;
-		case 2:
-			//change server IP address
-			return true;
-			break;
-		case 3:
-			//change server port number
-			return true;
-			break;
-		case 4:
-			//send test message to server sans arduino
-			return true;
-			break;
-		case 5:
-			//send test message to server with arduino
-			return true;
-			break;
-		case 6:
-			//quit program
-			return true;
-			break;
-		default:
-			cout << "inproper input" << endl
-			return false;
+		if(!isMainInputValid(input))
+		{
+			std::cerr << "invalid input\nmust be a single digit 1-3" << std::endl;
+			return false; //if the input is the incorrect level don't proccess it
+		} 
+		int input_switch = stoi(input); //can't switch a string so making it an int
+		switch(input_switch)
+		{
+			case 1:
+				std::cout<<getRobotMenu()<<std::endl;
+				break;
+			case 2:
+			{	
+				std::string message = obtainAndFormatTestMessage();
+				sendData(message);
+				break;
+			} //need brackets in order to set var message
+			case 3:
+			{
+				std::string message = obtainAndFormatTestMessage();
+				sendData(message);
+				break;
+			}
+			default:
+				std::cerr << "invalid input\nmust be a single digit 1-3" << std::endl;
+				return false; //did not successfully process input
+				break;
+		}	
+		return true; //successfully processed input	
 	} 
 	else if (m_menu_state == robot_control) 
 	{
-		switch(processed_input)
-		case 1:
-			//request image
-			return true;
-			break;
-		case 2:
-			//request other data
-			return true;
-			break;
-		case 3:
-			//move forward
-			setinput("2 " + defaultPowerLevel);
-			return true;
-			break;
-		case 4:
-			//move back
-			setinput("3 " + defaultPowerLevel);
-			return true;
-			break;
-		case 5:
-			//stop
-			setinput("1");
-			return true;
-			break;
-		case 6:
-			//turn right
-			setinput("4 " + defaultPowerLevel);
-			return true;
-			break;
-		case 7:
-			//turn left
-			setinput("5 " + defaultPowerLevel);
-			return true;
-			break;
-		case 8:
-			//lower digger, automatically starts digging
-			setinput("6");
-			return true;
-			break;
-		case 9:
-			//raise digger, automatically stops digging
-			setinput("7");
-			return true;
-			break;
-		default:
-			cout << "Improper input" << endl;
-			return false;
+		if(getInput() == "help") std::cout<<"\n"<<getRobotMenu()<<std::endl;
+		else if(getInput()=="exit") std::cout<<"\n"<<getMainMenu()<<std::endl;
+		else if(!isRobotInputValid(getInput())) //didn't process input
+		{ 
+			std::cerr<<"invalid input\n"<<getRobotMenu()<<std::endl;
+			return false; 
+		}
+		else
+		{
+			std::string packet = formatPacketToRobot(getInput());
+			sendData(packet);
+		}
+		return true;
 	}
 	else
 	{
-		cout << "no state" << endl;
+		std::cerr << "FUCK SOMETHING WENT WRONG IN MENUCONTROLLER" << std::endl;
 		return false;
 	}
+}
+std::string MenuController::obtainAndFormatTestMessage(bool to_arduino)
+{
+	std::string packet="[T";
+	std:string message;
+	std::cout<<"enter message to send: "<<std::endl;
+	getline(std::cin, message);
+	packet += to_arduino ? "A"+message : message;
+	packet +="]"; //ending packet
+	return packet;
+}
+bool MenuController::isMainInputValid(std::string input)
+{
+	return input.length()>1 ? false : true;
+}
+bool MenuController::isRobotInputValid(std::string input)
+{
+	//as of right now it doesn't check the spacebar!!!
+	std::vector<std::string> commands = splitString(input);
+	//if # of args is invalid or arg is out of range
+	int mode;
+	int power_level;
+	// if the command is the right number of arguments
+	if(commands.size()>2 || commands.size()==0) return false; 
+	try //if the command is 1 or 2 numbers (1 # for mode and 1 # for powerlevel)
+	{ 
+		mode = std::stoi(commands[0]);
+		if(commands.size() == 2) power_level = std::stoi(commands[1]);
+	}
+	catch(...)  //catch all exceptions
+	{
+		return false;
+	}
+	if(mode < 1 || mode > 11) return false; //checking mode
+	//if arg is supposed to have a mode and a power level
+	if((mode >=2  && mode <= 5)){ //check powerlevel
+		if(commands.size()!=2) return false; //size should be 2 for this mode
+		if (power_level > 127 || power_level < 0) return false; //make sure power level is valid
+	}
+	//if arg is just supposed to have a mode
+	if((mode==1) || (mode > 5 && mode < 12)){
+		if(commands.size()!=1) return false; //input size should only be one for this input
+	}
+	return true; //commamd was valid!
+}
+bool MenuController::inMainMenu()
+{
+	 return m_menu_state == main ?  true : false;
+}
+std::string MenuController::formatPacketToRobot(std::string input)
+{
+	std::string packet="[";
+	std::vector<std::string> commands = splitString(input);
+	//if the command is meant to control the robot otherwise it's meant to get sensor data
+	int mode = (std::stoi(commands[0]));
+	if(mode<=9) packet+="M";
+	else if(mode==10) packet+="S";
+	else if (mode==11) packet+="I";
+	//need another 0 if the command is only one digit
+	if(mode < 10) {	
+		packet+= (commands[0].length()==1) ? "0"+commands[0] : commands[0];
+
+	//get the power level if there is one
+	if(commands.size()==2){
+		if(commands[1].length()==1) packet+="00"+commands[1];
+		else if(commands[1].length()==2) packet+="0"+commands[1];
+		else packet+=commands[1];
+		}
+	}
+	packet+="]"; //closing the packet
+	return packet;
 
 }
 

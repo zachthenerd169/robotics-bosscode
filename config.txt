@@ -1,0 +1,17 @@
+# Test Comment
+
+#Threshold values for blue folder
+threshold_hue_low = 100
+threshold_hue_high = 128
+threshold_sat_low = 120
+threshold_sat_high = 180
+threshold_val_low = 100
+threshold_val_high = 255
+
+#Threshold values for yellow folder
+#threshold_hue_low = 100
+#threshold_hue_high = 128
+#threshold_sat_low = 120
+#threshold_sat_high = 180
+#threshold_val_low = 100
+#threshold_val_high = 255

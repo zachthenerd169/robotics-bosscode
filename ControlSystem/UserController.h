@@ -16,51 +16,15 @@
 class UserController
 {
 	public:
-		UserController(std::string address, unsigned short port) :
-			m_socket(new TCPSocket(address, port))
-		{
-			
-		}
 		/**
-		 * Description: default constructor
-		 * Inputs: none
-		 */
-		UserController():m_socket(nullptr){}
-		/**
-		 * Description: constructor that uses another TCPSocket that already existed outside of this
-		 * 				class
-		 */
-	    //UserController(TCPSocket& socket){m_socket(socket);}
-	    /**
 	     * Description: constructor creates TCPSocket object
 	     * Inputs: the IP Address of the NUC (the computer on the robot)
 	     * 		   the port number the NUC is listening on
 	     */
-	    //UserController(std::string ip_address, unsigned short port_number){m_socket = new TCPSocket(ip_address, port_number);}
-		virtual ~UserController(){} //make virtual to ensure that actual instantiated object is destructed
-		/**
-		 * Description: sets the TCPSocket object (this will typically be used if the
-		 * 				default constructor is used
-		 * Input:  TCPSocket
-		 * Output: none
-		 */
-		//void setSocket(TCPSocket& socket){m_socket(socket);}
-		/**
-		 * Description: changes the port number for this socket
-		 * Input: the new port number
-		 * Output: true if it successfully changed the port number, false otherwise
-		 * 		   the port number will not successfully change if PracticalSocket throws
-		 * 		   an exception or if m_socket is nullptr
-		 */
-		bool changePort(unsigned short new_port);
-		/**
-	     * Description: changes the ip address for this socket
-	     * Input: the new ip addess
-		 * Output: true if it successfully changed the address, false otherwise
-		 * 		   the address will not successfully change if PracticalSocket throws
-		 * 		   an exception or if m_socket is nullptr
-		 */
-		bool changeIPAddress(std::string new_ip);
+		UserController(std::string address, unsigned short port) :
+			m_socket(new TCPSocket(address, port)), m_input(""){}
+		//make virtual to ensure that actual instantiated object is destructed
+		virtual ~UserController(){}
 		/**
 		 * Description: receives data from the robot. The type of data the user will
 		 * 				receive is sensor data if the Control System is not in debug mode. If the
@@ -68,7 +32,7 @@ class UserController
 		 * Input:  none
 		 * Output: character array of data
 		 */
-		char* receiveData(void);
+		std::string receiveData(void);
 		/**
 		 * Description: send data to the robot through m_socket. The type of data the user will send are commands or
 		 * 				requests.
@@ -77,28 +41,30 @@ class UserController
 		 * 	Input: a character array of that will either contain a command or request
 		 * 	Output: none
 		 */
-		void sendData(char* data);
+		bool sendData(std::string data);
 		/**
 		 * Description: method is to implementd in MenuController & XboxController. it will process the user's
 		 *              input whether the input is something like a button press or a command line input
 		 * Input: void
 		 * Output: returns true if processed input successfully, false otherwise
 		 */
-		virtual bool processInput() = 0;
-		
+		virtual bool processInput()=0;
 		/**
 		 * Description: method sets the input
 		 * Input: string that will be placed in the input
 		 * Output: void
 		 */
-		void setInput(std::string input) {m_input = input};
-		
+		void setInput(std::string input) {m_input = input;};
 		/**
 		 * Description: method gets the input
 		 * Input: void
 		 * Output: void
 		 */
-		std::string getInput() {return m_input};
+		std::string getInput() {return m_input;}
+		/**
+		 * for the user to change ip addresses and stuff (maybe won't do it)
+		 */
+		std::shared_ptr<TCPSocket> getSocket(){return m_socket;}
 
 	private:
 		/**

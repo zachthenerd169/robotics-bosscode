@@ -1,13 +1,12 @@
 #include "../lib/PracticalSocket.h"
-#include "../MenuController.h"
+#include "../XboxController.h"
 
 #include <iostream>
 #include <string.h>
 #include <memory>
-#define DEBUG 1//
+#define DEBUG 1
+
 // To compile: g++ --std=c++11 -o menutest.exe tests/MenuControllerTest.cpp src/UserController.cpp src/MenuController.cpp lib/PracticalSocket.cpp
-// (make sure you are in the ControlSystem dir when you compile/run)
-// To run: ./menutest.exe <ip address> <port #>
 int main (int argc, char** argv)
 {
 	std::string address;
@@ -31,23 +30,22 @@ int main (int argc, char** argv)
     	}
     }	
 #endif	
-	MenuController menu(address, port); //construct menu object
+	XboxController xboxcontroller(address, port); //construct xbox controller object
  	std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;
   	
     while(true)
     {
-        std::string server_data;
-        std::string user_input;
-		getline(std::cin, user_input);
-		menu.setInput(user_input);
-		bool success=menu.processInput(); //not really doing anything with success right now
+		bool success=xboxcontroller.processInput(); //not really doing anything with success right now
+		if(success)
+		{
+			// send the data to the server 
+		}
+		else
+		{
+			// Exited for some reason or another
+			return 0;
+		}
 		if(menu.inMainMenu()){std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;}
-        // server_data=menu.receiveData(); //try to get messages back from the server
-        // if(server_data.length()>=1){
-        //     std:cout<<"Server: "<<server_data<<std::endl;
-        // }
-
-
 	}
     return 0;
 }
