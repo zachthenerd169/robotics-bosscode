@@ -43,7 +43,7 @@ public:
 private:
   TCPServerSocket m_servSock;
   ThreadSafeQueue<std::string> q_new_messages;
-  ThreadSafeQueue<std::string> q_outgoing_messages;
+  ThreadSafeQueue<std::string> q_outgoing_message;
   std::thread my_thread;
 
   /* function to be run in thread */

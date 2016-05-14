@@ -1,6 +1,6 @@
 #include "../UserController.h"
 #include <iostream>
-
+#include <cstring>
 
 bool UserController::sendData(std::string data)
 {

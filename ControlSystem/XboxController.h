@@ -8,7 +8,9 @@
  * Control Key:
  */
 
-#include "CXBOXController.h"
+#include "UserController.h"
+#include "lib/CXBOXController.h" // for xbox controller
+
 
 #ifndef XBOXCONTROLLER_H_
 #define XBOXCONTROLLER_H_
@@ -20,31 +22,36 @@ class XboxController : public UserController
 		 * Description: constructor copies TCPSocket, xbox controller is initialized so the nothing is pressed
 		 * Inputs: a TCPSocket object
 		 */
-		XboxController(TCPSocket& socket):UserController(socket),m_xbox_controller({1,1,1,1,1,1,1,1,1,1,1,1}){};
+		//XboxController(TCPSocket& socket):UserController(socket),m_xbox_controller(){};
 		/**
 		 * Description: creates a TCPSocket objects, xbox controller is initialized so the nothing is pressed
 		 * Inputs: the IP Address of the NUC (the computer on the robot)
 		 * 		   the port number the NUC is listening on
 		 */
 		XboxController(std::string address, unsigned short port):
-				UserController(address, port),m_xbox_controller({1,1,1,1,1,1,1,1,1,1,1,1}){};
+				UserController(address, port),m_xbox_controller(){};
 		/**
 		 * Description: default constructor
 		 * Input: none
 		 */
-		XboxController():UserController(),m_xbox_controller({1,1,1,1,1,1,1,1,1,1,1,1}){};
+		XboxController():UserController(),m_xbox_controller(){};
 		/**
 		 * Description: Checks if the user has pressed a button that hasn't been pressed.
 		 * Inputs: string that stores the processed input that is to be sent to the robot
 		 * Outputs: returns true if command was successfully processed, returns false
 		 * 			otherwise. Note, power change button presses are not commands.
 		 */
-		bool processInput(std::string &processed_input);
+		bool processInput();
 		/**
-		 * Description: setters for class attributes
-		 * Input: menu state or user input
+		 * Description: setter for power level
+		 * Input: new power level
 		 */
-		void setPowerLevel(std::string powerLevel){m_power_level=powerLevel;}
+		void setPowerLevel(int powerLevel){m_power_level=powerLevel;}
+		/**
+		 * Description: getter for power level
+		 * Output: the current power level
+		 */
+		int getPowerLevel(){return m_power_level;}
 
 
 		/**
@@ -76,7 +83,7 @@ class XboxController : public UserController
 		* holds the current power level as adjusted
 		* by the controller
 		*/
-		int m_power_level;
+		int m_power_level = 0;
 
 		/**
 		* holds the current state of the xbox controller
@@ -87,7 +94,7 @@ class XboxController : public UserController
 		* points to the controller being used
 		*/
 		CXBOXController* m_player_controller;
-		
+
 
 };
 #endif /* XBOXCONTROLLER_H_ */

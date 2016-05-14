@@ -1,6 +1,6 @@
 /* Compile with: g++ -Wall -std=c++11 -o ThreaddedNetworkTest.exe ThreadingTest.cpp  ThreaddedNetwork.cpp PracticalSocket.cpp -lpthread
- * To run: ./ThreaddedNetworkTest.exe
- */
+*/
+
 #include "ThreaddedNetwork.h"
 
 int main(int argc, char *argv[])
@@ -21,13 +21,13 @@ int main(int argc, char *argv[])
     std::vector<std::string> data = network.getNewMessages(); 
     if(!data.empty())
     {
-      std::cout << "Received new data:\n";
+      //std::cout << "Received new data:\n";
       network.sendMessage(data.at(0));
       for(int i=0; i<data.size(); i++)
       {
-        std::cout << data.at(i) << "\n";
+        //std::cout << data.at(i) << "\n";
       }
-      std::cout <<"End new data\n";
+      //std::cout <<"End new data\n";
     }
   }
 

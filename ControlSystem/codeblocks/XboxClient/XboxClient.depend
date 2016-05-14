@@ -1,0 +1,84 @@
+# depslib dependency file v1.0
+1454889966 source:c:\users\uirc\documents\github\robotics-bosscode\controlsystem\lib\cxboxcontroller.cpp
+	"CXBOXController.h"
+
+1463170349 c:\users\uirc\documents\github\robotics-bosscode\controlsystem\lib\cxboxcontroller.h
+	<windows.h>
+	"Xinput.h"
+
+1271731484 c:\users\uirc\documents\github\robotics-bosscode\controlsystem\lib\xinput.h
+	<windef.h>
+
+1463171736 source:c:\users\uirc\documents\github\robotics-bosscode\controlsystem\lib\practicalsocket.cpp
+	"PracticalSocket.h"
+	<winsock.h>
+	<sys/types.h>
+	<sys/socket.h>
+	<netdb.h>
+	<arpa/inet.h>
+	<unistd.h>
+	<netinet/in.h>
+	<stdio.h>
+	<errno.h>
+
+1462746226 c:\users\uirc\documents\github\robotics-bosscode\controlsystem\lib\practicalsocket.h
+	<string>
+	<exception>
+
+1462746226 source:c:\users\uirc\documents\github\robotics-bosscode\controlsystem\src\databuffer.cpp
+	"../DataBuffer.h"
+
+1462746226 c:\users\uirc\documents\github\robotics-bosscode\controlsystem\databuffer.h
+	<deque>
+	<iostream>
+	<string.h>
+	"Buffer.h"
+
+1462746226 c:\users\uirc\documents\github\robotics-bosscode\controlsystem\buffer.h
+	<string.h>
+
+1463178728 source:c:\users\uirc\documents\github\robotics-bosscode\controlsystem\src\menucontroller.cpp
+	"../MenuController.h"
+	"../util/splitString.h"
+
+1463171736 c:\users\uirc\documents\github\robotics-bosscode\controlsystem\menucontroller.h
+	"UserController.h"
+
+1463186160 c:\users\uirc\documents\github\robotics-bosscode\controlsystem\usercontroller.h
+	"lib/PracticalSocket.h"
+	<memory>
+	<iostream>
+
+1463171736 c:\users\uirc\documents\github\robotics-bosscode\controlsystem\util\splitstring.h
+	<iostream>
+	<string.h>
+	<vector>
+	<sstream>
+
+1463181319 source:c:\users\uirc\documents\github\robotics-bosscode\controlsystem\src\usercontroller.cpp
+	"../UserController.h"
+	<iostream>
+	<cstring>
+
+1463185939 source:c:\users\uirc\documents\github\robotics-bosscode\controlsystem\src\xboxcontroller.cpp
+	"../XboxController.h"
+	<iostream>
+
+1463186204 c:\users\uirc\documents\github\robotics-bosscode\controlsystem\xboxcontroller.h
+	"UserController.h"
+	"lib/CXBOXController.h"
+
+1463178728 source:c:\users\uirc\documents\github\robotics-bosscode\controlsystem\tests\menucontrollertest.cpp
+	"../lib/PracticalSocket.h"
+	"../MenuController.h"
+	<iostream>
+	<string.h>
+	<memory>
+
+1463185361 source:c:\users\uirc\documents\github\robotics-bosscode\controlsystem\tests\xboxcontrollertest.cpp
+	"../lib/PracticalSocket.h"
+	"../XboxController.h"
+	<iostream>
+	<string.h>
+	<memory>
+
