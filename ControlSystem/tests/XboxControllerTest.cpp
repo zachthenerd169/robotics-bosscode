@@ -30,25 +30,24 @@ int main (int argc, char** argv)
     	}
     }
 #endif
-	//XboxController xboxcontroller(address, port); //construct xbox controller object
-	XboxController xboxcontroller; //construct xbox controller object
- 	//std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;
+	XboxController xboxcontroller(address, port); //construct xbox controller object
+	//XboxController xboxcontroller; //This is used for testing without networking code
 
     while(true)
     {
+		std::cout<<"\n\n"<<xboxcontroller.getMenu()<<std::endl;
 		bool success=xboxcontroller.processInput(); //not really doing anything with success right now
 		if(success)
 		{
 			// send the data to the server
-			//xboxcontroller.sendData(xboxcontrolle r.getInput());
-			std::cout << xboxcontroller.getInput();
+			xboxcontroller.sendData(xboxcontroller.getInput());
+			//std::cout << xboxcontroller.getInput(); // This is used for testing the buttons
 		}
 		else
 		{
 			// Exited for some reason or another
 			return 0;
 		}
-		//if(menu.inMainMenu()){std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;}
 	}
     return 0;
 }

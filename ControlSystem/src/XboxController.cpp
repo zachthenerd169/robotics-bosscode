@@ -1,6 +1,11 @@
 #include "../XboxController.h" // not sure if this is needed
 #include <iostream>
 
+std::string XboxController::getMenu()
+{
+	return "\n---CONTROLS---\nPOWER LEVEL DOWN: <D-PAD DOWN>\nPOWER LEVEL UP: <D-PAD UP>\nSTOP ROBOT: <START>\nMOVE STRAIGHT FORWARD: <A>\nMOVE STRAIGHT REVERSE: <Y>\nTURN RIGHT: <B>\nTURN LEFT: <X>\nDIGGER DROP: <RB>\nRAISE DIGGER: <LB>\nREQUEST SENSOR DATA: <LEFT THUMB>\nREQUEST IMAGE: <RIGHT THUMB>\nEXIT: <SELECT>";
+}
+
 bool XboxController::processInput()
 {
     m_player_controller = new CXBOXController(1);
@@ -146,7 +151,7 @@ bool XboxController::processInput()
 				m_xbox_controller.endStart = true;
 			}
 
-			// Check for start button (exit)
+			// Check for select button (exit)
 			if(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK)
 			{
 				std::cout << "Exiting Client Program";
