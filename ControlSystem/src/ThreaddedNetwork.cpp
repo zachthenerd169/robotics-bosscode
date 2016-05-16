@@ -4,6 +4,8 @@
 ThreaddedNetwork::ThreaddedNetwork(int servPort) :
   m_servSock(servPort)
 {
+  // block right away
+  cts = false;
   // start the new thread running 'inThreadUpdate'
   my_thread = std::thread(&ThreaddedNetwork::inThreadUpdate,this);
 }
@@ -27,6 +29,11 @@ std::vector<std::string> ThreaddedNetwork::getNewMessages()
 void ThreaddedNetwork::sendMessage(std::string message)
 {
   q_outgoing_messages.push(message);
+}
+
+void ThreaddedNetwork::clearToSend();
+{
+  cts = true;
 }
 
 void ThreaddedNetwork::inThreadUpdate()
@@ -80,6 +87,8 @@ void ThreaddedNetwork::inThreadUpdate()
       } // end for
       //sock->send(buffer,recvMsgSize);
       std::string outgoing = "";
+      while(!cts) {} // Block until clear to send
+      cts = false; // set cts back to false once we've unblocked
       for(int i=0; i<q_outgoing_messages.size(); i++)
       {
         outgoing += "[";
