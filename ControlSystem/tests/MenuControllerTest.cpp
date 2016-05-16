@@ -32,7 +32,7 @@ int main (int argc, char** argv)
     }	
 #endif	
 	MenuController menu(address, port); //construct menu object
- 	std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;
+ 	std::cout<<"\n\n"<<menu.getMainMenu();
   	
     while(true)
     {
@@ -40,8 +40,9 @@ int main (int argc, char** argv)
         std::string user_input;
 		getline(std::cin, user_input);
 		menu.setInput(user_input);
+        std::cout<<std::endl;
 		bool success=menu.processInput(); //not really doing anything with success right now
-		if(menu.inMainMenu()){std::cout<<"\n\n"<<menu.getMainMenu()<<std::endl;}
+		if(menu.inMainMenu()){std::cout<<"\n\n"<<menu.getMainMenu();}
         // server_data=menu.receiveData(); //try to get messages back from the server
         // if(server_data.length()>=1){
         //     std:cout<<"Server: "<<server_data<<std::endl;

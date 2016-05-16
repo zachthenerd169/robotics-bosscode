@@ -5,7 +5,7 @@
 std::string MenuController::getMainMenu()
 {
 	m_menu_state = main;
-	std::string menu_text = "1) CONTROL ROBOT\n2) Send Test Message To Server Without Arduino\n3) Send Test Message To Server With Arduino\n\nEnter a number that is 1-3";
+	std::string menu_text = "1) CONTROL ROBOT\n2) Send Test Message To Server Without Arduino\n3) Send Test Message To Server With Arduino\n\nEnter a number that is 1-3: ";
 	return menu_text;
 }
 std::string MenuController::getRobotMenu()
@@ -21,7 +21,7 @@ bool MenuController::processInput()
 	{
 		if(!isMainInputValid(input))
 		{
-			std::cerr << "invalid input\nmust be a single digit 1-3" << std::endl;
+			std::cerr << "invalid input\nmust be a single digit 1-3"<<std::endl;
 			return false; //if the input is the incorrect level don't proccess it
 		} 
 		int input_switch = stoi(input); //can't switch a string so making it an int
@@ -75,8 +75,9 @@ std::string MenuController::obtainAndFormatTestMessage(bool to_arduino)
 {
 	std::string packet="[T";
 	std:string message;
-	std::cout<<"enter message to send: "<<std::endl;
+	std::cout<<"enter message to send: ";
 	getline(std::cin, message);
+	std::cout<<std::endl;
 	packet += to_arduino ? "A"+message : message;
 	packet +="]"; //ending packet
 	return packet;
