@@ -104,6 +104,7 @@ int main(int argc, char *argv[])
         }
       }
     }
+    network.clearToSend();
 
     /* Update robot state */
     //
