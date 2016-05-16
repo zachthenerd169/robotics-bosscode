@@ -12,34 +12,41 @@
 
 std::string leftPad(unsigned int num)
 {
+  std::cout<<"num: "<<num<<std::endl;
   if(num == 0) {return std::string("000");}
-  std::string out;
+  std::string out="";
   if(num < 10)
   {
-    std::string out = "00";
+    out = "00";
   }
   else if(num < 100)
   {
-    std::string out = "0";
+    out = "0";
   }
   else if(num > 999)
   {
     return "999";
   }
-  out += num;
+  out += std::to_string(num);
+  std::cout<<"out: "<<out<<std::endl;
   return out;
 }
 
 void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
 {
+  std::cout<<"TEST: " << cmd << std::endl;
   char mode = cmd.at(1); // mode is the second letter
-  int speed = std::stoi(cmd.substr(2));
-  if(mode == '0') // stop
+  int speed;
+  std::cout<<mode<<std::endl;
+  std::cout<<cmd.substr(2)<<std::endl;
+  if(cmd.length()>2)speed = std::stoi(cmd.substr(2));
+  if(mode == '1') // stop
   {
     motor_arduino.write("s");
   }
-  else if(mode == '1') // forward
+  else if(mode == '2') // forward
   {
+    std::cout<<"speed: "<<speed<<std::endl;
     std::string out = "";
     out += "!01";
     out += leftPad(speed);
@@ -71,7 +78,12 @@ int main(int argc, char *argv[])
 
   /* Construct robot components */
   ThreaddedNetwork network(server_port);
-  Arduino motor_arduino("dev/ttyACM0");
+  //STEPH TEST
+  const char* steph_port="/dev/cu.usbmodem1421";
+  Arduino motor_arduino(steph_port);
+
+  //USE THIS OTHERWISE
+  //Arduino motor_arduino("dev/ttyACM0");
 
 
   /* Main program loop */

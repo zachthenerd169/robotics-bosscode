@@ -1,7 +1,7 @@
 #include "../Arduino.h"
 #define BUF_MAX 256   // default max buffer size
 #define TIMEOUT 5000 // default timeout
-#define DEBUG 1
+#define DEBUG 0
 
 
 void Arduino::write(std::string message)
