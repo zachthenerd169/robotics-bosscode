@@ -130,7 +130,7 @@ std::string MenuController::formatPacketToRobot(std::string input)
 	else if (mode==11) packet+="I";
 	//need another 0 if the command is only one digit
 	if(mode < 10) {	
-		packet+= (commands[0].length()==1) ? "0"+commands[0] : commands[0];
+		packet+= commands[0];
 
 	//get the power level if there is one
 	if(commands.size()==2){
