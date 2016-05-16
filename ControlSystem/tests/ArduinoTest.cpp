@@ -3,6 +3,7 @@
 
 int main (int argc, char** argv)
 {
-	Arduino arduino;
-	arduino.writeToMotors("hello motors!");
+	const char* steph_port="/dev/cu.usbmodem1421";
+	Arduino motor_arduino(steph_port);
+	motor_arduino.write("hello motors!");
 }

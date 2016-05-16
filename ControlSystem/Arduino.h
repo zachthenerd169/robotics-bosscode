@@ -9,23 +9,21 @@ class Arduino{
 		/**
 		 *
 		 */
-		Arduino()
+		Arduino(const char* port, int baud_rate=9600)
 		{
-			fd_motors=-1;
-			fd_motors = serialport_init(MOTOR_PORT, BAUD_RATE); //opening port
-    		(fd_motors == -1) ? std::cout<< "couldn't open port for arduino! :(" << std::endl : std::cout<< "opened port " << MOTOR_PORT << std::endl;
-    		serialport_flush(fd_motors);
+			fd=-1;
+			fd = serialport_init(port, baud_rate); //opening port
+    		(fd == -1) ? std::cout<< "couldn't open port for arduino! :(" << std::endl : std::cout<< "opened port " << port << std::endl;
+    		serialport_flush(fd);
     	}
 		/**
 		 * Description: writes the string to the arduino
 		 * Input: the message to be written
 		 */
-		void writeToMotors(std::string message);
+		void write(std::string message);
 
 	private:
-		int fd_motors;
-		const char* MOTOR_PORT="/dev/cu.usbmodem1421"; //steph's port
-		const int BAUD_RATE=57600;
+		int fd;
 };
 
 #endif
