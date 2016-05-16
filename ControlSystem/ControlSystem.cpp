@@ -35,10 +35,10 @@ int main(int argc, char *argv[])
   while(true)
   {
     /* check for any new messages from the server */
-    if( network.hasNewMessages() )
+    std::vector<std::string> newMessages = network.getNewMessages();
+    if(newMessages.size() > 0)
     {
       /* Processes incoming messages */
-      std::vector<std::string> newMessages = network.getNewMessages();
       for(unsigned int i=0; i<newMessages.size(); i++)
       {
         /* for now just print the messages */
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
         switch(newMessages.at(i)[0])
         {
           case 'M': // movement command
-            handleMovementCommand(newMessages.at(i));
+            //handleMovementCommand(newMessages.at(i));
             break;
           case 'S': // sensor request
             break;
