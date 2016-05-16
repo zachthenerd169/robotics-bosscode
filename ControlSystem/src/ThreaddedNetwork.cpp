@@ -1,4 +1,4 @@
-#include "ThreaddedNetwork.h"
+#include "../ThreaddedNetwork.h"
 
 /* Constructor */
 ThreaddedNetwork::ThreaddedNetwork(int servPort) :

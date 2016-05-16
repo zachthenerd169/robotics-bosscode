@@ -19,10 +19,9 @@
 #include <cstring>
 
 #include <thread>
-#include "ThreadSafeQueue.h"
+#include "util/ThreadSafeQueue.h"
 
 #include <vector> 
-
 #define RCVBUFSIZE  50        // Size of receive buffer
 
 class ThreaddedNetwork
