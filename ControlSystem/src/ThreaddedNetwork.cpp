@@ -88,6 +88,7 @@ void ThreaddedNetwork::inThreadUpdate()
       }
       std::cout << "outgoing:\n" << outgoing << "\n";
       sock->send("[Good]",6);
+      sock->send("[Test]",6);
       if(outgoing.length() > 0)
       {
         sock->send(outgoing.c_str(), outgoing.length());
