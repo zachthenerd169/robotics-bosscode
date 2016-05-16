@@ -11,7 +11,9 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="192.168.0.11 2348" />
 				<Compiler>
+					<Add option="-std=c++0x" />
 					<Add option="-g" />
 				</Compiler>
 			</Target>
@@ -31,29 +33,14 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="../../.gitignore" />
-		<Unit filename="../../AutonomousProcessor.h" />
-		<Unit filename="../../Buffer.h" />
-		<Unit filename="../../CentralController.h" />
-		<Unit filename="../../CommandBuffer.h" />
-		<Unit filename="../../DataBuffer.h" />
-		<Unit filename="../../IRSensor.h" />
-		<Unit filename="../../ImageCollector.h" />
-		<Unit filename="../../LaserRangeFinder.h" />
-		<Unit filename="../../LocationSensor.h" />
-		<Unit filename="../../ManualProcessor.h" />
-		<Unit filename="../../MenuController.h" />
-		<Unit filename="../../Network.h" />
-		<Unit filename="../../Processor.h" />
-		<Unit filename="../../Sensor.h" />
-		<Unit filename="../../ThreaddedNetwork.h" />
 		<Unit filename="../../UserController.h" />
 		<Unit filename="../../XboxController.h" />
 		<Unit filename="../../lib/CXBOXController.cpp" />
 		<Unit filename="../../lib/CXBOXController.h" />
+		<Unit filename="../../lib/PracticalSocket.cpp" />
+		<Unit filename="../../lib/PracticalSocket.h" />
 		<Unit filename="../../lib/Xinput.h" />
-		<Unit filename="../../menutest.exe" />
-		<Unit filename="../../src/DataBuffer.cpp" />
+		<Unit filename="../../src/UserController.cpp" />
 		<Unit filename="../../src/XboxController.cpp" />
 		<Unit filename="../../tests/XboxControllerTest.cpp" />
 		<Unit filename="../../util/ThreadSafeQueue.h" />

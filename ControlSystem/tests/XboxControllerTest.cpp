@@ -4,7 +4,8 @@
 #include <iostream>
 #include <string.h>
 #include <memory>
-#define DEBUG 1
+#include <stdlib.h>
+#define DEBUG 0
 
 // To compile: g++ --std=c++11 -o xboxtest.exe tests/XboxControllerTest.cpp src/UserController.cpp src/XboxController.cpp lib/PracticalSocket.cpp lib/CXboxController.cpp
 int main (int argc, char** argv)
@@ -32,6 +33,7 @@ int main (int argc, char** argv)
 #endif
 	XboxController xboxcontroller(address, port); //construct xbox controller object
 	//XboxController xboxcontroller; //This is used for testing without networking code
+	xboxcontroller.initializeController();
 
     while(true)
     {

@@ -15,6 +15,13 @@
 #ifndef XBOXCONTROLLER_H_
 #define XBOXCONTROLLER_H_
 
+/**
+ * Description: Helper function for converting integer to string (std::to_string doesn't work on MINGW)
+ * Inputs: the integer to convert to a string
+ * Outputs: the converted string
+ */
+ std::string to_string(int value);
+
 class XboxController : public UserController
 {
 	public:
@@ -30,6 +37,13 @@ class XboxController : public UserController
 		 * Input: none
 		 */
 		XboxController():UserController(),m_xbox_controller(){};
+
+		/**
+		 * Description: initializes the controller
+		 * Input: none
+		 */
+		void initializeController(){m_player_controller = new CXBOXController(1);}
+
 		/**
 		 * Description: Checks if the user has pressed a button that hasn't been pressed.
 		 * Inputs: string that stores the processed input that is to be sent to the robot
@@ -61,7 +75,7 @@ class XboxController : public UserController
 		/**
 		* constant that specifies the absolute largest power level
 		*/
-		static const int MAX_POWER_LEVEL = 50;
+		static const int MAX_POWER_LEVEL = 120;
 	private:
 		/**
 		 * holds the button press state of the xbox controller
