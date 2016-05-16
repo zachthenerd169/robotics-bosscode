@@ -3,6 +3,6 @@
 
 int main (int argc, char** argv)
 {
-	Arduino arduino();
+	Arduino arduino;
 	arduino.writeToMotors("hello motors!");
 }

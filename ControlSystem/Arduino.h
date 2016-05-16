@@ -1,5 +1,7 @@
 #ifndef ARDUINO_H_
 #define ARDUINO_H_
+#include <iostream>
+#include "lib/arduino-serial-lib.h"
 
 class Arduino{
 	
@@ -10,19 +12,19 @@ class Arduino{
 		Arduino()
 		{
 			fd_motors=-1;
-			fd_motors = serialport_init(port, BAUDRATE); //opening port
-    		(fd_motors == -1) ? std::cout<< "couldn't open port for arduino! :(" << std::endl : std::cout<< "opened port " << port << std::endl;
+			fd_motors = serialport_init(MOTOR_PORT, BAUD_RATE); //opening port
+    		(fd_motors == -1) ? std::cout<< "couldn't open port for arduino! :(" << std::endl : std::cout<< "opened port " << MOTOR_PORT << std::endl;
     		serialport_flush(fd_motors);
     	}
 		/**
 		 * Description: writes the string to the arduino
 		 * Input: the message to be written
 		 */
-		std::string writeToMotors(std::string message);
+		void writeToMotors(std::string message);
 
 	private:
 		int fd_motors;
-		const char* MOTOR_PORT="/dev/cu.usbmodem1411"; //steph's port
+		const char* MOTOR_PORT="/dev/cu.usbmodem1421"; //steph's port
 		const int BAUD_RATE=57600;
 };
 
