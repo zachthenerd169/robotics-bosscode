@@ -89,29 +89,29 @@ void loop()
   /* read the next byte into motor_byte */
   else if(read_index == 1)
   {
-  	motor_byte = in_byte
+  	motor_byte = in_byte;
   	read_index = 2; // start looking for dir_byte
   }
   /* read the next byte into dir_byte */
   else if(read_index == 2)
   {
-  	dir_byte = in_byte
+  	dir_byte = in_byte;
   	read_index = 3; // start looking for power_bytes
   }
   /* read the next three bytes into power_bytes */
   else if(read_index == 3)
   {
-  	power_bytes[0] = in_byte
+  	power_bytes[0] = in_byte;
   	read_index = 4;
   }
   else if(read_index == 4)
   {
-  	power_bytes[1] = in_byte
+  	power_bytes[1] = in_byte;
   	read_index = 5;
   }
   else if(read_index == 5)
   {
-  	power_bytes[2] = in_byte
+  	power_bytes[2] = in_byte;
   	read_index = 0; // stop looking for new data bytes (only start byte)
   	message_done = true; // let the program know that the message isready
   }
