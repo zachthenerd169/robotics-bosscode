@@ -20,7 +20,7 @@
  * Inputs: the integer to convert to a string
  * Outputs: the converted string
  */
- std::string to_string(int value);
+ std::string int_to_string(int value);
 
 class XboxController : public UserController
 {

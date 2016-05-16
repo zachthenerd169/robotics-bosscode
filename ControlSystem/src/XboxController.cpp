@@ -42,7 +42,7 @@ bool XboxController::processInput()
 			// Check for A button (forward)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (m_xbox_controller.endA == true) )
 			{
-				setInput("[M2" + to_string(getPowerLevel()) + "]");
+				setInput("[M2" + int_to_string(getPowerLevel()) + "]");
 				m_xbox_controller.endA = false;
 				std::cout << "Go forward at power level: " << getPowerLevel() << std::endl;
 				return true;
@@ -54,7 +54,7 @@ bool XboxController::processInput()
 			// Check for B button (turn right)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (m_xbox_controller.endB == true))
 			{
-				setInput("[M4" + to_string(getPowerLevel()) + "]");
+				setInput("[M4" + int_to_string(getPowerLevel()) + "]");
 				m_xbox_controller.endB = false;
 				std::cout << "Turn right at power level: " << getPowerLevel() << std::endl;
 				return true;
@@ -66,7 +66,7 @@ bool XboxController::processInput()
 			// Check for X button (turn left)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_X) && (m_xbox_controller.endX == true))
 			{
-				setInput("[M5" + to_string(getPowerLevel()) + "]");
+				setInput("[M5" + int_to_string(getPowerLevel()) + "]");
 				m_xbox_controller.endX = false;
 				std::cout << "Turn left at power level: " << getPowerLevel() << std::endl;
 				return true;
@@ -78,7 +78,7 @@ bool XboxController::processInput()
 			// Check for Y button (backward)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && (m_xbox_controller.endY == true))
 			{
-				setInput("[M3" + to_string(getPowerLevel()) + "]");
+				setInput("[M3" + int_to_string(getPowerLevel()) + "]");
 				m_xbox_controller.endY = false;
 				std::cout << "Go backward at power level: " << getPowerLevel() << std::endl;
 				return true;
@@ -169,7 +169,7 @@ bool XboxController::processInput()
 }
 
 
-std::string to_string(int value)
+std::string int_to_string(int value)
 {
     std::ostringstream os;
     os << value;
