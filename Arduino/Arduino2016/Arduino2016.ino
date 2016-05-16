@@ -27,6 +27,7 @@
 
 // Define what the first character of a valid message is
 #define START_CHAR '!'
+#define STOP_ALL 's'
 
 // variables for storing message parts
 char motor_byte;
@@ -59,7 +60,7 @@ DualVNH5019MotorShield MD_Bucket;
 void setup()
 {
   power_bytes[3] = '\0';
-	
+
   Serial.begin(9600);
   
   SWSerial_Drive.begin(9600);
@@ -82,7 +83,14 @@ void loop()
   while (Serial.available() == 0)  {}
   in_byte = Serial.read();
   /* if the new data was the beginning of a message then reset everything */
-  if(in_byte == START_CHAR)
+  /* if the new byte says stop, then stop everything and reset */
+  if(in_byte == STOP_ALL)
+  {
+  	allStop();
+  	read_index = 0;
+  	message_done = false;
+  }
+  else if(in_byte == START_CHAR)
   {
   	read_index = 1;
   	message_done = false;
@@ -144,3 +152,12 @@ void loop()
   	}
   }
 } // loop
+
+void allStop()
+{
+	ST_Drive.motor(1,0);
+	ST_Drive.motor(2,0);
+	ST_Dig.motor(1,0);
+	ST_Dig.motor(2,0);
+	MD_Bucket.setSpeeds(0,0);
+}
