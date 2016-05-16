@@ -3,6 +3,7 @@
  * To run: ./ThreaddedNetworkTest.exe <port #>
  */
 #include "../ThreaddedNetwork.h"
+#include <string>
 
 int main(int argc, char *argv[])
 {
@@ -27,13 +28,19 @@ int main(int argc, char *argv[])
       {
         std::cout << data.at(i) << "\n";
       }
+      std::string outmsg;
+      outmsg += "Got ";
+      outmsg += data.size();
+      outmsg += " new messages";
+      network.sendMessage(outmsg);
+
       std::cout <<"End new data\n";
     }
+    network.clearToSend();
   }
 
   return 0;
 }
-
 
 
 
