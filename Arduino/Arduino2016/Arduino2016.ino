@@ -136,11 +136,11 @@ void loop()
   	/* set the power level of the correct motor */
   	if(motor_byte == DRIVE_TRAIN_RIGHT)
   	{
-  		ST_Drive.motor(1,p_level);
+  		ST_Drive.motor(1,-1*p_level);
   	}
   	if(motor_byte == DRIVE_TRAIN_LEFT)
   	{
-  		ST_Drive.motor(2,p_level);
+  		ST_Drive.motor(2,-1*p_level);
   	}
   	if(motor_byte == DIGGER)
   	{
