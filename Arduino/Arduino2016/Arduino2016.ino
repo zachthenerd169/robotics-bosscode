@@ -32,7 +32,6 @@
 char motor_byte;
 char dir_byte;
 char power_bytes[4];
-power_bytes[3] = '\0';
 
 // The current byte being read
 char in_byte;
@@ -59,6 +58,8 @@ DualVNH5019MotorShield MD_Bucket;
 
 void setup()
 {
+  power_bytes[3] = '\0';
+	
   Serial.begin(9600);
   
   SWSerial_Drive.begin(9600);
