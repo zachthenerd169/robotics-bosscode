@@ -10,6 +10,46 @@
 #include <vector>
 #include <string>
 
+void handleMovementCommand(std::string cmd)
+{
+  char mode = cmd.at(1); // mode is the second letter
+  std::string speed = std::stoi(cmd.substring(2));
+  if(mode == '0') // stop
+  {
+    motor_arduino.write('s');
+  }
+  else if(mode == '1') // forward
+  {
+    std::string out = "";
+    out += "!01";
+    out += leftPad(speed);
+    out += "!11";
+    out += leftPad(speed);
+    std::cout << out << std::endl;
+    motor_arduino.write(out);
+  }
+}
+
+std::string leftPad(unsigned int num)
+{
+  if(num == 0) {return std::string("000");}
+  std::string out;
+  if(num < 10)
+  {
+    std::string out = "00";
+  }
+  else if(num < 100)
+  {
+    std::string out = "0";
+  }
+  else if(num > 999)
+  {
+    return "999";
+  }
+  out += num;
+  return out;
+}
+
 int main(int argc, char *argv[])
 {
   /* Read Command Line Arguments */
@@ -72,44 +112,4 @@ int main(int argc, char *argv[])
     //
   }
   return 0;
-}
-
-void handleMovementCommand(std::string cmd)
-{
-  char mode = cmd.at(1); // mode is the second letter
-  std::string speed = stoi(cmd.substring(2));
-  if(mode == '0') // stop
-  {
-    motor_arduino.write('s');
-  }
-  else if(mode == '1') // forward
-  {
-    std::string out = "";
-    out += "!01";
-    out += leftPad(speed);
-    out += "!11";
-    out += leftPad(speed);
-    std::cout << out << std::endl;
-    motor_arduino.write(out);
-  }
-}
-
-std::string leftPad(unsigned int num)
-{
-  if(num == 0) {return std::string("000");}
-  std::string out;
-  if(num < 10)
-  {
-    std::string out = "00";
-  }
-  else if(num < 100)
-  {
-    std::string out = "0";
-  }
-  else if(num > 999)
-  {
-    return "999";
-  }
-  out += num;
-  return out;
 }
