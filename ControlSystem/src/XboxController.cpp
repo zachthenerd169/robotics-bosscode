@@ -42,6 +42,7 @@ bool XboxController::processInput()
 			// Check for A button (forward)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (m_xbox_controller.endA == true) )
 			{
+				setInput("[M2" + std::to_string(getPowerLevel()) + "]");
 				m_xbox_controller.endA = false;
 				std::cout << "Go forward at power level: " << getPowerLevel() << std::endl;
 				return true;
