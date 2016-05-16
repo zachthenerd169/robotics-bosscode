@@ -22,9 +22,8 @@ std::string UserController::receiveData()
 {
     std::string current_message = "";
     char buffer[RCVBUFSIZE];
-    int recv_msg_Size;
+    int recv_msg_size=1; // set to one just so we enter the loop
     bool has_start = false;
-    recv_msg_size = 1; // set to one just so we enter the loop
     while(recv_msg_size > 0) //keeps reading until there is nothing left to read or there is an error
     {
         memset(buffer, 0, RCVBUFSIZE); // clear the input buffer
@@ -53,9 +52,9 @@ std::string UserController::receiveData()
             if(buffer[i] == '[')
             {
                 // start recording
-                hasStart = true;
+                has_start = true;
                // reset the current message
-               currentMessage = "";
+               current_message = "";
             } // end if
         } // end for
     } // end while
