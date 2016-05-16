@@ -1,8 +1,7 @@
 #include "../ThreaddedNetwork.h"
 
 /* Constructor */
-ThreaddedNetwork::ThreaddedNetwork(int servPort) :
-  m_servSock(servPort)
+ThreaddedNetwork::ThreaddedNetwork(int servPort) : m_servSock(servPort)
 {
   // block right away
   cts = false;
@@ -31,7 +30,7 @@ void ThreaddedNetwork::sendMessage(std::string message)
   q_outgoing_messages.push(message);
 }
 
-void ThreaddedNetwork::clearToSend();
+void ThreaddedNetwork::clearToSend()
 {
   cts = true;
 }

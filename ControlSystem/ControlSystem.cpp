@@ -1,7 +1,7 @@
 //============================================================================
 // Name        : ControlSystem.cpp
 // Description : Main Robot Code
-// Compiling   : g++ -Wall -std=c++11 -o ControlSystem.exe ControlSystem.cpp src/ThreaddedNetwork.cpp lib/PracticalSocket.cpp src/Arduino.cpp -lpthread
+// Compiling   : g++ -Wall -std=c++11 -o ControlSystem.exe ControlSystem.cpp src/ThreaddedNetwork.cpp lib/PracticalSocket.cpp src/Arduino.cpp lib/arduino-serial-lib.cpp -lpthread
 
 //============================================================================
 #include <iostream>
@@ -33,10 +33,10 @@ std::string leftPad(unsigned int num)
 void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
 {
   char mode = cmd.at(1); // mode is the second letter
-  std::string speed = std::stoi(cmd.substring(2));
+  int speed = std::stoi(cmd.substr(2));
   if(mode == '0') // stop
   {
-    motor_arduino.write('s');
+    motor_arduino.write("s");
   }
   else if(mode == '1') // forward
   {
