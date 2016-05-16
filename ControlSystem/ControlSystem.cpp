@@ -10,26 +10,6 @@
 #include <vector>
 #include <string>
 
-void handleMovementCommand(std::string cmd)
-{
-  char mode = cmd.at(1); // mode is the second letter
-  std::string speed = std::stoi(cmd.substring(2));
-  if(mode == '0') // stop
-  {
-    motor_arduino.write('s');
-  }
-  else if(mode == '1') // forward
-  {
-    std::string out = "";
-    out += "!01";
-    out += leftPad(speed);
-    out += "!11";
-    out += leftPad(speed);
-    std::cout << out << std::endl;
-    motor_arduino.write(out);
-  }
-}
-
 std::string leftPad(unsigned int num)
 {
   if(num == 0) {return std::string("000");}
@@ -48,6 +28,26 @@ std::string leftPad(unsigned int num)
   }
   out += num;
   return out;
+}
+
+void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
+{
+  char mode = cmd.at(1); // mode is the second letter
+  std::string speed = std::stoi(cmd.substring(2));
+  if(mode == '0') // stop
+  {
+    motor_arduino.write('s');
+  }
+  else if(mode == '1') // forward
+  {
+    std::string out = "";
+    out += "!01";
+    out += leftPad(speed);
+    out += "!11";
+    out += leftPad(speed);
+    std::cout << out << std::endl;
+    motor_arduino.write(out);
+  }
 }
 
 int main(int argc, char *argv[])
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
         switch(newMessages.at(i)[0])
         {
           case 'M': // movement command
-            handleMovementCommand(newMessages.at(i));
+            handleMovementCommand(newMessages.at(i), motor_arduino);
             break;
           case 'S': // sensor request
             break;
