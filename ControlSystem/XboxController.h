@@ -19,11 +19,6 @@ class XboxController : public UserController
 {
 	public:
 		/**
-		 * Description: constructor copies TCPSocket, xbox controller is initialized so the nothing is pressed
-		 * Inputs: a TCPSocket object
-		 */
-		//XboxController(TCPSocket& socket):UserController(socket),m_xbox_controller(){};
-		/**
 		 * Description: creates a TCPSocket objects, xbox controller is initialized so the nothing is pressed
 		 * Inputs: the IP Address of the NUC (the computer on the robot)
 		 * 		   the port number the NUC is listening on
@@ -52,6 +47,15 @@ class XboxController : public UserController
 		 * Output: the current power level
 		 */
 		int getPowerLevel(){return m_power_level;}
+		/**
+		 * Description: gets the menu which displays controls
+		 * Output: the text menu
+		 */
+		std::string getMenu();
+		/**
+		 * Description: Destructor
+		 */
+		 ~XboxController(){}
 
 
 		/**
