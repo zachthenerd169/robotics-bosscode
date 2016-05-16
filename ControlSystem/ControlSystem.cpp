@@ -12,7 +12,7 @@
 
 std::string leftPad(unsigned int num)
 {
-  std::cout<<"num: "<<num<<std::endl;
+  //std::cout<<"num: "<<num<<std::endl;
   if(num == 0) {return std::string("000");}
   std::string out="";
   if(num < 10)
@@ -28,13 +28,13 @@ std::string leftPad(unsigned int num)
     return "999";
   }
   out += std::to_string(num);
-  std::cout<<"out: "<<out<<std::endl;
+  //std::cout<<"out: "<<out<<std::endl;
   return out;
 }
 
 void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
 {
-  std::cout<<"TEST: " << cmd << std::endl;
+  //std::cout<<"TEST: " << cmd << std::endl;
   char mode = cmd.at(1); // mode is the second letter
   int speed;
   std::cout<<mode<<std::endl;
