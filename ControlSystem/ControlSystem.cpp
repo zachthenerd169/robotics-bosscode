@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 void handleMovementCommand(std::string cmd)
 {
   char mode = cmd.at(1); // mode is the second letter
-  std::string speed = atoi(cmd.substring(2));
+  std::string speed = stoi(cmd.substring(2));
   if(mode == '0') // stop
   {
     motor_arduino.write('s');
@@ -86,9 +86,9 @@ void handleMovementCommand(std::string cmd)
   {
     std::string out = "";
     out += "!01";
-    out += leftPad(num);
+    out += leftPad(speed);
     out += "!11";
-    out += leftPad(num);
+    out += leftPad(speed);
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
@@ -105,6 +105,10 @@ std::string leftPad(unsigned int num)
   else if(num < 100)
   {
     std::string out = "0";
+  }
+  else if(num > 999)
+  {
+    return "999";
   }
   out += num;
   return out;
