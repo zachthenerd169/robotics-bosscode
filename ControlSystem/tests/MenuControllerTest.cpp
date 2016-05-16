@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string.h>
 #include <memory>
-#define DEBUG 1//
+#define DEBUG 0
 // To compile: g++ --std=c++11 -o menutest.exe tests/MenuControllerTest.cpp src/UserController.cpp src/MenuController.cpp lib/PracticalSocket.cpp
 // (make sure you are in the ControlSystem dir when you compile/run)
 // To run: ./menutest.exe <ip address> <port #>
