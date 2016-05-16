@@ -42,14 +42,23 @@ int main (int argc, char** argv)
 		menu.setInput(user_input);
         std::cout<<std::endl;
 		bool success=menu.processInput(); //not really doing anything with success right now
+        //if the user is in the main menu and they sent a test message they should receive
+        //data back
+        if(menu.inMainMenu() && (user_input=="2" || user_input == "3"))
+        {
+            server_data=menu.receiveData(); //try to get messages back from the server
+            if(server_data.length()>=1) std::cout<<"Server: "<<server_data<<std::endl;
+        }
+        //if the user is in the robot control menu and they request and image or sensor
+        //data send data back
+        else if(!menu.inMainMenu() && (user_input=="8" || user_input=="9"))
+        {
+            server_data=menu.receiveData(); //try to get messages back from the server
+            if(server_data.length()>=1) std::cout<<"Server: "<<server_data<<std::endl;
+        }
 		if(menu.inMainMenu()){std::cout<<"\n\n"<<menu.getMainMenu();}
-        // server_data=menu.receiveData(); //try to get messages back from the server
-        // if(server_data.length()>=1){
-        //     std:cout<<"Server: "<<server_data<<std::endl;
-        // }
-
-
-	}
+  
+    }
     return 0;
 }
 

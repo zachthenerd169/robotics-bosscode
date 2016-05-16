@@ -35,9 +35,7 @@ std::string UserController::receiveData()
             {
                 if(buffer[i] == ']') // if this is the end of the message
                 {
-                    // send the message to the main thread
-                    //q_new_messages.push(current_message);
-                    // stop recording messages
+                    std::cout<<current_message<<std::endl;
                     return current_message;
                     has_start = false;
                 }
