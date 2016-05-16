@@ -1,12 +1,14 @@
 //============================================================================
 // Name        : ControlSystem.cpp
 // Description : Main Robot Code
-// Compiling   : g++ -Wall -std=c++11 -o ControlSystem.exe ControlSystem.cpp src/ThreaddedNetwork.cpp lib/PracticalSocket.cpp -lpthread
+// Compiling   : g++ -Wall -std=c++11 -o ControlSystem.exe ControlSystem.cpp src/ThreaddedNetwork.cpp lib/PracticalSocket.cpp src/Arduino.cpp -lpthread
 
 //============================================================================
 #include <iostream>
 #include "ThreaddedNetwork.h"
+#include "Arduino.h"
 #include <vector>
+#include <string>
 
 int main(int argc, char *argv[])
 {
@@ -29,6 +31,7 @@ int main(int argc, char *argv[])
 
   /* Construct robot components */
   ThreaddedNetwork network(server_port);
+  Arduino motor_arduino("dev/ttyACM0");
 
 
   /* Main program loop */
@@ -48,7 +51,7 @@ int main(int argc, char *argv[])
         switch(newMessages.at(i)[0])
         {
           case 'M': // movement command
-            //handleMovementCommand(newMessages.at(i));
+            handleMovementCommand(newMessages.at(i));
             break;
           case 'S': // sensor request
             break;
@@ -69,4 +72,44 @@ int main(int argc, char *argv[])
     //
   }
   return 0;
+}
+
+void handleMovementCommand(std::string cmd)
+{
+  char mode = cmd.at(1); // mode is the second letter
+  std::string speed = stoi(cmd.substring(2));
+  if(mode == '0') // stop
+  {
+    motor_arduino.write('s');
+  }
+  else if(mode == '1') // forward
+  {
+    std::string out = "";
+    out += "!01";
+    out += leftPad(speed);
+    out += "!11";
+    out += leftPad(speed);
+    std::cout << out << std::endl;
+    motor_arduino.write(out);
+  }
+}
+
+std::string leftPad(unsigned int num)
+{
+  if(num == 0) {return std::string("000");}
+  std::string out;
+  if(num < 10)
+  {
+    std::string out = "00";
+  }
+  else if(num < 100)
+  {
+    std::string out = "0";
+  }
+  else if(num > 999)
+  {
+    return "999";
+  }
+  out += num;
+  return out;
 }
