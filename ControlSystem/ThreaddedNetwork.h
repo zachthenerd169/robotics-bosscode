@@ -38,12 +38,16 @@ public:
 
   /* sendMessage */
   void sendMessage(std::string message);
+
+  /* clearToSend */
+  void clearToSend();
   
 private:
   TCPServerSocket m_servSock;
   ThreadSafeQueue<std::string> q_new_messages;
   ThreadSafeQueue<std::string> q_outgoing_messages;
   std::thread my_thread;
+  bool cts;
 
   /* function to be run in thread */
   void inThreadUpdate();
