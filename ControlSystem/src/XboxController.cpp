@@ -4,7 +4,7 @@
 
 std::string XboxController::getMenu()
 {
-	return "\n---CONTROLS---\nPOWER LEVEL DOWN: <D-PAD DOWN>\nPOWER LEVEL UP: <D-PAD UP>\nSTOP ROBOT: <START>\nMOVE STRAIGHT FORWARD: <A>\nMOVE STRAIGHT REVERSE: <Y>\nTURN RIGHT: <B>\nTURN LEFT: <X>\nDIGGER DROP: <RB>\nRAISE DIGGER: <LB>\nREQUEST SENSOR DATA: <LEFT THUMB>\nREQUEST IMAGE: <RIGHT THUMB>\nEXIT: <SELECT>";
+	return "\n---CONTROLS---\nMOTOR POWER LEVEL DOWN: <D-PAD DOWN>\nMOTOR POWER LEVEL UP: <D-PAD UP>\nDIGGER POWER LEVEL DOWN: <D-PAD LEFT>\nDIGGER POWER LEVEL UP: <D-PAD RIGHT>\nSTOP ROBOT: <START>\nMOVE STRAIGHT FORWARD: <A>\nMOVE STRAIGHT REVERSE: <Y>\nTURN RIGHT: <B>\nTURN LEFT: <X>\nDIGGER DROP: <RB>\nRAISE DIGGER: <LB>\nDIGGER ON: <RT>\nDIGGER OFF: <LT>\nREQUEST SENSOR DATA: <LEFT THUMB>\nREQUEST IMAGE: <RIGHT THUMB>\nEXIT: <SELECT>";
 }
 
 bool XboxController::processInput()
@@ -15,13 +15,16 @@ bool XboxController::processInput()
 		while(true)
 		{
 			m_state = m_player_controller->GetState();
+			float leftTrigger = (float) m_state.Gamepad.bLeftTrigger / 255;
+			float rightTrigger = (float) m_state.Gamepad.bRightTrigger / 255;
 
+			// Check for d-pad up button (power level increase)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && (m_xbox_controller.endUp == true) )
 			{
 				m_xbox_controller.endUp = false;
 				int newPowerLevel = getPowerLevel() + 10 < MAX_POWER_LEVEL ? getPowerLevel() + 10 : MAX_POWER_LEVEL;
 				setPowerLevel(newPowerLevel);
-				std::cout << "Power Level: " << getPowerLevel() << std::endl;
+				std::cout << "Motor Power Level: " << getPowerLevel() << std::endl;
 			}
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) {
 				m_xbox_controller.endUp = true;
@@ -33,10 +36,34 @@ bool XboxController::processInput()
 				m_xbox_controller.endDown = false;
 				int newPowerLevel = getPowerLevel() - 10 > 0 ? getPowerLevel() - 10 : 0;
 				setPowerLevel(newPowerLevel);
-				std::cout << "Power Level: " << getPowerLevel() << std::endl;
+				std::cout << "Motor Power Level: " << getPowerLevel() << std::endl;
 			}
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) {
 				m_xbox_controller.endDown = true;
+			}
+
+			// Check for d-pad right button (digger power level increase)
+			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) && (m_xbox_controller.endRight == true) )
+			{
+				m_xbox_controller.endRight = false;
+				int newPowerLevel = getPowerLevelDigger() + 10 < MAX_POWER_LEVEL_DIGGER ? getPowerLevelDigger() + 10 : MAX_POWER_LEVEL_DIGGER;
+				setPowerLevelDigger(newPowerLevel);
+				std::cout << "Digger Power Level: " << getPowerLevelDigger() << std::endl;
+			}
+			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)) {
+				m_xbox_controller.endRight = true;
+			}
+
+			// Check for d-pad left button (digger power level decrease)
+			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) && (m_xbox_controller.endLeft == true) )
+			{
+				m_xbox_controller.endLeft = false;
+				int newPowerLevel = getPowerLevelDigger() - 10 > 0 ? getPowerLevelDigger() - 10 : 0;
+				setPowerLevelDigger(newPowerLevel);
+				std::cout << "Digger Power Level: " << getPowerLevelDigger() << std::endl;
+			}
+			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)) {
+				m_xbox_controller.endLeft = true;
 			}
 
 			// Check for A button (forward)
@@ -109,6 +136,30 @@ bool XboxController::processInput()
 			}
 			else if(!(m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)) {
 				m_xbox_controller.endLB = true;
+			}
+
+			// Check for Right trigger (digger on)
+			if((rightTrigger > 0.1) && (m_xbox_controller.endRT == true))
+			{
+				setInput("[M8" + int_to_string(getPowerLevelDigger()) + "]");
+				m_xbox_controller.endRT = false;
+				std::cout << "Digger On" << std::endl;
+				return true;
+			}
+			else if(!(rightTrigger > 0.1)) {
+				m_xbox_controller.endRT = true;
+			}
+
+			// Check for Left trigger (digger off)
+			if((leftTrigger > 0.1) && (m_xbox_controller.endLT == true))
+			{
+				setInput("[M9]");
+				m_xbox_controller.endLT = false;
+				std::cout << "Digger Off" << std::endl;
+				return true;
+			}
+			else if(!(leftTrigger > 0.1)) {
+				m_xbox_controller.endLT = true;
 			}
 
 			// The following buttons were removed since the robot is built

@@ -62,6 +62,16 @@ class XboxController : public UserController
 		 */
 		int getPowerLevel(){return m_power_level;}
 		/**
+		 * Description: setter for power level
+		 * Input: new power level
+		 */
+		void setPowerLevelDigger(int powerLevel){m_power_level_digger=powerLevel;}
+		/**
+		 * Description: getter for power level
+		 * Output: the current power level
+		 */
+		int getPowerLevelDigger(){return m_power_level_digger;}
+		/**
 		 * Description: gets the menu which displays controls
 		 * Output: the text menu
 		 */
@@ -76,6 +86,11 @@ class XboxController : public UserController
 		* constant that specifies the absolute largest power level
 		*/
 		static const int MAX_POWER_LEVEL = 120;
+
+		/**
+		* constant that specifies the absolute largest power level for the digger
+		*/
+		static const int MAX_POWER_LEVEL_DIGGER = 120;
 	private:
 		/**
 		 * holds the button press state of the xbox controller
@@ -95,6 +110,10 @@ class XboxController : public UserController
 			bool endLB;
 			bool endRThumb;
 			bool endLThumb;
+			bool endLT;
+			bool endRT;
+			bool endLeft;
+			bool endRight;
 		}m_xbox_controller;
 
 		/**
@@ -102,6 +121,12 @@ class XboxController : public UserController
 		* by the controller
 		*/
 		int m_power_level = 0;
+
+		/**
+		* holds the current power level for the digger as adjusted
+		* by the controller
+		*/
+		int m_power_level_digger = 0;
 
 		/**
 		* holds the current state of the xbox controller
