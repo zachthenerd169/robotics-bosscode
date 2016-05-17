@@ -122,12 +122,7 @@ int main(int argc, char *argv[])
 
   /* Construct robot components */
   ThreaddedNetwork network(server_port);
-  //STEPH TEST
-  const char* steph_port="/dev/cu.usbmodem1421";
-  Arduino motor_arduino(steph_port);
-
-  //USE THIS OTHERWISE
-  //Arduino motor_arduino("dev/ttyACM0");
+  Arduino motor_arduino("/dev/ttyACM0");
 
 
   /* Main program loop */
