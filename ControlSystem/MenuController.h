@@ -21,6 +21,7 @@
 #ifndef MENUCONTROLLER_H_
 #define MENUCONTROLLER_H_
 #include <vector>
+ #include "util/Modes.h"
 
 class MenuController : public UserController
 {
@@ -81,8 +82,8 @@ class MenuController : public UserController
 		/**
 		 * enum to hold all of the modes the robot could possibly be in
 		 */
-		enum m_mode{STOP_ROBOT='0', MOVE_FORWARD='1', MOVE_REVERSE='2', TURN_RIGHT='3', TURN_LEFT='4', RAISE='5', 
-			LOWER='6', DIG='7', STOP_DIG='8', HOLD_BUCKET='9', SENSOR_DATA='S', IMAGE='I'};
+		//enum Mode{STOP_ROBOT='0', MOVE_FORWARD='1', MOVE_REVERSE='2', TURN_RIGHT='3', TURN_LEFT='4', RAISE='5', 
+		//	LOWER='6', DIG='7', STOP_DIG='8', HOLD_BUCKET='9', SENSOR_DATA='S', IMAGE='I'};
 		/**
 		 * Description: function asks the user for an input and appends [Tmessage] on it
 		 * Input: by default  the message will not go to the arduino

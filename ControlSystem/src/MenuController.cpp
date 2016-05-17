@@ -143,61 +143,61 @@ bool MenuController::formatAndSend(std::string input)
 
 	switch(mode) //checking if it has the correct mode
 	{
-		case m_mode::STOP_ROBOT:
+		case Mode::STOP_ROBOT:
 			packet+="M";
-			packet.push_back(static_cast<char>(STOP_ROBOT));
+			packet.push_back(static_cast<char>(Mode::STOP_ROBOT));
 			if(validatePowerLevel(commands)) return false;
 			break;
-		case m_mode::MOVE_FORWARD:
+		case Mode::MOVE_FORWARD:
 			packet+="M";
-			packet.push_back(static_cast<char>(MOVE_FORWARD));
+			packet.push_back(static_cast<char>(Mode::MOVE_FORWARD));
 			//std::cout<<commands[1]<<std::endl;
 			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
 			else return false;
 			break;
-		case m_mode::MOVE_REVERSE:
+		case Mode::MOVE_REVERSE:
 			packet+="M";
-			packet.push_back(static_cast<char>(MOVE_REVERSE));
+			packet.push_back(static_cast<char>(Mode::MOVE_REVERSE));
 			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
 			else return false;
 			break;
-		case m_mode::TURN_RIGHT:
+		case Mode::TURN_RIGHT:
 			packet+="M";
-			packet.push_back(static_cast<char>(TURN_RIGHT));
+			packet.push_back(static_cast<char>(Mode::TURN_RIGHT));
 			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
 			else return false;
 			break;
-		case m_mode::TURN_LEFT:
-			packet.push_back(static_cast<char>(TURN_LEFT));
+		case Mode::TURN_LEFT:
+			packet.push_back(static_cast<char>(Mode::TURN_LEFT));
 			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
 			else return false;
 			break;
-		case m_mode::RAISE:
+		case Mode::RAISE:
 			packet+="M";
-			packet.push_back(static_cast<char>(RAISE));
+			packet.push_back(static_cast<char>(Mode::RAISE));
 			//there should be no additional input
 			if(validatePowerLevel(commands)) return false;
 			break;
-		case m_mode::LOWER:
+		case Mode::LOWER:
 			packet+="M";
-			packet.push_back(static_cast<char>(LOWER));
+			packet.push_back(static_cast<char>(Mode::LOWER));
 			if(validatePowerLevel(commands)) return false;
 			break;
-		case m_mode::STOP_DIG:
+		case Mode::STOP_DIG:
 			packet+="M";
-			packet.push_back(static_cast<char>(STOP_DIG));
+			packet.push_back(static_cast<char>(Mode::STOP_DIG));
 			if(validatePowerLevel(commands)) return false;
 			break;
-		case m_mode::HOLD_BUCKET:
+		case Mode::HOLD_BUCKET:
 			packet+="M";
-			packet.push_back(static_cast<char>(HOLD_BUCKET));
+			packet.push_back(static_cast<char>(Mode::HOLD_BUCKET));
 			if(validatePowerLevel(commands)) return false;
 			break;
-		case m_mode::SENSOR_DATA:
+		case Mode::SENSOR_DATA:
 			packet+="S";
 			if(validatePowerLevel(commands)) return false;
 			break;
-		case m_mode::IMAGE:
+		case Mode::IMAGE:
 			packet+="I";
 			if(validatePowerLevel(commands)) return false;
 			break;									
@@ -207,8 +207,8 @@ bool MenuController::formatAndSend(std::string input)
 			break;				
 	}
 	packet+="]";
-	std::cout<<"sending: "<<packet<<std::endl;
-	//sendData(packet);
+	//std::cout<<"sending: "<<packet<<std::endl;
+	sendData(packet);
 	return true;
 }
 
