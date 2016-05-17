@@ -32,7 +32,12 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c++0x" />
 		</Compiler>
+		<Linker>
+			<Add library="../../../../../../../../Program Files/Microsoft SDKs/Windows/v7.1/Lib/Xinput.lib" />
+			<Add library="../../../../../../../../Program Files/Microsoft SDKs/Windows/v7.1/Lib/WSock32.Lib" />
+		</Linker>
 		<Unit filename="../../UserController.h" />
 		<Unit filename="../../XboxController.h" />
 		<Unit filename="../../lib/CXBOXController.cpp" />

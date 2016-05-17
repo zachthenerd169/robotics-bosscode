@@ -136,8 +136,21 @@ int main(int argc, char *argv[])
 
   /* Construct robot components */
   ThreaddedNetwork network(server_port);
+
   //Arduino motor_arduino("/dev/ttyACM0");
-  Arduino motor_arduino("/dev/cu.usbmodem1421");
+  //Arduino motor_arduino("/dev/cu.usbmodem1421");
+
+  /*attempts both instances of port on arduino */
+  try
+  {
+    Arduino motor_arduino("/dev/ttyACM0");
+  }
+  catch(...) 
+  {
+    Arduino motor_arduino("/dev/ttyACM1");
+  }
+  //Arduino motor_arduino("/dev/cu.usbmodem1421");
+
 
 
   /* Main program loop */
