@@ -10,6 +10,7 @@
 
 #include "UserController.h"
 #include "lib/CXBOXController.h" // for xbox controller
+#include "util/Modes.h"
 
 
 #ifndef XBOXCONTROLLER_H_
