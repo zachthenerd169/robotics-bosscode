@@ -32,7 +32,7 @@ std::string leftPad(unsigned int num)
   return out;
 }
 
-std::string createMotorCommand(unsigned char motor, unsigned char dir, unsigned int power)
+std::string createMotorCommand(unsigned int motor, unsigned int dir, unsigned int power)
 {
   std::string out = "!";
   out += motor;
