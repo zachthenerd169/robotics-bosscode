@@ -117,7 +117,18 @@ bool XboxController::processInput()
 			// Check for RB button (digger drop)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && (m_xbox_controller.endRB == true))
 			{
-				setInput("[M6]");
+			    if(m_lowered)
+                {
+                    setInput("[STOPDIGGER]");   // This should be changed
+                    m_lowered = false;
+                    m_raised = false;
+                }
+                else
+                {
+                    setInput("[M6]");
+                    m_lowered = true;
+                    m_raised = false;
+                }
 				m_xbox_controller.endRB = false;
 				std::cout << "Dropping Digger" << std::endl;
 				return true;
@@ -129,7 +140,18 @@ bool XboxController::processInput()
 			// Check for LB button (digger raise)
 			if((m_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) && (m_xbox_controller.endLB == true))
 			{
-				setInput("[M7]");
+			    if(m_raised)
+                {
+                    setInput("[STOPDIGGER]");   // This should be changed
+                    m_raised = false;
+                    m_lowered = false;
+                }
+                else
+                {
+                    setInput("[M7]");
+                    m_raised = true;
+                    m_lowered = false;
+                }
 				m_xbox_controller.endLB = false;
 				std::cout << "Raising Digger" << std::endl;
 				return true;

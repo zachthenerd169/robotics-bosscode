@@ -117,6 +117,16 @@ class XboxController : public UserController
 		}m_xbox_controller;
 
 		/**
+		* tells whether the last digger action was a lower
+		*/
+		bool m_lowered = false;
+
+		/**
+		* tells whether the last digger action was a raise
+		*/
+		bool m_raised = false;
+
+		/**
 		* holds the current power level as adjusted
 		* by the controller
 		*/
