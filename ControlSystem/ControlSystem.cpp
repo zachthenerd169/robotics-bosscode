@@ -85,14 +85,14 @@ void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
-  else if(mode == '6') // lower bucket
+  else if(mode == '6') // lower bucket/digger
   {
     std::string out = "";
-    out += createMotorCommand(3,1,256); // bucket down
+    out += createMotorCommand(3,1,256); // bucket/digger down
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
-  else if(mode == '7') // raise bucket
+  else if(mode == '7') // raise bucket/digger
   {
     std::string out = "";
     out += createMotorCommand(3,0,256); // bucket up
@@ -123,6 +123,7 @@ int main(int argc, char *argv[])
   /* Construct robot components */
   ThreaddedNetwork network(server_port);
   Arduino motor_arduino("/dev/ttyACM0");
+  //Arduino motor_arduino("/dev/cu.usbmodem1421");
 
 
   /* Main program loop */

@@ -8,9 +8,23 @@
 #ifndef IMAGECOLLECTOR_H_
 #define IMAGECOLLECTOR_H_
 
+#include <iostream>
+// #include "opencv2/highgui.hpp"
+// #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/core/core.hpp"
+#include "opencv2/videoio/videoio.hpp"
+
+ using namespace cv;
+
 class ImageCollector : public Sensor
 {
 	public:
+
+		/**
+		 * Description: constructor initializes webcam
+		 *
+		 */
+		ImageCollector();
 		/**
 		 * Description: returns image as a char array
 		 * Input: none
@@ -35,7 +49,7 @@ class ImageCollector : public Sensor
 		/**
 		 * Camera to take the picture (might not need this)
 		 */
-		//Camera m_Camera
+		VideoCapture m_camera;
 };
 
 

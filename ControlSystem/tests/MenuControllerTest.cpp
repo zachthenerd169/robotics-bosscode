@@ -51,7 +51,7 @@ int main (int argc, char** argv)
         }
         //if the user is in the robot control menu and they request and image or sensor
         //data send data back
-        else if(!menu.inMainMenu() && (user_input=="8" || user_input=="9"))
+        else if(!menu.inMainMenu() && (user_input=="10" || user_input=="11"))
         {
             server_data=menu.receiveData(); //try to get messages back from the server
             if(server_data.length()>=1) std::cout<<"Server: "<<server_data<<std::endl;
