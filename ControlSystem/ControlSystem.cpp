@@ -32,6 +32,15 @@ std::string leftPad(unsigned int num)
   return out;
 }
 
+std::string createMotorCommand(unsigned char motor, unsigned char, dir, unsigned int power)
+{
+  std::string out = "!";
+  out += motor;
+  out += dir;
+  out += leftPad(power);
+  return out;
+}
+
 void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
 {
   //std::cout<<"TEST: " << cmd << std::endl;
@@ -46,12 +55,47 @@ void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
   }
   else if(mode == '2') // forward
   {
-    std::cout<<"speed: "<<speed<<std::endl;
     std::string out = "";
-    out += "!01";
-    out += leftPad(speed);
-    out += "!11";
-    out += leftPad(speed);
+    out += createMotorCommand(0,1,speed); // right forward
+    out += createMotorCommand(1,1,speed); // left forward
+    std::cout << out << std::endl;
+    motor_arduino.write(out);
+  }
+  else if(mode == '3') // reverse
+  {
+    std::string out = "";
+    out += createMotorCommand(0,0,speed); // right backward
+    out += createMotorCommand(1,0,speed); // left backward
+    std::cout << out << std::endl;
+    motor_arduino.write(out);
+  }
+  else if(mode == '4') // turn right
+  {
+    std::string out = "";
+    out += createMotorCommand(0,0,speed); // right backward
+    out += createMotorCommand(1,1,speed); // left forward
+    std::cout << out << std::endl;
+    motor_arduino.write(out);
+  }
+  else if(mode == '5') // turn left
+  {
+    std::string out = "";
+    out += createMotorCommand(0,1,speed); // right forward
+    out += createMotorCommand(1,0,speed); // left backward
+    std::cout << out << std::endl;
+    motor_arduino.write(out);
+  }
+  else if(mode == '6') // lower bucket
+  {
+    std::string out = "";
+    out += createMotorCommand(3,1,speed); // bucket down
+    std::cout << out << std::endl;
+    motor_arduino.write(out);
+  }
+  else if(mode == '7') // raise bucket
+  {
+    std::string out = "";
+    out += createMotorCommand(3,0,speed); // bucket up
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
