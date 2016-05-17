@@ -26,13 +26,15 @@ int main (int argc, char** argv)
     	address=argv[1];
     	try{ port=atoi(argv[2]);}
     	catch(...){ 
-    		std::cerr<<"invalid port number"<<std::endl;
+    		std::cerr<<"ERROR: invalid port number"<<std::endl;
     		exit(1);
     	}
     }	
-#endif	
+#endif
+
+    std::cout<<"Welcome to MenuController!"<<std::endl<<std::endl;;
 	MenuController menu(address, port); //construct menu object
- 	std::cout<<"\n\n"<<menu.getMainMenu();
+ 	menu.printMainMenu();
   	
     while(true)
     {
@@ -42,6 +44,7 @@ int main (int argc, char** argv)
 		menu.setInput(user_input);
         std::cout<<std::endl;
 		bool success=menu.processInput(); //not really doing anything with success right now
+
         //if the user is in the main menu and they sent a test message they should receive
         //data back
         if(menu.inMainMenu() && (user_input=="2" || user_input == "3"))
@@ -51,12 +54,12 @@ int main (int argc, char** argv)
         }
         //if the user is in the robot control menu and they request and image or sensor
         //data send data back
-        else if(!menu.inMainMenu() && (user_input=="10" || user_input=="11"))
+        else if(!menu.inMainMenu() && (user_input=="S" || user_input=="I"))
         {
             server_data=menu.receiveData(); //try to get messages back from the server
             if(server_data.length()>=1) std::cout<<"Server: "<<server_data<<std::endl;
         }
-		if(menu.inMainMenu()){std::cout<<"\n\n"<<menu.getMainMenu();}
+		if(menu.inMainMenu()){menu.printMainMenu();}
   
     }
     return 0;

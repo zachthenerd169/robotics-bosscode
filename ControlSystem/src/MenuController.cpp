@@ -2,16 +2,36 @@
 #include "../util/splitString.h"
 
 
-std::string MenuController::getMainMenu()
+void MenuController::printMainMenu()
 {
 	m_menu_state = main;
-	std::string menu_text = "1) CONTROL ROBOT\n2) Send Test Message To Server Without Arduino\n3) Send Test Message To Server With Arduino\n\nEnter a number that is 1-3: ";
-	return menu_text;
+	std::cout<<"1) CONTROL ROBOT"<<std::endl
+			 <<"2) Send Test Message To Server Without Arduino"<<std::endl
+			 <<"3) Send Test Message To Server With Arduino"<<std::endl
+			 <<std::endl
+			 <<"input: ";
 }
-std::string MenuController::getRobotMenu()
+void MenuController::printRobotMenu()
 {
 	m_menu_state = robot_control;
-	return "\nMODE KEY: DESIRED ACTION <user input>\nSTOP ROBOT: <1>\nMOVE STRAIGHT FORWARD: <2 powerLevel>\nMOVE STRAIGHT REVERSE: <3 powerLevel>\nTURN RIGHT: <4 powerLevel>\nTURN LEFT: <5 powerLevel>\nLOWER DIGGER/BUCKET: <6>\nRAISE DIGGER/BUCKET:<7>\nSTART DIGGER <8 powerlevel>\nSTOP DIGGER <9>\nREQUEST SENSOR DATA <10>\nREQUEST IMAGE: <11>\n\nPRINT KEY <help>\nBACK TO MAIN MENU <exit>";
+	std::cout<<"MODE KEY: DESIRED ACTION <user input>"<<std::endl
+			<<"--------------------------------------"<<std::endl
+			<<"STOP ROBOT:         <0>"<<std::endl
+			<<"MOVE FORWARD        <1 powerlevel>"<<std::endl
+			<<"MOVE REVERSE:       <3 powerLevel>"<<std::endl
+			<<"TURN RIGHT:         <4 powerLevel>"<<std::endl
+			<<"TURN LEFT:          <5 powerlevel>"<<std::endl
+			<<"START DIGGER        <6 powerlevel>"<<std::endl
+			<<"LOWER DIGGER/BUCKET <7>"<<std::endl
+			<<"RAISE DIGGER/BUCKET <8>"<<std::endl
+			<<"HOLD BUCKET         <9>"<<std::endl
+			<<"REQUEST SENSOR DATA <S>"<<std::endl
+			<<"REQUEST IMAGE       <I>"<<std::endl
+			<<std::endl
+			<<"PRINT KEY           <help>"<<std::endl
+			<<"EXIT MENU           <exit>"<<std::endl
+			<<std::endl
+			<<"input: ";
 }
 bool MenuController::processInput()
 {
@@ -21,14 +41,14 @@ bool MenuController::processInput()
 	{
 		if(!isMainInputValid(input))
 		{
-			std::cerr << "invalid input\nmust be a single digit 1-3"<<std::endl;
+			std::cerr << "ERROR: invalid input\nmust be a single digit 1-3"<<std::endl;
 			return false; //if the input is the incorrect level don't proccess it
 		} 
 		int input_switch = stoi(input); //can't switch a string so making it an int
 		switch(input_switch)
 		{
 			case 1:
-				std::cout<<getRobotMenu()<<std::endl;
+				printRobotMenu();
 				break;
 			case 2:
 			{	
@@ -43,7 +63,7 @@ bool MenuController::processInput()
 				break;
 			}
 			default:
-				std::cerr << "invalid input\nmust be a single digit 1-3" << std::endl;
+				std::cerr << "ERROR: invalid input\nmust be a single digit 1-3" << std::endl;
 				return false; //did not successfully process input
 				break;
 		}	
@@ -51,17 +71,19 @@ bool MenuController::processInput()
 	} 
 	else if (m_menu_state == robot_control) 
 	{
-		if(getInput() == "help") std::cout<<"\n"<<getRobotMenu()<<std::endl;
-		else if(getInput()=="exit") std::cout<<"\n"<<getMainMenu()<<std::endl;
-		else if(!isRobotInputValid(getInput())) //didn't process input
-		{ 
-			std::cerr<<"invalid input\n"<<getRobotMenu()<<std::endl;
-			return false; 
+		if(getInput() == "help") printRobotMenu();
+		else if(getInput()=="exit") 
+		{
+			m_menu_state=main;
+			//printMainMenu();
 		}
 		else
 		{
-			std::string packet = formatPacketToRobot(getInput());
-			sendData(packet);
+			if(!formatAndSend(getInput())) 
+			{
+				std::cout<<"ERROR: invalid input, could not send packet!"<<std::endl;
+				return false;
+			}
 		}
 		return true;
 	}
@@ -86,63 +108,95 @@ bool MenuController::isMainInputValid(std::string input)
 {
 	return input.length()>1 ? false : true;
 }
-bool MenuController::isRobotInputValid(std::string input)
-{
-	//as of right now it doesn't check the spacebar!!!
-	std::vector<std::string> commands = splitString(input);
-	//if # of args is invalid or arg is out of range
-	int mode;
-	int power_level;
-	// if the command is the right number of arguments
-	if(commands.size()>2 || commands.size()==0) return false; 
-	try //if the command is 1 or 2 numbers (1 # for mode and 1 # for powerlevel)
-	{ 
-		mode = std::stoi(commands[0]);
-		if(commands.size() == 2) power_level = std::stoi(commands[1]);
-	}
-	catch(...)  //catch all exceptions
-	{
-		return false;
-	}
-	if(mode < 1 || mode > 11) return false; //checking mode
-	//if arg is supposed to have a mode and a power level
-	//move forward/backward/turn/digger
-	if(((mode >=2  && mode <= 5) || (mode==8))){ //check powerlevel
-		if(commands.size()!=2) return false; //size should be 2 for this mode
-		if (power_level > 127 || power_level < 0) return false; //make sure power level is valid
-	}
-	//if arg is just supposed to have a mode
-	if((mode==1 || mode==9) || (mode > 5 && mode < 7)){
-		if(commands.size()!=1) return false; //input size should only be one for this input
-	}
-	return true; //commamd was valid!
-}
 bool MenuController::inMainMenu()
 {
 	 return m_menu_state == main ?  true : false;
 }
-std::string MenuController::formatPacketToRobot(std::string input)
+//validates and sends packet
+bool MenuController::validatePowerLevel(std::vector<std::string> commands)
 {
-	std::string packet="[";
-	std::vector<std::string> commands = splitString(input);
-	//if the command is meant to control the robot otherwise it's meant to get sensor data
-	int mode = (std::stoi(commands[0]));
-	if(mode<=9) packet+="M";
-	else if(mode==10) packet+="S";
-	else if (mode==11) packet+="I";
-	//need another 0 if the command is only one digit
-	if(mode < 10) {	
-		packet+= commands[0];
-
-	//get the power level if there is one
-	if(commands.size()==2){
-		if(commands[1].length()==1) packet+="00"+commands[1];
-		else if(commands[1].length()==2) packet+="0"+commands[1];
-		else packet+=commands[1];
-		}
+	if(commands.size()<2) return false;
+	try
+	{
+		int powerlevel = std::stoi(commands[1]);
+		return (powerlevel > 127 || powerlevel < 0) ? false : true;
 	}
-	packet+="]"; //closing the packet
-	return packet;
+	catch(...) //can't convert to int
+	{
+		return false;
+	}
+}
+std::string MenuController::addPadding(std::string powerlevel)
+{
+	if(powerlevel.length() == 1) return "00"+powerlevel;
+	else if(powerlevel.length()==2) return "0"+powerlevel;
+	else return powerlevel;
+}
+bool MenuController::formatAndSend(std::string input)
+{
 
+	std::vector<std::string> commands = splitString(input);
+	if(commands.size()>2 || commands.size()==0) return false; //if the input is not the right size it's invalid
+
+	std::string packet="[";
+	char mode=commands[0].at(0);
+
+	switch(mode) //checking if it has the correct mode
+	{
+		case m_mode::STOP_ROBOT:
+			packet+="M";
+			packet.push_back(static_cast<char>(STOP_ROBOT));
+			if(validatePowerLevel(commands)) return false;
+			break;
+		case m_mode::MOVE_FORWARD:
+			packet+="M";
+			packet.push_back(static_cast<char>(MOVE_FORWARD));
+			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
+			break;
+		case m_mode::MOVE_REVERSE:
+			packet+="M";
+			packet.push_back(static_cast<char>(MOVE_REVERSE));
+			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
+			break;
+		// case m_mode::TURN_RIGHT:
+		// 	packet+="M"+TURN_RIGHT;
+		// 	break;
+		// case m_mode::TURN_LEFT:
+		// 	packet+="M"+TURN_LEFT;
+		// 	if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
+		// 	break;
+		// case m_mode::RAISE:
+		// 	packet+="M"+RAISE;
+		// 	//there should be no additional input
+		// 	if(validatePowerLevel(commands)) return false;
+		// 	break;
+		// case m_mode::LOWER:
+		// 	packet+="M"+LOWER;
+		// 	if(validatePowerLevel(commands)) return false;
+		// 	break;
+		// case m_mode::STOP_DIG:
+		// 	packet+="M"+STOP_DIG;
+		// 	if(validatePowerLevel(commands)) return false;
+		// 	break;
+		// case m_mode::HOLD_BUCKET:
+		// 	packet+="M"+HOLD_BUCKET;
+		// 	if(validatePowerLevel(commands)) return false;
+		// 	break;
+		case m_mode::SENSOR_DATA:
+			packet+="S";
+			if(validatePowerLevel(commands)) return false;
+			break;
+		case m_mode::IMAGE:
+			packet+="I";
+			if(validatePowerLevel(commands)) return false;
+			break;									
+		default:
+			return false;
+			break;				
+	}
+	packet+="]";
+	std::cout<<"sending: "<<packet<<std::endl;
+	//sendData(packet);
+	return true;
 }
 
