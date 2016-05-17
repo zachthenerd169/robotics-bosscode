@@ -56,8 +56,8 @@ int main (int argc, char** argv)
         //data send data back
         else if(!menu.inMainMenu() && (user_input=="S" || user_input=="I"))
         {
-            server_data=menu.receiveData(); //try to get messages back from the server
-            if(server_data.length()>=1) std::cout<<"Server: "<<server_data<<std::endl;
+           // server_data=menu.receiveData(); //try to get messages back from the server
+           // if(server_data.length()>=1) std::cout<<"Server: "<<server_data<<std::endl;
         }
 		if(menu.inMainMenu()){menu.printMainMenu();}
   

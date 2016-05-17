@@ -18,12 +18,13 @@ void MenuController::printRobotMenu()
 			<<"--------------------------------------"<<std::endl
 			<<"STOP ROBOT:         <0>"<<std::endl
 			<<"MOVE FORWARD        <1 powerlevel>"<<std::endl
-			<<"MOVE REVERSE:       <3 powerLevel>"<<std::endl
-			<<"TURN RIGHT:         <4 powerLevel>"<<std::endl
-			<<"TURN LEFT:          <5 powerlevel>"<<std::endl
-			<<"START DIGGER        <6 powerlevel>"<<std::endl
-			<<"LOWER DIGGER/BUCKET <7>"<<std::endl
-			<<"RAISE DIGGER/BUCKET <8>"<<std::endl
+			<<"MOVE REVERSE:       <2 powerLevel>"<<std::endl
+			<<"TURN RIGHT:         <3 powerLevel>"<<std::endl
+			<<"TURN LEFT:          <4 powerlevel>"<<std::endl
+			<<"LOWER DIGGER/BUCKET <5>"<<std::endl
+			<<"RAISE DIGGER/BUCKET <6>"<<std::endl
+			<<"START DIGGER        <7 powerlevel>"<<std::endl
+			<<"STOP DIGGER         <8>"<<std::endl
 			<<"HOLD BUCKET         <9>"<<std::endl
 			<<"REQUEST SENSOR DATA <S>"<<std::endl
 			<<"REQUEST IMAGE       <I>"<<std::endl
@@ -72,19 +73,17 @@ bool MenuController::processInput()
 	else if (m_menu_state == robot_control) 
 	{
 		if(getInput() == "help") printRobotMenu();
-		else if(getInput()=="exit") 
-		{
-			m_menu_state=main;
-			//printMainMenu();
-		}
+		else if(getInput()=="exit") m_menu_state=main;
 		else
 		{
 			if(!formatAndSend(getInput())) 
 			{
 				std::cout<<"ERROR: invalid input, could not send packet!"<<std::endl;
+				std::cout<<std::endl<<"input: ";
 				return false;
 			}
 		}
+		std::cout<<std::endl<<"input: ";
 		return true;
 	}
 	else
@@ -139,6 +138,7 @@ bool MenuController::formatAndSend(std::string input)
 	if(commands.size()>2 || commands.size()==0) return false; //if the input is not the right size it's invalid
 
 	std::string packet="[";
+	if(commands[0].size()>1) return false; //mode should be one character
 	char mode=commands[0].at(0);
 
 	switch(mode) //checking if it has the correct mode
@@ -151,37 +151,48 @@ bool MenuController::formatAndSend(std::string input)
 		case m_mode::MOVE_FORWARD:
 			packet+="M";
 			packet.push_back(static_cast<char>(MOVE_FORWARD));
+			//std::cout<<commands[1]<<std::endl;
 			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
+			else return false;
 			break;
 		case m_mode::MOVE_REVERSE:
 			packet+="M";
 			packet.push_back(static_cast<char>(MOVE_REVERSE));
 			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
+			else return false;
 			break;
-		// case m_mode::TURN_RIGHT:
-		// 	packet+="M"+TURN_RIGHT;
-		// 	break;
-		// case m_mode::TURN_LEFT:
-		// 	packet+="M"+TURN_LEFT;
-		// 	if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
-		// 	break;
-		// case m_mode::RAISE:
-		// 	packet+="M"+RAISE;
-		// 	//there should be no additional input
-		// 	if(validatePowerLevel(commands)) return false;
-		// 	break;
-		// case m_mode::LOWER:
-		// 	packet+="M"+LOWER;
-		// 	if(validatePowerLevel(commands)) return false;
-		// 	break;
-		// case m_mode::STOP_DIG:
-		// 	packet+="M"+STOP_DIG;
-		// 	if(validatePowerLevel(commands)) return false;
-		// 	break;
-		// case m_mode::HOLD_BUCKET:
-		// 	packet+="M"+HOLD_BUCKET;
-		// 	if(validatePowerLevel(commands)) return false;
-		// 	break;
+		case m_mode::TURN_RIGHT:
+			packet+="M";
+			packet.push_back(static_cast<char>(TURN_RIGHT));
+			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
+			else return false;
+			break;
+		case m_mode::TURN_LEFT:
+			packet.push_back(static_cast<char>(TURN_LEFT));
+			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
+			else return false;
+			break;
+		case m_mode::RAISE:
+			packet+="M";
+			packet.push_back(static_cast<char>(RAISE));
+			//there should be no additional input
+			if(validatePowerLevel(commands)) return false;
+			break;
+		case m_mode::LOWER:
+			packet+="M";
+			packet.push_back(static_cast<char>(LOWER));
+			if(validatePowerLevel(commands)) return false;
+			break;
+		case m_mode::STOP_DIG:
+			packet+="M";
+			packet.push_back(static_cast<char>(STOP_DIG));
+			if(validatePowerLevel(commands)) return false;
+			break;
+		case m_mode::HOLD_BUCKET:
+			packet+="M";
+			packet.push_back(static_cast<char>(HOLD_BUCKET));
+			if(validatePowerLevel(commands)) return false;
+			break;
 		case m_mode::SENSOR_DATA:
 			packet+="S";
 			if(validatePowerLevel(commands)) return false;
@@ -191,6 +202,7 @@ bool MenuController::formatAndSend(std::string input)
 			if(validatePowerLevel(commands)) return false;
 			break;									
 		default:
+			//std::cout<<"default"<<std::endl;
 			return false;
 			break;				
 	}
