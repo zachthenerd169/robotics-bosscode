@@ -99,6 +99,20 @@ void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
+  else if(mode == '8') // start digger
+  {
+    std::string out = "";
+    out += createMotorCommand(2,1,speed); // digger start
+    std::cout << out << std::endl;
+    motor_arduino.write(out);
+  }
+  else if(mode == '9') // stop digger
+  {
+    std::string out = "";
+    out += createMotorCommand(2,1,speed); // digger stop
+    std::cout << out << std::endl;
+    motor_arduino.write(out);
+  }
 }
 
 int main(int argc, char *argv[])
