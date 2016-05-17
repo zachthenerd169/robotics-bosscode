@@ -88,14 +88,14 @@ void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
   else if(mode == '6') // lower bucket
   {
     std::string out = "";
-    out += createMotorCommand(3,1,speed); // bucket down
+    out += createMotorCommand(3,1,256); // bucket down
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
   else if(mode == '7') // raise bucket
   {
     std::string out = "";
-    out += createMotorCommand(3,0,speed); // bucket up
+    out += createMotorCommand(3,0,256); // bucket up
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }

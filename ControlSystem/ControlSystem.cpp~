@@ -32,11 +32,11 @@ std::string leftPad(unsigned int num)
   return out;
 }
 
-std::string createMotorCommand(unsigned char motor, unsigned char dir, unsigned int power)
+std::string createMotorCommand(unsigned int motor, unsigned int dir, unsigned int power)
 {
   std::string out = "!";
-  out += motor;
-  out += dir;
+  out += std::to_string(motor);
+  out += std::to_string(dir);
   out += leftPad(power);
   return out;
 }
@@ -88,14 +88,14 @@ void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
   else if(mode == '6') // lower bucket
   {
     std::string out = "";
-    out += createMotorCommand(3,1,speed); // bucket down
+    out += createMotorCommand(3,1,256); // bucket down
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
   else if(mode == '7') // raise bucket
   {
     std::string out = "";
-    out += createMotorCommand(3,0,speed); // bucket up
+    out += createMotorCommand(3,0,256); // bucket up
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
@@ -122,12 +122,7 @@ int main(int argc, char *argv[])
 
   /* Construct robot components */
   ThreaddedNetwork network(server_port);
-  //STEPH TEST
-  const char* steph_port="/dev/cu.usbmodem1421";
-  Arduino motor_arduino(steph_port);
-
-  //USE THIS OTHERWISE
-  //Arduino motor_arduino("dev/ttyACM0");
+  Arduino motor_arduino("/dev/ttyACM0");
 
 
   /* Main program loop */
