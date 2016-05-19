@@ -20,6 +20,7 @@
 #define DRIVE_TRAIN_LEFT '1'
 #define DIGGER '2'
 #define BUCKET '3'
+#define PUSHER '4'
 
 // Define what the directions are
 #define FORWARD '1'
@@ -150,6 +151,10 @@ void loop()
   	{
   		MD_Bucket.setSpeeds(p_level,p_level);
   	}
+    if(motor_byte == PUSHER)
+    {
+      ST_Dig.motor(2,p_level)
+    }
   }
 } // loop
 
