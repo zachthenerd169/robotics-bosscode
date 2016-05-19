@@ -10,40 +10,40 @@
 // To run: ./menutest.exe <ip address> <port #>
 int main (int argc, char** argv)
 {
-	std::string address;
-	unsigned short port;
-#if DEBUG	
-	port=1024;
-	address="127.0.0.1";  
+    std::string address;
+    unsigned short port;
+#if DEBUG   
+    port=1024;
+    address="127.0.0.1";  
 #else 
-	if(argc != 3)
-	{
- 	  	cerr << "Usage: " << argv[0] << " <Server Address> <Server Port>" << endl;
-    	exit(1);
+    if(argc != 3)
+    {
+        cerr << "Usage: " << argv[0] << " <Server Address> <Server Port>" << endl;
+        exit(1);
     }
     else
     {
-    	address=argv[1];
-    	try{ port=atoi(argv[2]);}
-    	catch(...){ 
-    		std::cerr<<"ERROR: invalid port number"<<std::endl;
-    		exit(1);
-    	}
-    }	
+        address=argv[1];
+        try{ port=atoi(argv[2]);}
+        catch(...){ 
+            std::cerr<<"ERROR: invalid port number"<<std::endl;
+            exit(1);
+        }
+    }   
 #endif
 
     std::cout<<"Welcome to MenuController!"<<std::endl<<std::endl;;
-	MenuController menu(address, port); //construct menu object
- 	menu.printMainMenu();
-  	
+    MenuController menu(address, port); //construct menu object
+    menu.printMainMenu();
+    
     while(true)
     {
         std::string server_data;
         std::string user_input;
-		getline(std::cin, user_input);
-		menu.setInput(user_input);
+        getline(std::cin, user_input);
+        menu.setInput(user_input);
         std::cout<<std::endl;
-		bool success=menu.processInput(); //not really doing anything with success right now
+        bool success=menu.processInput(); //not really doing anything with success right now
 
         //if the user is in the main menu and they sent a test message they should receive
         //data back
@@ -59,7 +59,7 @@ int main (int argc, char** argv)
            // server_data=menu.receiveData(); //try to get messages back from the server
            // if(server_data.length()>=1) std::cout<<"Server: "<<server_data<<std::endl;
         }
-		if(menu.inMainMenu()){menu.printMainMenu();}
+        if(menu.inMainMenu()){menu.printMainMenu();}
   
     }
     return 0;

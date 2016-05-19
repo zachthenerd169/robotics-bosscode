@@ -21,8 +21,8 @@ void MenuController::printRobotMenu()
 			<<"MOVE REVERSE:       <2 powerLevel>"<<std::endl
 			<<"TURN RIGHT:         <3 powerLevel>"<<std::endl
 			<<"TURN LEFT:          <4 powerlevel>"<<std::endl
-			<<"LOWER DIGGER/BUCKET <5>"<<std::endl
-			<<"RAISE DIGGER/BUCKET <6>"<<std::endl
+			<<"RAISE DIGGER/BUCKET <5>"<<std::endl
+			<<"LOWER DIGGER/BUCKET <6>"<<std::endl
 			<<"START DIGGER        <7 powerlevel>"<<std::endl
 			<<"STOP DIGGER         <8>"<<std::endl
 			<<"HOLD BUCKET         <9>"<<std::endl
@@ -168,6 +168,7 @@ bool MenuController::formatAndSend(std::string input)
 			else return false;
 			break;
 		case Mode::TURN_LEFT:
+			packet+="M";
 			packet.push_back(static_cast<char>(Mode::TURN_LEFT));
 			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
 			else return false;
@@ -187,6 +188,12 @@ bool MenuController::formatAndSend(std::string input)
 			packet+="M";
 			packet.push_back(static_cast<char>(Mode::STOP_DIG));
 			if(validatePowerLevel(commands)) return false;
+			break;
+		case Mode::DIG:
+			packet+="M";
+			packet.push_back(static_cast<char>(Mode::DIG));
+			if(validatePowerLevel(commands)) packet+=addPadding(commands[1]);
+			else return false;
 			break;
 		case Mode::HOLD_BUCKET:
 			packet+="M";
