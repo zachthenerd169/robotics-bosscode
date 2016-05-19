@@ -72,8 +72,15 @@ bool MenuController::processInput()
 	} 
 	else if (m_menu_state == robot_control) 
 	{
-		if(getInput() == "help") printRobotMenu();
-		else if(getInput()=="exit") m_menu_state=main;
+		if(getInput() == "help"){
+			printRobotMenu();
+			return true;
+		}
+		else if(getInput()=="exit"){ 
+			m_menu_state=main;
+			std::cout<<std::endl;
+			return true;
+		}
 		else
 		{
 			if(!formatAndSend(getInput())) 
@@ -135,6 +142,10 @@ bool MenuController::formatAndSend(std::string input)
 {
 
 	std::vector<std::string> commands = splitString(input);
+	// for(int i=0; i<commands.size(); i++)
+	// {
+	// 	std::cout<<"commands["<<i<<"] = "<<commands[i]<<std::endl;
+	// }
 	if(commands.size()>2 || commands.size()==0) return false; //if the input is not the right size it's invalid
 
 	std::string packet="[";
@@ -144,9 +155,10 @@ bool MenuController::formatAndSend(std::string input)
 	switch(mode) //checking if it has the correct mode
 	{
 		case Mode::STOP_ROBOT:
+			//std::cout<<"stop robot"<<std::endl;
 			packet+="M";
 			packet.push_back(static_cast<char>(Mode::STOP_ROBOT));
-			if(validatePowerLevel(commands)) return false;
+			if(commands.size()==2) return false;
 			break;
 		case Mode::MOVE_FORWARD:
 			packet+="M";
@@ -177,17 +189,17 @@ bool MenuController::formatAndSend(std::string input)
 			packet+="M";
 			packet.push_back(static_cast<char>(Mode::RAISE));
 			//there should be no additional input
-			if(validatePowerLevel(commands)) return false;
+			if(commands.size()==2) return false;
 			break;
 		case Mode::LOWER:
 			packet+="M";
 			packet.push_back(static_cast<char>(Mode::LOWER));
-			if(validatePowerLevel(commands)) return false;
+			if(commands.size()==2) return false;
 			break;
 		case Mode::STOP_DIG:
 			packet+="M";
 			packet.push_back(static_cast<char>(Mode::STOP_DIG));
-			if(validatePowerLevel(commands)) return false;
+			if(commands.size()==2) return false;
 			break;
 		case Mode::DIG:
 			packet+="M";
@@ -198,15 +210,15 @@ bool MenuController::formatAndSend(std::string input)
 		case Mode::HOLD_BUCKET:
 			packet+="M";
 			packet.push_back(static_cast<char>(Mode::HOLD_BUCKET));
-			if(validatePowerLevel(commands)) return false;
+			if(commands.size()==2) return false;
 			break;
 		case Mode::SENSOR_DATA:
 			packet+="S";
-			if(validatePowerLevel(commands)) return false;
+			if(commands.size()==2) return false;
 			break;
 		case Mode::IMAGE:
 			packet+="I";
-			if(validatePowerLevel(commands)) return false;
+			if(commands.size()==2) return false;
 			break;									
 		default:
 			//std::cout<<"default"<<std::endl;
