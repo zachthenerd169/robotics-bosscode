@@ -137,19 +137,25 @@ int main(int argc, char *argv[])
   /* Construct robot components */
   ThreaddedNetwork network(server_port);
 
-  //Arduino motor_arduino("/dev/ttyACM0");
-  //Arduino motor_arduino("/dev/cu.usbmodem1421");
-
+  Arduino motor_arduino; //fd=-1...to avoid issues with scope
+  
   /*attempts both instances of port on arduino */
   try
   {
-    Arduino motor_arduino("/dev/ttyACM0");
+     Arduino motor_arduino_temp("/dev/cu.usbmodem1411");
+     motor_arduino=motor_arduino_temp;
+    
+    //Arduino motor_arduino("/dev/ttyACM0");
   }
   catch(...) 
   {
-    Arduino motor_arduino("/dev/ttyACM1");
+    //std::cout<<"caught exception!"<<std::endl;
+    //Arduino motor_arduino("/dev/ttyACM1");
+    
+    Arduino motor_arduino_temp("/dev/cu.usbmodem1421");
+    motor_arduino=motor_arduino_temp;
   }
-  //Arduino motor_arduino("/dev/cu.usbmodem1421");
+
 
 
 

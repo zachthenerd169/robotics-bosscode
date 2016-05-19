@@ -6,6 +6,12 @@
 class Arduino{
 	
 	public:
+		Arduino(){fd=-1;}
+		Arduino operator()(const char* port, int baud_rate=9600)
+		{
+			Arduino a(port, baud_rate);
+			return a;
+		}
 		/**
 		 *
 		 */
@@ -13,7 +19,7 @@ class Arduino{
 		{
 			fd=-1;
 			fd = serialport_init(port, baud_rate); //opening port
-    		(fd == -1) ? std::cout<< "couldn't open port for arduino! :(" << std::endl : std::cout<< "opened port " << port << std::endl;
+    		(fd == -1) ? throw std::invalid_argument("Couldn't open port" + std::string(port)) : std::cout<< "opened port " << port << std::endl;
     		serialport_flush(fd);
     	}
 		/**
