@@ -10,7 +10,6 @@
 
 #include "UserController.h"
 #include "lib/CXBOXController.h" // for xbox controller
-#include "util/Modes.h"
 
 
 #ifndef XBOXCONTROLLER_H_
@@ -116,16 +115,6 @@ class XboxController : public UserController
 			bool endLeft;
 			bool endRight;
 		}m_xbox_controller;
-
-		/**
-		* tells whether the last digger action was a lower
-		*/
-		bool m_lowered = false;
-
-		/**
-		* tells whether the last digger action was a raise
-		*/
-		bool m_raised = false;
 
 		/**
 		* holds the current power level as adjusted

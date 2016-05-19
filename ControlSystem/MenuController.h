@@ -20,8 +20,6 @@
 #include "UserController.h"
 #ifndef MENUCONTROLLER_H_
 #define MENUCONTROLLER_H_
-#include <vector>
- #include "util/Modes.h"
 
 class MenuController : public UserController
 {
@@ -43,7 +41,7 @@ class MenuController : public UserController
 		 * Inputs: none
 		 * Outputs: string that holds the main menu
 		 */
-		void printMainMenu();
+		std::string getMainMenu();
 		//DESTRUCCTTTIOOOON!!!
 		 ~MenuController(){}
 		/**
@@ -53,7 +51,7 @@ class MenuController : public UserController
 		 * Inputs: none
 		 * Outputs: string that holds the robot control menu
 		 */
-		void printRobotMenu();
+		std::string getRobotMenu();
 		/**
 		 * Description: method looks at m_menu_state & m_input and decides what command
 		 * 				to send to the robot
@@ -80,11 +78,6 @@ class MenuController : public UserController
 		 */
 		enum MenuState {main, robot_control, request} m_menu_state;
 		/**
-		 * enum to hold all of the modes the robot could possibly be in
-		 */
-		//enum Mode{STOP_ROBOT='0', MOVE_FORWARD='1', MOVE_REVERSE='2', TURN_RIGHT='3', TURN_LEFT='4', RAISE='5', 
-		//	LOWER='6', DIG='7', STOP_DIG='8', HOLD_BUCKET='9', SENSOR_DATA='S', IMAGE='I'};
-		/**
 		 * Description: function asks the user for an input and appends [Tmessage] on it
 		 * Input: by default  the message will not go to the arduino
 		 * Output: the formatted message
@@ -105,7 +98,7 @@ class MenuController : public UserController
 		 * Input: the user's input
 		 * Output: true if valid, false otherwise
 		 */
-		//bool isRobotInputValid(std::string input);
+		bool isRobotInputValid(std::string input);
 		/**
 		 * Description: checks the input from the user and puts the input in the correct
 		 *				format to send to the robot. You should only use this function after
@@ -113,11 +106,7 @@ class MenuController : public UserController
 		 * Input: the unformated valid input, eg. 2 120
 		 * Output: the the packet in the correct format [M02120]
 		 */
-		//std::string formatPacketToRobot(std::string input);
-		 bool formatAndSend(std::string input);
-		 std::string addPadding(std::string powerlevel);
-		 bool validatePowerLevel(std::vector<std::string> commands);
-
+		std::string formatPacketToRobot(std::string input);
 
 };
 #endif /* MENUCONTROLLER_H_*/

@@ -9,7 +9,7 @@
 #include "Arduino.h"
 #include <vector>
 #include <string>
-#include "util/Modes.h"
+
 std::string leftPad(unsigned int num)
 {
   //std::cout<<"num: "<<num<<std::endl;
@@ -49,11 +49,11 @@ void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
   std::cout<<mode<<std::endl;
   std::cout<<cmd.substr(2)<<std::endl;
   if(cmd.length()>2)speed = std::stoi(cmd.substr(2));
-  if(mode == Mode::STOP_ROBOT) // stop
+  if(mode == '1') // stop
   {
     motor_arduino.write("s");
   }
-  else if(mode == Mode::MOVE_FORWARD) // forward
+  else if(mode == '2') // forward
   {
     std::string out = "";
     out += createMotorCommand(0,1,speed); // right forward
@@ -61,7 +61,7 @@ void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
-  else if(mode == Mode::MOVE_REVERSE) // reverse
+  else if(mode == '3') // reverse
   {
     std::string out = "";
     out += createMotorCommand(0,0,speed); // right backward
@@ -69,7 +69,7 @@ void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
-  else if(mode == Mode::TURN_RIGHT) // turn right
+  else if(mode == '4') // turn right
   {
     std::string out = "";
     out += createMotorCommand(0,0,speed); // right backward
@@ -77,7 +77,7 @@ void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
-  else if(mode == Mode::TURN_LEFT) // turn left
+  else if(mode == '5') // turn left
   {
     std::string out = "";
     out += createMotorCommand(0,1,speed); // right forward
@@ -85,28 +85,28 @@ void handleMovementCommand(std::string cmd, Arduino& motor_arduino)
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
-  else if(mode == Mode::LOWER) // lower bucket/digger
+  else if(mode == '6') // lower bucket/digger
   {
     std::string out = "";
     out += createMotorCommand(3,1,256); // bucket/digger down
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
-  else if(mode == Mode::RAISE) // raise bucket/digger
+  else if(mode == '7') // raise bucket/digger
   {
     std::string out = "";
     out += createMotorCommand(3,0,256); // bucket up
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
-  else if(mode == Mode::DIG) // start digger
+  else if(mode == '8') // start digger
   {
     std::string out = "";
     out += createMotorCommand(2,1,speed); // digger start
     std::cout << out << std::endl;
     motor_arduino.write(out);
   }
-  else if(mode == Mode::STOP_DIG) // stop digger
+  else if(mode == '9') // stop digger
   {
     std::string out = "";
     out += createMotorCommand(2,1,speed); // digger stop
@@ -136,21 +136,8 @@ int main(int argc, char *argv[])
 
   /* Construct robot components */
   ThreaddedNetwork network(server_port);
-
-  //Arduino motor_arduino("/dev/ttyACM0");
+  Arduino motor_arduino("/dev/ttyACM0");
   //Arduino motor_arduino("/dev/cu.usbmodem1421");
-
-  /*attempts both instances of port on arduino */
-  try
-  {
-    Arduino motor_arduino("/dev/ttyACM0");
-  }
-  catch(...) 
-  {
-    Arduino motor_arduino("/dev/ttyACM1");
-  }
-  //Arduino motor_arduino("/dev/cu.usbmodem1421");
-
 
 
   /* Main program loop */
